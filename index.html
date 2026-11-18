@@ -17,7 +17,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script>
 /* aplicar el tema antes de pintar, para que no parpadee */
 try{const t=JSON.parse(localStorage.getItem("adela-irregular-v1")||"{}").theme;if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}
@@ -53,10 +53,10 @@ try{const t=JSON.parse(localStorage.getItem("adela-irregular-v1")||"{}").theme;i
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Lexend,system-ui,sans-serif;min-height:100vh;transition:background .3s}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;min-height:100vh;transition:background .3s}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(600px 400px at 100% 0%,var(--glow1) 0,transparent 70%),radial-gradient(500px 400px at 0% 100%,var(--glow2) 0,transparent 70%);}
-h1,h2,h3{font-family:Lexend,system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+h1,h2,h3{font-family:Nunito,system-ui,sans-serif;letter-spacing:-.02em;margin:0}
 button{font:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:10px}
 .wrap{max-width:960px;margin:0 auto;padding:18px 16px 70px}
@@ -121,7 +121,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 
 /* estudiar */
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.search{flex:1;min-width:180px;padding:11px 16px;border:2px solid var(--line);border-radius:14px;font:600 15px Lexend,sans-serif;background:var(--field);color:var(--ink)}
+.search{flex:1;min-width:180px;padding:11px 16px;border:2px solid var(--line);border-radius:14px;font:600 15px Nunito,sans-serif;background:var(--field);color:var(--ink)}
 .search:focus{outline:none;border-color:var(--inf)}
 .tog{border:2px solid var(--line);background:var(--field);border-radius:14px;padding:8px 12px;font-weight:700;font-size:13px;color:var(--soft)}
 .tog[aria-pressed=true]{color:#fff;border-color:transparent}
@@ -170,7 +170,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .slot label{display:block;font-weight:800;font-size:12.5px;margin:0 0 6px 6px}
 .slot.a label{color:var(--inf)}.slot.b label{color:var(--past)}.slot.c label{color:var(--part)}
-.slot input{width:100%;padding:14px 10px;border-radius:16px;border:3px solid var(--line);font:800 19px Lexend,sans-serif;text-align:center;color:var(--ink);background:var(--field);transition:border-color .2s,background .2s}
+.slot input{width:100%;padding:14px 10px;border-radius:16px;border:3px solid var(--line);font:800 19px Nunito,sans-serif;text-align:center;color:var(--ink);background:var(--field);transition:border-color .2s,background .2s}
 .slot.a input:focus{border-color:var(--inf);outline:none}
 .slot.b input:focus{border-color:var(--past);outline:none}
 .slot.c input:focus{border-color:var(--part);outline:none}
@@ -388,7 +388,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=7, APP_DATE="18/11/2026";
+const APP_VERSION=8, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
