@@ -483,7 +483,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=20, APP_DATE="18/11/2026";
+const APP_VERSION=21, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -708,7 +708,8 @@ function lev(a,b){
   return d[m][n];
 }
 function regular(inf){
-  const r=new Set([inf+"ed",inf+"d"]);
+  // la forma regular "inventada" más probable va primero: choose → choosed, go → goed
+  const r=new Set(inf.endsWith("e")?[inf+"d",inf+"ed"]:[inf+"ed",inf+"d"]);
   if(/[^aeiou]y$/.test(inf))r.add(inf.slice(0,-1)+"ied");
   if(/[^aeiou][aeiou][bdgklmnprt]$/.test(inf))r.add(inf+inf.slice(-1)+"ed");
   return r;
