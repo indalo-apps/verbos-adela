@@ -86,16 +86,17 @@ button{font:inherit;cursor:pointer;color:inherit}
 .nums div{font-size:13px;color:var(--hero-soft)}
 .nums b{display:block;font-size:26px;color:#fff;font-weight:800;line-height:1.1}
 .mosaic-box{background:rgba(255,255,255,.06);border-radius:20px;padding:14px}
-.mosaic{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}
-.mosaic button{aspect-ratio:1;border-radius:5px;background:rgba(255,255,255,.13);border:0;padding:0;transition:background .4s,transform .3s}
-.mosaic button:hover{transform:scale(1.15)}
-.mosaic button.l1{background:var(--bad)}
-.mosaic button.l2{background:var(--past)}
-.mosaic button.l3{background:var(--sun)}
-.mosaic button.l4{background:var(--part)}
-.mosaic button.dim{opacity:.22}
-.mosaic button.sel{outline:2px solid #fff;outline-offset:1px}
-.mosaic button.pop{transform:scale(1.4)}
+.wall{display:flex;flex-wrap:wrap;gap:4px}
+.wall button{border:0;font:700 12.5px Nunito,sans-serif;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.12);color:#D9D3FA;transition:background .4s,color .4s,transform .3s,opacity .3s}
+.wall button:hover{transform:scale(1.08)}
+.wall button.l1{background:var(--bad);color:#fff}
+.wall button.l2{background:var(--past);color:#fff}
+.wall button.l3{background:var(--sun);color:#231A4F}
+.wall button.l4{background:var(--part);color:#fff}
+.wall button.dim{opacity:.22}
+.wall button.sel{outline:2px solid #fff;outline-offset:1px}
+.wall button.pop{transform:scale(1.3)}
+.wmore{display:none}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--hero-soft);margin-top:10px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .tinfo{margin-top:10px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -105,12 +106,15 @@ button{font:inherit;cursor:pointer;color:inherit}
 .tinfo button{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:10px;width:34px;height:34px}
 
 /* modos */
-.modes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0 16px}
-.mode{border:0;background:var(--paper);border-radius:18px;padding:12px 6px 10px;text-align:center;box-shadow:0 3px 0 var(--line);transition:transform .15s}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 16px}
+.mode{border:0;background:var(--mc);color:#fff;border-radius:20px;padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:1px;min-height:98px;box-shadow:0 4px 0 var(--md);transition:transform .15s,box-shadow .15s,opacity .2s;position:relative}
 .mode:hover{transform:translateY(-2px)}
-.mode .e{font-size:24px;display:block;line-height:1.2}
-.mode .t{font-weight:700;font-size:13px}
-.mode.on{background:var(--inf);color:#fff;box-shadow:0 3px 0 var(--inf-d)}
+.mode:active{transform:translateY(3px);box-shadow:0 1px 0 var(--md)}
+.mode .e{font-size:24px;line-height:1.2}
+.mode .t{font-weight:900;font-size:17px;line-height:1.2}
+.mode small{font-weight:600;font-size:12.5px;opacity:.92;line-height:1.3}
+.mode.on{outline:3px solid var(--ink);outline-offset:3px}
+.mode.on::after{content:"";position:absolute;top:12px;right:12px;width:10px;height:10px;border-radius:50%;background:#fff}
 .groups{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-4px 0 16px;font-size:14px;color:var(--soft);font-weight:700}
 .seg{display:inline-flex;flex-wrap:wrap;background:var(--paper);border-radius:22px;padding:4px;box-shadow:0 2px 0 var(--line)}
 .seg button{border:0;background:none;border-radius:18px;padding:6px 14px;font-weight:700;font-size:13px;color:var(--soft)}
@@ -283,13 +287,18 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
   .nums div{font-size:11.5px}
   .nums b{font-size:19px}
   .mosaic-box{padding:10px;border-radius:14px}
-  .mosaic{grid-template-columns:repeat(22,1fr);gap:3px}
-  .mosaic button{border-radius:3px}
+  .wall{gap:3px}
+  .wall button{font-size:11px;padding:2px 7px}
+  .wall.short{max-height:66px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
+  .wmore{display:block;border:0;background:rgba(255,255,255,.12);color:#fff;font:800 12px Nunito,sans-serif;border-radius:999px;padding:5px 12px;margin:8px auto 0}
   .legend{gap:8px;font-size:10.5px;margin-top:8px}
-  .modes{grid-template-columns:repeat(6,1fr);gap:5px;margin:12px 0}
-  .mode{padding:8px 2px 6px;border-radius:14px}
-  .mode .e{font-size:19px}
-  .mode .t{font-size:10.5px}
+  .modes{grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+  .mode{padding:10px 12px;border-radius:16px;min-height:0;display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center}
+  .mode .e{font-size:20px;grid-row:1/3}
+  .mode .t{font-size:15px}
+  .mode small{font-size:11px}
+  .mode.on{outline-offset:2px}
+  .mode.on::after{top:8px;right:8px;width:8px;height:8px}
   .groups{margin:-2px 0 12px}
   .groups>span{display:none}
   .seg{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
@@ -337,7 +346,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
   <section class="hero">
     <div>
       <h1 id="hello">¡Hola, Adela!</h1>
-      <p class="sub">Tres formas por verbo. Cuando las domines, su casilla se pondrá verde.</p>
+      <p class="sub">Tres formas por verbo. Cuando domines uno, se pondrá verde en tu muro.</p>
       <div class="train" id="train"></div>
       <div class="nums">
         <div><b id="sMaster">0</b>dominados</div>
@@ -347,10 +356,11 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
       </div>
     </div>
     <div class="mosaic-box">
-      <div class="mosaic" id="mosaic" aria-label="Progreso de cada verbo. Toca una casilla para ver el verbo."></div>
+      <div class="wall short" id="mosaic" aria-label="Tus 88 verbos, coloreados según cómo los llevas. Toca uno para verlo."></div>
+      <button class="wmore" id="wmore">Ver los 88 verbos ▾</button>
       <div class="tinfo hidden" id="tinfo"></div>
       <div class="legend" id="legend">
-        <span><i style="background:rgba(255,255,255,.25)"></i>sin ver</span>
+        <span><i style="background:rgba(255,255,255,.25)"></i>sin practicar</span>
         <span><i style="background:var(--bad)"></i>fallado</span>
         <span><i style="background:var(--past)"></i>empezado</span>
         <span><i style="background:var(--sun)"></i>casi</span>
@@ -360,12 +370,12 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
   </section>
 
   <nav class="modes" id="nav">
-    <button class="mode on" data-v="study"><span class="e">📖</span><span class="t">Estudiar</span></button>
-    <button class="mode" data-v="cards"><span class="e">🃏</span><span class="t">Tarjetas</span></button>
-    <button class="mode" data-v="write"><span class="e">✍️</span><span class="t">Escribir</span></button>
-    <button class="mode" data-v="choice"><span class="e">🎯</span><span class="t">Elegir</span></button>
-    <button class="mode" data-v="exam"><span class="e">📝</span><span class="t">Examen</span></button>
-    <button class="mode" data-v="review"><span class="e">🔁</span><span class="t">Fallos</span></button>
+    <button class="mode on" data-v="study" style="--mc:#6C4CF5;--md:#4A2FC9"><span class="e">📖</span><span class="t">Estudiar</span><small>La tabla con frases y audio</small></button>
+    <button class="mode" data-v="cards" style="--mc:#8B5CF6;--md:#6A3BD6"><span class="e">🃏</span><span class="t">Tarjetas</span><small>Gira y comprueba si te lo sabes</small></button>
+    <button class="mode" data-v="write" style="--mc:#FF7A30;--md:#D95A12"><span class="e">✍️</span><span class="t">Escribir</span><small>Escribe las formas que faltan</small></button>
+    <button class="mode" data-v="choice" style="--mc:#F59E0B;--md:#C77D00"><span class="e">🎯</span><span class="t">Elegir</span><small>Elige la respuesta correcta</small></button>
+    <button class="mode" data-v="exam" style="--mc:#14B37D;--md:#0B8A5F"><span class="e">📝</span><span class="t">Examen</span><small>10 o 20 verbos con nota</small></button>
+    <button class="mode" data-v="review" style="--mc:#F0446B;--md:#C02650"><span class="e">🔁</span><span class="t">Mis fallos</span><small>Repasa lo que has fallado</small></button>
   </nav>
 
   <div class="groups" id="groupsBar"><span>Practicar</span>
@@ -435,7 +445,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=14, APP_DATE="18/11/2026";
+const APP_VERSION=15, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -787,8 +797,9 @@ $("grpSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;
 
 // ---------- cabecera y mosaico ----------
 const LVLTXT=["Aún sin practicar","Lo has fallado: toca repasarlo","Empezado","Casi lo tienes","¡Dominado!"];
+$("wmore").onclick=()=>{const w=$("mosaic"),sh=w.classList.toggle("short");$("wmore").textContent=sh?"Ver los 88 verbos ▾":"Ver menos ▴";};
 function buildMosaic(){
-  $("mosaic").innerHTML=V.map((v,i)=>`<button id="m${i}" aria-label="${v.inf}" title="${v.inf}"></button>`).join("");
+  $("mosaic").innerHTML=V.map((v,i)=>`<button id="m${i}">${v.inf}</button>`).join("");
 }
 let selTile=-1;
 $("mosaic").onclick=e=>{
