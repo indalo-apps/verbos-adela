@@ -1,8 +1,8 @@
-# Verbos irregulares · Adela
+# Irregular Verbs
 
 App para estudiar los verbos irregulares de inglés (4º ESO).
 
-Versión actual: v4
+Versión actual: v5
 
 https://indalo-apps.github.io/verbos-adela/
 
