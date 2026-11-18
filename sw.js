@@ -2,7 +2,7 @@
 // La página siempre se pide primero a internet (así llegan las versiones nuevas);
 // si no hay conexión, se usa la última copia guardada.
 const CACHE = "irregular-verbs";
-const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const CORE = ["./", "index.html", "nunito.woff", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));

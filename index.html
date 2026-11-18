@@ -15,9 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preload" href="nunito.woff" as="font" type="font/woff" crossorigin>
 <script>
 /* aplicar el tema antes de pintar, para que no parpadee */
 try{const t=JSON.parse(localStorage.getItem("adela-irregular-v1")||"{}").theme;if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}
@@ -61,6 +59,8 @@ try{const t=JSON.parse(localStorage.getItem("adela-irregular-v1")||"{}").theme;i
     color-scheme:dark;
   }
 }
+/* Nunito (licencia SIL Open Font License) guardada en la app: no se conecta a Google */
+@font-face{font-family:"Nunito";src:url("nunito.woff") format("woff");font-weight:200 1000;font-style:normal;font-display:swap}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;min-height:100vh}
@@ -70,7 +70,8 @@ h1,h2,h3{letter-spacing:-.02em;margin:0}
 button,select{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input,textarea{-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:10px}
-.wrap{max-width:960px;margin:0 auto;padding:16px 16px 70px}
+.wrap{max-width:960px;margin:0 auto;padding:16px 16px 70px;zoom:var(--z,1)}
+.newsbg .news,#toasts,.updbar{zoom:var(--z,1)}
 .hidden{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
@@ -87,7 +88,8 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .iconbtn b{font-size:13px;color:var(--soft);font-weight:800}
 .offline{font-size:12px;font-weight:800;color:var(--past-x);background:var(--past-t);border-radius:999px;padding:5px 10px}
 #toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
-.toast{background:var(--hero);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 24px rgba(20,10,60,.35);text-align:center;animation:rise .35s ease-out}
+.toast button{pointer-events:auto;border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:10px;min-height:40px;padding:0 12px;font-weight:900;margin-left:10px}
+.toast{display:flex;align-items:center;background:var(--hero);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 24px rgba(20,10,60,.35);text-align:center;animation:rise .35s ease-out}
 @keyframes rise{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
 
 /* inicio */
@@ -104,6 +106,8 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .wall{display:flex;flex-wrap:wrap;gap:6px}
 .wall button{border:0;font-weight:800;font-size:13px;min-height:32px;padding:4px 11px;border-radius:999px;background:rgba(255,255,255,.14);color:#E6E1FF;transition:background .4s,color .4s,transform .3s,opacity .3s}
 .wall button.l1{background:var(--bad);color:#fff}
+.wall button.l1::before{content:"✗ "}
+.wall button.l4::before{content:"✓ "}
 .wall button.l2{background:var(--p2);color:var(--p2-x)}
 .wall button.l3{background:var(--p3);color:var(--p3-x)}
 .wall button.l4{background:var(--ok);color:#fff}
@@ -323,9 +327,10 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .hero{grid-template-columns:1fr;padding:16px;gap:12px;border-radius:22px}
   .hero h1{font-size:23px}
   .hero .sub,.hero .train{display:none}
-  .nums{gap:16px}
-  .nums div{font-size:12.5px}
-  .nums b{font-size:20px}
+  .nums{gap:4px 14px}
+  .nums div{font-size:13px;display:flex;align-items:baseline;gap:4px}
+  .nums b{display:inline;font-size:17px}
+  .nums .nb{display:none}
   .wallbox{padding:10px;border-radius:16px}
   .wall{gap:6px}
   .wall button{font-size:13px;min-height:34px;padding:4px 11px}
@@ -398,7 +403,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
         <div class="nums">
           <div><b id="sMaster">0</b>dominados</div>
           <div><b id="sStreak">0</b>racha</div>
-          <div><b id="sBest">0</b>mejor racha</div>
+          <div class="nb"><b id="sBest">0</b>mejor racha</div>
           <div><b id="sReview">0</b>por repasar</div>
         </div>
       </div>
@@ -408,10 +413,10 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
         <div class="tinfo hidden" id="tinfo"></div>
         <div class="legend" id="legend">
           <span><i style="background:rgba(255,255,255,.3)"></i>sin practicar</span>
-          <span><i style="background:var(--bad)"></i>fallado</span>
+          <span><i style="background:var(--bad)"></i>✗ fallado</span>
           <span><i style="background:var(--p2)"></i>practicando</span>
           <span><i style="background:var(--p3)"></i>casi</span>
-          <span><i style="background:var(--ok)"></i>dominado</span>
+          <span><i style="background:var(--ok)"></i>✓ dominado</span>
         </div>
       </div>
     </section>
@@ -505,7 +510,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=23, APP_DATE="18/11/2026";
+const APP_VERSION=24, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -748,9 +753,25 @@ function hint(v,k,ans){
   if(d===1||(d===2&&a.length>=6))return "Casi: revisa cómo se escribe.";
   return "";
 }
-function toast(msg,ms=2600){
-  const t=document.createElement("div");t.className="toast";t.textContent=msg;$("toasts").appendChild(t);
+function toast(msg,ms=2600,action){
+  const t=document.createElement("div");t.className="toast";
+  const sp=document.createElement("span");sp.textContent=msg;t.appendChild(sp);
+  if(action){const b=document.createElement("button");b.textContent=action.label;b.onclick=()=>{t.remove();action.fn();};t.appendChild(b);}
+  $("toasts").appendChild(t);
   setTimeout(()=>t.remove(),ms);
+  return t;
+}
+// ventana para confirmar (en vez de confirm(), que no funciona bien en el móvil)
+function confirmDialog(title,text,okLabel,cancelLabel,onOk,onCancel){
+  const m=document.createElement("div");m.className="newsbg";
+  m.innerHTML=`<div class="news" role="alertdialog" aria-modal="true" aria-labelledby="cfT"><h2 id="cfT">${title}</h2><p class="sv">${text}</p><div class="pick"><button class="btn r" id="cfOk">${okLabel}</button><button class="btn w" id="cfNo">${cancelLabel}</button></div></div>`;
+  document.body.appendChild(m);
+  const close=()=>{m.remove();document.removeEventListener("keydown",esc);};
+  const esc=e=>{if(e.key==="Escape"){close();onCancel&&onCancel();}};document.addEventListener("keydown",esc);
+  $("cfOk").onclick=()=>{close();onOk();};
+  $("cfNo").onclick=()=>{close();onCancel&&onCancel();};
+  m.onclick=e=>{if(e.target===m){close();onCancel&&onCancel();}};
+  $("cfNo").focus();
 }
 const CHEERS=["¡Bien, Adela!","¡Perfecto!","¡Clavado!","¡Eso es!","¡Imparable!","¡Muy bien!","¡Otra más!"];
 const EMO=["🎉","⭐","🔥","💪","🚀","✨"];
@@ -838,7 +859,11 @@ function setGroup(g){
   stats();
 }
 $("grpSeg").onclick=e=>{const b=e.target.closest("button");if(b)setGroup(b.dataset.g);};
-$("grpSel").onchange=()=>{setGroup($("grpSel").value);render();};
+$("grpSel").onchange=()=>{
+  const g=$("grpSel").value;
+  if(quizBusy())confirmDialog("¿Cambiar de grupo?",leaveText(),"Cambiar","Seguir",()=>{setGroup(g);render();},()=>{$("grpSel").value=SET;});
+  else{setGroup(g);render();}
+};
 
 // ---------- inicio: muro de verbos ----------
 const LVLTXT=["Aún sin practicar","Lo has fallado: toca repasarlo","Practicando","Casi lo tienes","¡Dominado!"];
@@ -872,6 +897,20 @@ function trainOf(v){$("train").innerHTML=`<span class="a">${v.inf}</span><span c
 
 // ---------- tema ----------
 const TNAME={auto:"Automático",light:"Claro",dark:"Oscuro"};
+// tamaño de letra: "auto" sigue el tamaño de texto del iPhone
+const TSIZE={auto:"Automático",1:"Normal",1.15:"Grande",1.3:"Muy grande"};
+function systemScale(){
+  try{
+    if(!CSS.supports("font","-apple-system-body"))return 1;
+    const d=document.createElement("span");d.style.font="-apple-system-body";d.style.position="absolute";d.style.visibility="hidden";d.textContent="a";
+    document.body.appendChild(d);const px=parseFloat(getComputedStyle(d).fontSize);d.remove();
+    return Math.min(1.4,Math.max(1,px/17));
+  }catch(e){return 1;}
+}
+function applyTextSize(){
+  const z=(S.textSize||"auto")==="auto"?systemScale():Number(S.textSize);
+  document.documentElement.style.setProperty("--z",z);
+}
 function applyTheme(){
   if(S.theme==="auto")delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=S.theme;
   const dark=S.theme==="dark"||(S.theme==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
@@ -886,8 +925,18 @@ function go(v){
   if(location.hash!=="#"+v)location.hash=v;else render(v);
 }
 addEventListener("hashchange",()=>render());
+let allowLeave=false;
+function quizBusy(){return ["examen","fallos"].includes(view)&&Q.list&&Q.list.length>0&&Q.i<Q.list.length&&(Q.i>0||Q.checked);}
+function leaveText(){const done=Q.i+(Q.checked?1:0);return `Llevas ${done} de ${Q.list.length} verbos. Si sales ahora, ${Q.mode==="examen"?"este examen no contará":"perderás este repaso"}.`;}
 function render(force){
   const h=force||location.hash.slice(1)||"inicio";
+  const target=TITLES[h]?h:"inicio";
+  if(target!==view&&quizBusy()&&!allowLeave){
+    history.pushState(null,"",location.pathname+location.search+"#"+view);
+    confirmDialog(Q.mode==="examen"?"¿Salir del examen?":"¿Salir del repaso?",leaveText(),"Salir","Seguir",()=>{allowLeave=true;go(target);});
+    return;
+  }
+  allowLeave=false;
   view=TITLES[h]?h:"inicio";
   const home=view==="inicio";
   $("achBtn").setAttribute("aria-pressed",view==="logros");$("setBtn").setAttribute("aria-pressed",view==="ajustes");
@@ -972,8 +1021,19 @@ function flipCard(){$("flip").classList.toggle("on");$("cEx").classList.toggle("
 $("flip").onclick=flipCard;
 $("flip").onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flipCard();}};
 $("cSpeak").onclick=()=>sayAll(cards[ci]);
-$("cYes").onclick=()=>{tone(true);trainOf(cards[ci]);mark(cards[ci],true);ci++;showCard();};
-$("cNo").onclick=()=>{tone(false);mark(cards[ci],false);ci++;showCard();};
+// en Tarjetas se puede deshacer la última respuesta
+function cardAnswer(ok){
+  const v=cards[ci];
+  const snap={ci,had:v.inf in S.lv,lv:S.lv[v.inf],streak:S.streak,best:S.best,ok:S.ok,everFailed:S.everFailed,ach:{...S.ach}};
+  tone(ok);if(ok)trainOf(v);mark(v,ok);ci++;showCard();
+  toast(ok?`«${v.inf}»: me lo sabía`:`«${v.inf}»: no me lo sabía`,5000,{label:"Deshacer",fn:()=>{
+    if(snap.had)S.lv[v.inf]=snap.lv;else delete S.lv[v.inf];
+    Object.assign(S,{streak:snap.streak,best:snap.best,ok:snap.ok,everFailed:snap.everFailed,ach:snap.ach});
+    save();stats();checkAch(true);ci=snap.ci;showCard();
+  }});
+}
+$("cYes").onclick=()=>cardAnswer(true);
+$("cNo").onclick=()=>cardAnswer(false);
 
 // ---------- escribir / examen / fallos ----------
 let Q={};
@@ -1146,6 +1206,8 @@ function renderSettings(){
   $("p-ajustes").innerHTML=`
   <div class="set"><h3>Tema</h3><p>Automático sigue el modo claro u oscuro del móvil.</p>
     <div class="seg" id="themeSeg" role="group" aria-label="Tema">${["auto","light","dark"].map(t=>`<button data-t="${t}" class="${S.theme===t?"on":""}" aria-pressed="${S.theme===t}">${{auto:"🌓",light:"☀️",dark:"🌙"}[t]} ${TNAME[t]}</button>`).join("")}</div></div>
+  <div class="set"><h3>Tamaño de letra</h3><p>Automático usa el tamaño de texto que tengas elegido en el iPhone.</p>
+    <div class="seg" id="sizeSeg" role="group" aria-label="Tamaño de letra">${["auto","1","1.15","1.3"].map(t=>`<button data-s="${t}" class="${String(S.textSize||"auto")===t?"on":""}" aria-pressed="${String(S.textSize||"auto")===t}">${TSIZE[t]}</button>`).join("")}</div></div>
   <div class="set"><h3>Sonidos</h3><p>Un pequeño sonido al acertar, al fallar y al conseguir un logro. En iPhone no suenan con el interruptor de silencio activado.</p>
     <button class="switch" id="sndSw" role="switch" aria-checked="${!S.mute}"><i></i>${S.mute?"Desactivados":"Activados"}</button></div>
   <div class="set"><h3>Voz</h3><p>Las voces en inglés de este dispositivo. Primero salen las británicas. Ahora: <b>${cur?esc(cur.name):"ninguna"}</b>.</p>
@@ -1159,6 +1221,7 @@ function renderSettings(){
   <div class="set"><h3>Empezar de cero</h3><p>Borra los verbos dominados, las rachas y los logros. Útil antes de un nuevo trimestre.</p>
     ${confirmReset?`<div class="confirm"><p>¿Seguro? Se borrarán ${nM} verbos dominados y ${nA} logros. No se puede deshacer.</p><div class="pick" style="justify-content:flex-start"><button class="btn r" id="rsYes">Sí, borrar mi progreso</button><button class="btn w" id="rsNo">Cancelar</button></div></div>`:`<button class="btn w" id="rsAsk">Borrar mi progreso</button>`}</div>`;
   $("themeSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.theme=b.dataset.t;save();applyTheme();renderSettings();};
+  $("sizeSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.textSize=b.dataset.s;save();applyTextSize();renderSettings();};
   $("sndSw").onclick=()=>{S.mute=!S.mute;save();if(!S.mute)tone(true);renderSettings();$("sndSw").focus();};
   if($("moreV"))$("moreV").onclick=()=>{allVoices=true;renderSettings();};
   $("p-ajustes").querySelectorAll(".try").forEach(b=>b.onclick=()=>sayText("go, went, gone. I have gone to London.",list[+b.dataset.i]));
@@ -1174,7 +1237,7 @@ function renderSettings(){
     $("bkGo").onclick=()=>{const r=readCode($("bkIn").value);$("bkMsg").textContent=r;};
   };
   if(confirmReset){
-    $("rsYes").onclick=()=>{const keep={theme:S.theme,mute:S.mute,voice:S.voice,seenVersion:S.seenVersion,iosTipDone:S.iosTipDone};S=Object.assign(FRESH(),keep);save();confirmReset=false;stats();checkAch(true);renderSettings();toast("Progreso borrado. ¡A por ello!");};
+    $("rsYes").onclick=()=>{const keep={theme:S.theme,mute:S.mute,voice:S.voice,textSize:S.textSize,seenVersion:S.seenVersion,iosTipDone:S.iosTipDone};S=Object.assign(FRESH(),keep);save();confirmReset=false;stats();checkAch(true);renderSettings();toast("Progreso borrado. ¡A por ello!");};
     $("rsNo").onclick=()=>{confirmReset=false;renderSettings();};
   }else $("rsAsk").onclick=()=>{confirmReset=true;renderSettings();$("rsNo").focus();};
 }
@@ -1209,11 +1272,12 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  24:["Puedes deshacer la última tarjeta y la app te avisa antes de abandonar un examen.","Nuevo en Ajustes: tamaño de letra (en automático sigue el del iPhone).","Los verbos dominados llevan ✓ y los fallados ✗, no solo color."],
   23:["Los grupos de verbos se ven mejor: cada uno enseña su patrón con bloques de colores (A A A, A B B, A B A, A B C) y un ejemplo."],
   18:["Nueva pantalla de inicio: eliges los verbos y el modo, y el ejercicio ocupa toda la pantalla.","Colores más claros: cada forma del verbo tiene su color, el verde es acierto y el rojo es fallo.","Nuevo botón ⚙️ Ajustes: tema, sonidos, voz, copia de seguridad y empezar de cero.","Botones más grandes y textos más fáciles de leer."]
 };
 $("ver").textContent="v"+APP_VERSION;
-$("foot").textContent=`Irregular Verbs · versión ${APP_VERSION} (${APP_DATE})`;
+$("foot").textContent=`Irregular Verbs · versión ${APP_VERSION} (${APP_DATE}) · Letra Nunito (SIL Open Font License)`;
 const ONLINE_HOST=location.protocol==="https:"&&/github\.io$/.test(location.hostname);
 const loadedAt=Date.now();let lastTouch=0;
 ["pointerdown","keydown"].forEach(ev=>addEventListener(ev,()=>{lastTouch=Date.now();},{passive:true}));
@@ -1278,7 +1342,7 @@ if(ONLINE_HOST&&"serviceWorker" in navigator){navigator.serviceWorker.register("
 const h=new Date().getHours();
 $("hello").textContent=h<14?"¡Buenos días, Adela!":h<21?"¡Buenas tardes, Adela!":"¡Buenas noches, Adela!";
 try{speechSynthesis.getVoices();}catch(e){}
-applyTheme();netState();setGroup("all");checkAch(true);
+applyTheme();applyTextSize();netState();setGroup("all");checkAch(true);
 trainOf(V[Math.random()*V.length|0]);
 render();showNews();iosTip();
 </script>
