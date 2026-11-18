@@ -36,7 +36,7 @@ try{const t=JSON.parse(localStorage.getItem("adela-irregular-v1")||"{}").theme;i
   --inf:#6741D9;  --inf-t:#ECE6FF;  --inf-x:#4A27B8;  --inf-d:#4C2DB0;
   --past:#C2410C; --past-t:#FFEDE3; --past-x:#9A3209; --past-d:#97320A;
   --part:#0B7285; --part-t:#DDF3F6; --part-x:#08596A; --part-d:#075465;
-  --ok:#2B8A3E;   --ok-t:#E3F7E6;   --ok-x:#1E6B2F;   --ok-d:#1E6B2F;
+  --ok:#237A36;   --ok-t:#E3F7E6;   --ok-x:#1E6B2F;   --ok-d:#195A27;
   --bad:#C92A2A;  --bad-t:#FFE6E6;  --bad-x:#A11D1D;  --bad-d:#9E1F1F;
   --p2:#D3F9D8; --p2-x:#1E5B2B; --p3:#8CE99A; --p3-x:#14461D;
   --sun:#FFD43B;
@@ -1154,7 +1154,7 @@ function readCode(txt){
 function confetti(){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   const c=$("confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
-  const cols=["#6741D9","#C2410C","#0B7285","#FFD43B","#2B8A3E"];
+  const cols=["#6741D9","#C2410C","#0B7285","#FFD43B","#237A36"];
   const P=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:4+Math.random()*6,a:Math.random()*6,c:cols[Math.random()*5|0]}));
   let t=0;(function f(){x.clearRect(0,0,c.width,c.height);
     P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore();});
