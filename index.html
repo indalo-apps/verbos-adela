@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Irregular Verbs · Adela</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="theme-color" content="#231A4F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Verbs">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -39,6 +49,8 @@ button{font:inherit;cursor:pointer;color:inherit}
 .logo{font-family:Unbounded;font-weight:900;font-size:20px;letter-spacing:-.03em;display:flex;align-items:center;gap:8px}
 .logo .chips{display:inline-flex;gap:3px}
 .logo .chips i{width:10px;height:22px;border-radius:5px;display:block}
+.ver{font:700 12px Manrope;color:var(--soft);background:var(--paper);border-radius:999px;padding:6px 11px;box-shadow:0 2px 0 var(--line);margin-right:8px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:16px;font-weight:700;z-index:60;box-shadow:0 6px 20px rgba(35,26,79,.3)}
 .iconbtn{border:0;background:var(--paper);border-radius:12px;width:40px;height:40px;font-size:18px;box-shadow:0 2px 0 var(--line)}
 
 /* hero */
@@ -192,7 +204,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 <div class="wrap">
   <div class="top">
     <div class="logo"><span class="chips"><i style="background:var(--inf)"></i><i style="background:var(--past)"></i><i style="background:var(--part)"></i></span>verbs</div>
-    <button class="iconbtn" id="snd" title="Sonido" aria-label="Activar o quitar sonido">🔔</button>
+    <div style="display:flex;align-items:center"><span class="ver" id="ver"></span><button class="iconbtn" id="snd" title="Sonido" aria-label="Activar o quitar sonido">🔔</button></div>
   </div>
 
   <section class="hero">
@@ -283,10 +295,11 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
     <div class="say" id="chMsg"></div>
   </section>
 
-  <footer>Verbos irregulares de 4º de ESO · versión 2</footer>
+  <footer id="foot"></footer>
 </div>
 
 <script>
+const APP_VERSION=3, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -638,6 +651,27 @@ function confetti(){
     P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore();});
     if(++t<200)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height);})();
 }
+
+// ---------- versión y actualización automática ----------
+$("ver").textContent="v"+APP_VERSION;
+$("foot").textContent=`Verbos irregulares de 4º de ESO · versión ${APP_VERSION} (${APP_DATE})`;
+let checking=false;
+async function checkUpdate(){
+  if(checking||location.protocol!=="https:"||!/github\.io$/.test(location.hostname))return;
+  checking=true;
+  try{
+    const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});
+    const {version}=await r.json();
+    if(version>APP_VERSION){
+      const t=document.createElement("div");t.className="toast";t.textContent=`Actualizando a la versión ${version}…`;document.body.appendChild(t);
+      setTimeout(()=>{const u=new URL(location.href);u.searchParams.set("v",version);location.replace(u.toString());},900);
+    }
+  }catch(e){}
+  checking=false;
+}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate();});
+addEventListener("pageshow",checkUpdate);
+setInterval(checkUpdate,10*60*1000);
 
 // ---------- inicio ----------
 const h=new Date().getHours();
