@@ -310,6 +310,12 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
   .panel{padding:16px;border-radius:22px}
   .ask{margin-bottom:16px}
 }
+.logo{white-space:nowrap}
+@media (max-width:400px){
+  .logo{font-size:14px}
+  .iconbtn{min-width:31px;height:31px;font-size:14px}
+}
+@media (max-width:345px){ #ver{display:none} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -429,7 +435,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=13, APP_DATE="18/11/2026";
+const APP_VERSION=14, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
