@@ -57,7 +57,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(600px 400px at 100% 0%,var(--glow1) 0,transparent 70%),radial-gradient(500px 400px at 0% 100%,var(--glow2) 0,transparent 70%);}
 h1,h2,h3{font-family:Nunito,system-ui,sans-serif;letter-spacing:-.02em;margin:0}
-button{font:inherit;cursor:pointer;color:inherit}
+button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+input{-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:10px}
 .wrap{max-width:960px;margin:0 auto;padding:18px 16px 70px}
 .hidden{display:none!important}
@@ -125,7 +126,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 
 /* estudiar */
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.search{flex:1;min-width:180px;padding:11px 16px;border:2px solid var(--line);border-radius:14px;font:600 15px Nunito,sans-serif;background:var(--field);color:var(--ink)}
+.search{flex:1;min-width:180px;padding:11px 16px;border:2px solid var(--line);border-radius:14px;font:600 16px Nunito,sans-serif;background:var(--field);color:var(--ink)}
 .search:focus{outline:none;border-color:var(--inf)}
 .tog{border:2px solid var(--line);background:var(--field);border-radius:14px;padding:8px 12px;font-weight:700;font-size:13px;color:var(--soft)}
 .tog[aria-pressed=true]{color:#fff;border-color:transparent}
@@ -279,6 +280,11 @@ button{font:inherit;cursor:pointer;color:inherit}
 .news h2{margin:8px 0 2px;font-size:24px;font-weight:900}
 .news .sv{color:var(--soft);margin:0 0 12px}
 .news ul{text-align:left;margin:0 0 18px;padding-left:20px;display:grid;gap:8px}
+.iostip{background:var(--paper);border:2px solid var(--sun);border-radius:20px;padding:14px 16px;margin:0 0 14px;display:flex;gap:12px;align-items:flex-start}
+.iostip .ico{font-size:26px;line-height:1}
+.iostip b{display:block;font-size:15px;margin-bottom:2px}
+.iostip p{margin:0;color:var(--soft);font-size:13.5px}
+.iostip button{border:0;background:var(--bg);border-radius:10px;padding:6px 10px;font-weight:800;font-size:12.5px;margin-left:auto;flex:none}
 footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
@@ -337,6 +343,13 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
   .iconbtn{min-width:31px;height:31px;font-size:14px}
 }
 @media (max-width:345px){ #ver{display:none} }
+@media (hover:none){
+  .mode:hover,.wall button:hover{transform:none}
+  .hb:hover{border-color:inherit}
+  .hb.b:hover{border-color:var(--past-t)}.hb.c:hover{border-color:var(--part-t)}.hb.d:hover{border-color:var(--line)}
+  .spk:hover{background:var(--bg)}
+  .opt:hover{border-color:var(--line)}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -457,7 +470,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=16, APP_DATE="18/11/2026";
+const APP_VERSION=17, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -732,28 +745,26 @@ function renderVoices(){
       En iPhone: Ajustes → Accesibilidad → Contenido leído → Voces → Inglés (Reino Unido), descarga Kate, Serena o Stephanie y vuelve a abrir la app.<br>
       En Android: Ajustes → Accesibilidad → Texto a voz → Motor de Google → Inglés (Reino Unido) e instala las voces.</div>
     <div class="row-btns"><button class="btn v" id="vBack">Volver a practicar</button></div>`;
-  $("v-voice").querySelectorAll(".try").forEach(b=>b.onclick=()=>{const v=list[+b.dataset.i];try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance("go, went, gone. I have gone to London.");u.voice=v;u.lang=v.lang;u.rate=.85;speechSynthesis.speak(u);}catch(e){}});
+  $("v-voice").querySelectorAll(".try").forEach(b=>b.onclick=()=>{const v=list[+b.dataset.i];sayText("go, went, gone. I have gone to London.",v);});
   $("v-voice").querySelectorAll(".use").forEach(b=>b.onclick=()=>{S.voice=list[+b.dataset.i].name;save();renderVoices();sayAll(V.find(x=>x.inf==="go"));});
   $("vBack").onclick=()=>go("study");
 }
 $("voiceBtn").onclick=()=>{if(view==="voice")go("study");else go("voice");};
 
-function speak(txt){
+function sayText(txt,voice){
   try{
+    const u=new SpeechSynthesisUtterance(txt);u.lang="en-GB";u.rate=.85;
+    const vo=voice||pickVoice();if(vo){u.voice=vo;u.lang=vo.lang;}
+    const busy=speechSynthesis.speaking||speechSynthesis.pending;
     speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(txt.replace(/\//g,", ").replace("—",""));
-    u.lang="en-GB";u.rate=.85;
-    const vo=pickVoice();if(vo){u.voice=vo;u.lang=vo.lang;}
-    speechSynthesis.speak(u);
-  }catch(e){}
+    if(busy)setTimeout(()=>speechSynthesis.speak(u),120);else speechSynthesis.speak(u);
+    return u;
+  }catch(e){return null;}
 }
+function speak(txt){sayText(txt.replace(/\//g,", ").replace("—",""));}
 let playTok=0,curAudio=null;
-function stopAudio(){playTok++;if(curAudio){curAudio.pause();curAudio=null;}try{speechSynthesis.cancel();}catch(e){}}
-function ttsWord(w){return new Promise(res=>{try{
-  const u=new SpeechSynthesisUtterance(w);u.lang="en-GB";u.rate=.85;
-  const vo=pickVoice();if(vo){u.voice=vo;u.lang=vo.lang;}
-  u.onend=u.onerror=()=>res();speechSynthesis.speak(u);setTimeout(res,2500);
-}catch(e){res();}});}
+function stopAudio(){}
+function ttsWord(w){sayText(w);}
 function playWords(list){
   stopAudio();
   // una sola frase, como antes; "read" en pasado suena /red/
@@ -768,6 +779,7 @@ function tone(kind){
   if(S.mute)return;
   try{
     AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==="suspended")AC.resume();
     const notes=kind==="ach"?[784,988,1175,1568]:kind?[660,880,1320]:[300,220];
     notes.forEach((f,i)=>{
       const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+i*.09;
@@ -967,7 +979,7 @@ function quizQ(){
     <div class="row-btns"><button type="button" class="btn w" id="qSpk" aria-label="Escuchar">🔊</button><button class="btn v" id="qGo">Comprobar</button></div>
     </form><div class="say" id="qMsg"></div><div class="after hidden" id="qEx"></div>`;
   const free=[0,1,2].filter(i=>!$("f"+i).readOnly);
-  if(free.length)$("f"+free[0]).focus();
+  if(free.length){$("f"+free[free.length-1]).setAttribute("enterkeyhint","go");$("f"+free[0]).focus();}
   // en el móvil, "siguiente" del teclado pasa a la otra casilla antes de comprobar
   free.forEach((i,n)=>$("f"+i).addEventListener("keydown",e=>{
     if(e.key==="Enter"&&!Q.checked&&n<free.length-1&&!$("f"+free[n+1]).value){e.preventDefault();$("f"+free[n+1]).focus();}
@@ -1098,7 +1110,8 @@ function confetti(){
 // novedades de cada versión (se enseñan una vez después de actualizar)
 const CHANGELOG={
   15:["Los modos ahora son tarjetas de colores que explican para qué sirve cada uno.","Tu progreso se ve en un muro con los 88 verbos: verde los que dominas, rojo los que has fallado."],
-  16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades, como ahora."]
+  16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades, como ahora."],
+  17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."]
 };
 const loadedAt=Date.now();let lastTouch=0;
 ["pointerdown","keydown"].forEach(ev=>addEventListener(ev,()=>{lastTouch=Date.now();},{passive:true}));
@@ -1113,6 +1126,16 @@ function showUpdBar(version){
   document.body.appendChild(b);
   $("updGo").onclick=()=>doUpdate(version);
   $("updX").onclick=()=>b.remove();
+}
+// iPhone en Safari: recomendar añadirla a la pantalla de inicio
+function iosTip(){
+  const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const standalone=navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;
+  if(!ios||standalone||S.iosTipDone)return;
+  const d=document.createElement("div");d.className="iostip";
+  d.innerHTML=`<div class="ico">📲</div><div><b>Instálala en tu iPhone</b><p>Pulsa el botón Compartir <b style="display:inline">⬆︎</b> de Safari y elige «Añadir a pantalla de inicio». Así se abre como una app, funciona sin internet y tu progreso queda más seguro. Hazlo antes de empezar: lo que practiques en Safari no pasa a la app.</p></div><button id="iosX">Entendido</button>`;
+  document.querySelector(".hero").before(d);
+  $("iosX").onclick=()=>{S.iosTipDone=true;save();d.remove();};
 }
 function showNews(){
   const seen=S.seenVersion||0;
@@ -1160,7 +1183,7 @@ $("hello").textContent=h<14?"¡Buenos días, Adela!":h<21?"¡Buenas tardes, Adel
 $("snd").textContent=S.mute?"🔕":"🔔";
 try{speechSynthesis.getVoices();}catch(e){}
 applyTheme();netState();
-buildMosaic();stats();renderRows();checkAch(true);showNews();
+buildMosaic();stats();renderRows();checkAch(true);showNews();iosTip();
 trainOf(V[Math.random()*V.length|0]);
 </script>
 </body>
