@@ -138,7 +138,8 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 
 /* pantalla de ejercicio */
 .shead{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.back{border:0;background:var(--paper);border-radius:14px;min-height:44px;padding:0 14px;font-weight:800;font-size:15px;box-shadow:0 2px 0 var(--line)}
+.backbtn{border:0;background:var(--paper);border-radius:14px;min-height:44px;padding:0 14px;font-weight:800;font-size:15px;box-shadow:0 2px 0 var(--line)}
+.shead h2:focus{outline:none}
 .shead h2{font-size:22px;font-weight:900;flex:1;min-width:120px}
 .grpsel{min-height:44px;border:2px solid var(--line);background:var(--field);border-radius:14px;padding:0 12px;font-weight:800;font-size:14px;color:var(--ink);max-width:100%}
 .panel{background:var(--paper);border-radius:28px;padding:24px;box-shadow:0 4px 0 var(--line)}
@@ -416,7 +417,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   <!-- PANTALLA DE EJERCICIO -->
   <main id="v-screen" class="hidden">
     <div class="shead">
-      <button class="back" id="back">← Inicio</button>
+      <button class="backbtn" id="back">← Inicio</button>
       <h2 id="stitle"></h2>
       <select class="grpsel" id="grpSel" aria-label="Grupo de verbos">
         <option value="all">Todos los verbos</option>
@@ -482,7 +483,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=19, APP_DATE="18/11/2026";
+const APP_VERSION=20, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
