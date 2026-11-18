@@ -267,6 +267,18 @@ button{font:inherit;cursor:pointer;color:inherit}
 .vopt.on .use{background:var(--part)}
 .vhelp{background:var(--row);border-radius:16px;padding:12px 14px;font-size:14px;color:var(--soft);margin-top:16px}
 .vhelp b{color:var(--ink)}
+.updbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:70;background:var(--hero);color:#fff;border-radius:18px;padding:10px 10px 10px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(20,10,60,.35);width:max-content;max-width:94vw;font-weight:700;font-size:14px;animation:rise .35s ease-out;flex-wrap:wrap;justify-content:center}
+.updbar button{border:0;border-radius:12px;padding:8px 14px;font-weight:800;font-size:14px}
+#updGo{background:var(--part);color:#fff}
+#updX{background:rgba(255,255,255,.14);color:#fff}
+.newsbg{position:fixed;inset:0;z-index:80;background:rgba(20,12,50,.55);display:flex;align-items:center;justify-content:center;padding:16px;animation:fade .25s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.news{background:var(--paper);color:var(--ink);border-radius:26px;padding:24px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(20,10,60,.4);animation:rise2 .35s ease-out}
+@keyframes rise2{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.news .ico{font-size:44px;line-height:1}
+.news h2{margin:8px 0 2px;font-size:24px;font-weight:900}
+.news .sv{color:var(--soft);margin:0 0 12px}
+.news ul{text-align:left;margin:0 0 18px;padding-left:20px;display:grid;gap:8px}
 footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
@@ -445,7 +457,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=15, APP_DATE="18/11/2026";
+const APP_VERSION=16, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1083,6 +1095,38 @@ function confetti(){
 }
 
 // ---------- versión, actualización automática y modo sin conexión ----------
+// novedades de cada versión (se enseñan una vez después de actualizar)
+const CHANGELOG={
+  15:["Los modos ahora son tarjetas de colores que explican para qué sirve cada uno.","Tu progreso se ve en un muro con los 88 verbos: verde los que dominas, rojo los que has fallado."],
+  16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades, como ahora."]
+};
+const loadedAt=Date.now();let lastTouch=0;
+["pointerdown","keydown"].forEach(ev=>addEventListener(ev,()=>{lastTouch=Date.now();},{passive:true}));
+function doUpdate(version){
+  toast(`Actualizando a la versión ${version}…`,5000);
+  setTimeout(()=>{const u=new URL(location.href);u.searchParams.set("v",version);location.replace(u.toString());},900);
+}
+function showUpdBar(version){
+  if($("updBar"))return;
+  const b=document.createElement("div");b.id="updBar";b.className="updbar";
+  b.innerHTML=`<span>✨ Hay una versión nueva de la app (v${version})</span><button id="updGo">Actualizar</button><button id="updX" aria-label="Más tarde">Más tarde</button>`;
+  document.body.appendChild(b);
+  $("updGo").onclick=()=>doUpdate(version);
+  $("updX").onclick=()=>b.remove();
+}
+function showNews(){
+  const seen=S.seenVersion||0;
+  if(!seen){S.seenVersion=APP_VERSION;save();return;}  // primera vez: sin novedades
+  if(seen>=APP_VERSION)return;
+  const notes=Object.keys(CHANGELOG).map(Number).filter(v=>v>seen&&v<=APP_VERSION).sort((a,b)=>a-b).flatMap(v=>CHANGELOG[v]);
+  S.seenVersion=APP_VERSION;save();
+  if(!notes.length){toast(`App actualizada a la versión ${APP_VERSION}`);return;}
+  const m=document.createElement("div");m.className="newsbg";
+  m.innerHTML=`<div class="news" role="dialog" aria-labelledby="newsT"><div class="ico">🎉</div><h2 id="newsT">¡App actualizada!</h2><p class="sv">Ahora tienes la versión ${APP_VERSION}. Novedades:</p><ul>${notes.map(n=>`<li>${n}</li>`).join("")}</ul><button class="btn v" id="newsOk">¡Genial!</button></div>`;
+  document.body.appendChild(m);
+  $("newsOk").onclick=()=>m.remove();m.onclick=e=>{if(e.target===m)m.remove();};
+  $("newsOk").focus();
+}
 $("ver").textContent="v"+APP_VERSION;
 $("foot").innerHTML=`Irregular Verbs · versión ${APP_VERSION} (${APP_DATE})`;
 const ONLINE_HOST=location.protocol==="https:"&&/github\.io$/.test(location.hostname);
@@ -1094,8 +1138,10 @@ async function checkUpdate(){
     const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});
     const{version}=await r.json();
     if(version>APP_VERSION){
-      toast(`Actualizando a la versión ${version}…`,5000);
-      setTimeout(()=>{const u=new URL(location.href);u.searchParams.set("v",version);location.replace(u.toString());},900);
+      // si acaba de abrirla o lleva un rato sin tocarla, se actualiza sola;
+      // si la está usando, solo avisa y ella decide cuándo
+      const idle=Date.now()-lastTouch>120000||Date.now()-loadedAt<6000;
+      if(idle)doUpdate(version);else showUpdBar(version);
     }
   }catch(e){}
   checking=false;
@@ -1114,7 +1160,7 @@ $("hello").textContent=h<14?"¡Buenos días, Adela!":h<21?"¡Buenas tardes, Adel
 $("snd").textContent=S.mute?"🔕":"🔔";
 try{speechSynthesis.getVoices();}catch(e){}
 applyTheme();netState();
-buildMosaic();stats();renderRows();checkAch(true);
+buildMosaic();stats();renderRows();checkAch(true);showNews();
 trainOf(V[Math.random()*V.length|0]);
 </script>
 </body>

@@ -2,7 +2,7 @@
 
 App para estudiar los verbos irregulares de inglés (4º ESO).
 
-Versión actual: v15
+Versión actual: v16
 
 https://indalo-apps.github.io/verbos-adela/
 
@@ -10,5 +10,6 @@ https://indalo-apps.github.io/verbos-adela/
 
 1. Sube `APP_VERSION` en `index.html`.
 2. Pon el mismo número en `version.json`.
-3. Al abrir la app (o volver a ella), el móvil detecta la versión nueva y se recarga solo.
+3. Añade las novedades de esa versión en `CHANGELOG` (dentro de `index.html`).
+4. Al abrir la app se actualiza sola y enseña las novedades. Si la está usando, sale un aviso con el botón «Actualizar».
 
