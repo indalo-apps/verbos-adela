@@ -424,7 +424,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=11, APP_DATE="18/11/2026";
+const APP_VERSION=12, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -664,8 +664,10 @@ function hint(v,k,ans){
 }
 // ---------- voz ----------
 // nombres de voces femeninas británicas habituales (iPhone, Mac, Windows, Android)
-const FEMALE=/(Kate|Serena|Stephanie|Martha|Female|Libby|Sonia|Hazel|Susan|Maisie|Mia|Fiona|Moira|Karen|Samantha|Tessa|Victoria|Ava|Zoe|Emily|Amy|Catherine|Jenny|Aria|gb-x-gba|gb-x-gbc|gb-x-gbg|gb-x-fis)/i;
-const MALE=/(Daniel|Arthur|Oliver|George|Ryan|Thomas|Male|Rishi|Aaron|Fred|Alex|Gordon|Lee|gb-x-gbb|gb-x-gbd|gb-x-rjs)/i;
+const FEMALE=/(Kate|Serena|Stephanie|Martha|Female|Libby|Sonia|Hazel|Susan|Maisie|Mia|Fiona|Moira|Karen|Samantha|Tessa|Victoria|Ava|Zoe|Emily|Amy|Catherine|Jenny|Aria|Shelley|Flo|Sandy|Grandma|gb-x-gba|gb-x-gbc|gb-x-gbg|gb-x-fis)/i;
+// orden de preferencia: primero las voces femeninas británicas de buena calidad
+const FEMALE_RANK=["Kate","Serena","Stephanie","Martha","Google UK English Female","Libby","Sonia","Hazel","Susan","Maisie","Mia","gb-x-gba","gb-x-gbc","gb-x-gbg","Female","Shelley","Flo","Sandy"];
+const MALE=/(Daniel|Arthur|Oliver|George|Ryan|Thomas|Male|Rishi|Aaron|Fred|Alex|Gordon|Lee|Eddy|Reed|Rocko|Grandpa|gb-x-gbb|gb-x-gbd|gb-x-rjs)/i;
 let VOICES=[];
 function loadVoices(){
   try{VOICES=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang)||v.lang==="en");}catch(e){VOICES=[];}
@@ -676,8 +678,9 @@ const isGB=v=>/en[-_]GB/i.test(v.lang);
 function pickVoice(){
   if(!VOICES.length)loadVoices();
   if(S.voice){const v=VOICES.find(x=>x.name===S.voice);if(v)return v;}
-  return VOICES.find(v=>isGB(v)&&FEMALE.test(v.name))
-      || VOICES.find(v=>isGB(v)&&!MALE.test(v.name))
+  const gb=VOICES.filter(isGB);
+  for(const n of FEMALE_RANK){const v=gb.find(x=>x.name.includes(n)&&!/Male/.test(x.name.replace("Female","")));if(v)return v;}
+  return VOICES.find(v=>isGB(v)&&FEMALE.test(v.name)&&!/Grandma/.test(v.name))
       || VOICES.find(isGB)
       || VOICES.find(v=>FEMALE.test(v.name))
       || VOICES[0]||null;
