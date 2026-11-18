@@ -2,7 +2,7 @@
 
 App para estudiar los verbos irregulares de inglés (4º ESO).
 
-Versión actual: v31
+Versión actual: v32
 
 https://indalo-apps.github.io/verbos-adela/
 
