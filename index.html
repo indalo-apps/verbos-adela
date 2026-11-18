@@ -509,6 +509,32 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
       <button role="tab" id="tabLearn" data-t="aprender" aria-controls="learnBox"><span aria-hidden="true">📚</span> Aprender</button>
       <button role="tab" id="tabPlay" data-t="jugar" aria-controls="playBox"><span aria-hidden="true">🎮</span> Jugar</button>
     </div>
+    <div id="learnBox" role="tabpanel" aria-labelledby="tabLearn">
+    <div class="step" style="margin-top:4px">¿Cómo quieres practicar?</div>
+    <nav class="modes" id="nav" aria-label="Modos">
+      <button class="mode" data-v="estudiar"><span class="e" aria-hidden="true">📖</span><span class="t">Estudiar</span><small>La tabla con frases y audio</small></button>
+      <button class="mode" data-v="tarjetas"><span class="e" aria-hidden="true">🃏</span><span class="t">Tarjetas</span><small>Gira y comprueba si te lo sabes</small></button>
+      <button class="mode" data-v="escribir"><span class="e" aria-hidden="true">✍️</span><span class="t">Escribir</span><small>Escribe las formas que faltan</small></button>
+      <button class="mode" data-v="elegir"><span class="e" aria-hidden="true">🎯</span><span class="t">Elegir</span><small>Elige la respuesta correcta</small></button>
+      <button class="mode" data-v="examen"><span class="e" aria-hidden="true">📝</span><span class="t">Examen</span><small>10 o 20 verbos con nota</small></button>
+      <button class="mode" data-v="fallos"><span class="e" aria-hidden="true">🔁</span><span class="t">Mis fallos<i class="badge hidden" id="failBadge"></i></span><small>Repasa lo que has fallado</small></button>
+    </nav>
+    </div>
+    <div id="playBox" role="tabpanel" aria-labelledby="tabPlay" class="hidden">
+      <div class="step" style="margin-top:4px">¿A qué quieres jugar?</div>
+      <div id="playInner"></div>
+    </div>
+    <div class="step" style="margin-top:22px">¿Qué verbos quieres practicar?</div>
+    <div class="groups" id="grpSeg" role="group" aria-label="Grupo de verbos">
+      <button data-g="all" class="gcard on" aria-pressed="true"><span class="blocks" aria-hidden="true"><i class="x">?</i><i class="x">?</i><i class="x">?</i></span><b>Todos</b><small>Los verbos mezclados</small><span class="w" lang="en">write · wrote · written</span><small class="n" id="gn-all"></small></button>
+      <button data-g="AAA" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="a">A</i><i class="a">A</i></span><b>No cambian</b><small>Las tres formas son iguales</small><span class="w" lang="en">cut · cut · cut</span><small class="n" id="gn-AAA"></small></button>
+      <button data-g="ABB" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="b">B</i></span><b>Pasado = participio</b><small>Pasado y participio iguales</small><span class="w" lang="en">bring · brought · brought</span><small class="n" id="gn-ABB"></small></button>
+      <button data-g="ABA" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="a">A</i></span><b>Participio = infinitivo</b><small>El participio vuelve al infinitivo</small><span class="w" lang="en">come · came · come</span><small class="n" id="gn-ABA"></small></button>
+      <button data-g="ABC" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="c">C</i></span><b>Las tres distintas</b><small>Tres formas diferentes</small><span class="w" lang="en">sing · sang · sung</span><small class="n" id="gn-ABC"></small></button>
+    </div>
+
+
+    <div class="step">Tus 88 verbos</div>
     <section class="hero">
       <div>
         <h1 id="hello">¡Hola, Adela!</h1>
@@ -534,31 +560,6 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
         </div>
       </div>
     </section>
-
-    <div class="step">¿Qué verbos quieres practicar?</div>
-    <div class="groups" id="grpSeg" role="group" aria-label="Grupo de verbos">
-      <button data-g="all" class="gcard on" aria-pressed="true"><span class="blocks" aria-hidden="true"><i class="x">?</i><i class="x">?</i><i class="x">?</i></span><b>Todos</b><small>Los verbos mezclados</small><span class="w" lang="en">write · wrote · written</span><small class="n" id="gn-all"></small></button>
-      <button data-g="AAA" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="a">A</i><i class="a">A</i></span><b>No cambian</b><small>Las tres formas son iguales</small><span class="w" lang="en">cut · cut · cut</span><small class="n" id="gn-AAA"></small></button>
-      <button data-g="ABB" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="b">B</i></span><b>Pasado = participio</b><small>Pasado y participio iguales</small><span class="w" lang="en">bring · brought · brought</span><small class="n" id="gn-ABB"></small></button>
-      <button data-g="ABA" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="a">A</i></span><b>Participio = infinitivo</b><small>El participio vuelve al infinitivo</small><span class="w" lang="en">come · came · come</span><small class="n" id="gn-ABA"></small></button>
-      <button data-g="ABC" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="c">C</i></span><b>Las tres distintas</b><small>Tres formas diferentes</small><span class="w" lang="en">sing · sang · sung</span><small class="n" id="gn-ABC"></small></button>
-    </div>
-
-    <div id="learnBox" role="tabpanel" aria-labelledby="tabLearn">
-    <div class="step">¿Cómo quieres practicar?</div>
-    <nav class="modes" id="nav" aria-label="Modos">
-      <button class="mode" data-v="estudiar"><span class="e" aria-hidden="true">📖</span><span class="t">Estudiar</span><small>La tabla con frases y audio</small></button>
-      <button class="mode" data-v="tarjetas"><span class="e" aria-hidden="true">🃏</span><span class="t">Tarjetas</span><small>Gira y comprueba si te lo sabes</small></button>
-      <button class="mode" data-v="escribir"><span class="e" aria-hidden="true">✍️</span><span class="t">Escribir</span><small>Escribe las formas que faltan</small></button>
-      <button class="mode" data-v="elegir"><span class="e" aria-hidden="true">🎯</span><span class="t">Elegir</span><small>Elige la respuesta correcta</small></button>
-      <button class="mode" data-v="examen"><span class="e" aria-hidden="true">📝</span><span class="t">Examen</span><small>10 o 20 verbos con nota</small></button>
-      <button class="mode" data-v="fallos"><span class="e" aria-hidden="true">🔁</span><span class="t">Mis fallos<i class="badge hidden" id="failBadge"></i></span><small>Repasa lo que has fallado</small></button>
-    </nav>
-    </div>
-    <div id="playBox" role="tabpanel" aria-labelledby="tabPlay" class="hidden">
-      <div class="step">¿A qué quieres jugar?</div>
-      <div id="playInner"></div>
-    </div>
   </main>
 
   <!-- PANTALLA DE EJERCICIO -->
@@ -631,7 +632,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=34, APP_DATE="18/11/2026";
+const APP_VERSION=35, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1904,6 +1905,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  35:["Inicio reordenado: primero eliges cómo practicar, luego los verbos y abajo tu muro de 88 verbos."],
   34:["Arriba del inicio eliges 📚 Aprender o 🎮 Jugar."],
   33:["Las frases de ejemplo se ven más ordenadas."],
   31:["🗓️ Reto del día: un juego y 10 verbos nuevos cada día, con racha de días seguidos.","Al terminar una partida ves los verbos que fallaste y puedes practicarlos.","Cuenta atrás y botón de pausa, 🎲 partida rápida y más efectos al acertar.","Lluvia con velocidad y ❄️ congelar; Contrarreloj con faltas de ortografía; Parejas con 3 niveles; Supervivencia con 👹 jefes y comodines; Ahorcado con 💡 pista; Duelo con trampas más difíciles."],
