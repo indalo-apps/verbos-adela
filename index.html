@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irregular Verbs · Adela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f3ee; --card:#fff; --ink:#1d2433; --muted:#6b7280; --line:#e5e0d8;
+  --accent:#3b5bdb; --accent-soft:#e7ecff; --ok:#2f9e44; --ok-soft:#e6f6ea;
+  --bad:#e03131; --bad-soft:#fdecec; --warm:#f08c00; --warm-soft:#fff4e0;
+  --r:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif}
+h1,h2,h3,.display{font-family:"Bricolage Grotesque",Inter,sans-serif;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+header h1{margin:0;font-size:28px;font-weight:800}
+header h1 span{color:var(--accent)}
+.hello{color:var(--muted);margin:2px 0 0}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;white-space:nowrap}
+.pill b{font-family:"Bricolage Grotesque",sans-serif}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+nav button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 14px;font-weight:600;color:var(--ink)}
+nav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;font-size:14px;color:var(--muted)}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:none;padding:6px 11px;color:var(--muted);font-weight:500}
+.seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.hidden{display:none!important}
+
+/* table */
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tools input[type=search]{flex:1;min-width:160px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 10px;cursor:pointer;user-select:none}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td .ph{display:block;color:var(--muted);font-size:13px}
+td.es{color:var(--muted);font-size:14px}
+td .w{font-weight:600}
+.mask{background:var(--line);color:transparent;border-radius:6px;cursor:pointer;user-select:none}
+.mask .ph{color:transparent}
+.spk{border:0;background:var(--accent-soft);color:var(--accent);border-radius:8px;width:30px;height:30px;font-size:14px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--line);vertical-align:middle}
+.dot.l1{background:#ffc9c9}.dot.l2{background:#ffd8a8}.dot.l3{background:#b2f2bb}.dot.l4{background:var(--ok)}
+.tablewrap{overflow-x:auto}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;color:var(--muted);font-size:14px}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.prompt{text-align:center;margin-bottom:22px}
+.prompt .es{font-size:15px;color:var(--muted)}
+.prompt .big{font-size:40px;font-weight:800;margin:4px 0}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
+.field input{width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font:600 18px Inter,sans-serif;text-align:center;background:#fff}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field input[readonly]{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.field input.ok{border-color:var(--ok);background:var(--ok-soft)}
+.field input.bad{border-color:var(--bad);background:var(--bad-soft)}
+.field .sol{font-size:14px;color:var(--bad);text-align:center;min-height:21px;margin-top:4px;font-weight:600}
+.actions{display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:12px 22px;font-weight:700;background:var(--accent);color:#fff}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.ok{background:var(--ok)}.btn.bad{background:var(--bad)}
+.msg{text-align:center;margin-top:14px;font-weight:600;min-height:24px}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+
+/* flashcards */
+.flip{perspective:1000px;max-width:460px;margin:0 auto;height:270px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:1px solid var(--line)}
+.front{background:var(--card)}
+.back{background:var(--ink);color:#fff;transform:rotateY(180deg)}
+.front .big{font-size:42px;font-weight:800}
+.back .row{font-size:24px;font-weight:700;margin:4px 0}
+.back .row small{display:block;font-size:12px;font-weight:500;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+.hint{color:var(--muted);font-size:13px;margin-top:10px}
+
+/* choice */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:520px;margin:0 auto}
+.opt{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px;font-weight:600;font-size:17px}
+.opt:hover{border-color:var(--accent)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+
+/* results */
+.result{text-align:center}
+.result .grade{font-size:72px;font-weight:800;margin:0;line-height:1}
+.result ul{text-align:left;max-width:460px;margin:16px auto;padding-left:18px}
+.start{text-align:center}
+.start p{color:var(--muted)}
+.start .btn{margin:4px}
+.empty{text-align:center;color:var(--muted);padding:30px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
+@media(max-width:600px){
+  .fields{grid-template-columns:1fr}
+  .prompt .big{font-size:32px}
+  td.es,th.es{display:none}
+  .opts{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Irregular <span>Verbs</span></h1>
+      <p class="hello" id="hello">¡Hola, Adela! 👋</p>
+    </div>
+    <div class="stats">
+      <div class="pill">✅ Dominados <b id="sMaster">0</b>/<b id="sTotal">0</b></div>
+      <div class="pill">🔥 Racha <b id="sStreak">0</b></div>
+      <div class="pill">📌 Por repasar <b id="sReview">0</b></div>
+    </div>
+  </header>
+
+  <nav id="nav">
+    <button data-v="study" class="on">📖 Estudiar</button>
+    <button data-v="cards">🃏 Tarjetas</button>
+    <button data-v="write">✍️ Escribir</button>
+    <button data-v="choice">🎯 Elegir</button>
+    <button data-v="exam">📝 Examen</button>
+    <button data-v="review">🔁 Mis fallos</button>
+  </nav>
+
+  <div class="filters">
+    Verbos:
+    <div class="seg" id="setSeg">
+      <button data-s="all" class="on">Todos</button>
+      <button data-s="1">Hoja 1 (be → keep)</button>
+      <button data-s="2">Hoja 2 (know → write)</button>
+    </div>
+  </div>
+
+  <!-- STUDY -->
+  <section id="v-study" class="card">
+    <div class="tools">
+      <input type="search" id="q" placeholder="Buscar verbo (inglés o español)…">
+      <label class="chk"><input type="checkbox" id="hPast"> Tapar pasado</label>
+      <label class="chk"><input type="checkbox" id="hPart"> Tapar participio</label>
+      <label class="chk"><input type="checkbox" id="hEs"> Tapar español</label>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Infinitive</th><th>Past simple</th><th>Past participle</th><th class="es">Español</th><th></th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="hint">Truco: tapa columnas y pulsa sobre una casilla gris para destaparla. El punto de color indica lo bien que te sabes cada verbo.</p>
+  </section>
+
+  <!-- CARDS -->
+  <section id="v-cards" class="card hidden">
+    <div class="qhead"><span id="cCount"></span><span>Pulsa la tarjeta para darle la vuelta</span></div>
+    <div class="flip" id="flip">
+      <div class="flip-in">
+        <div class="face front"><div class="es" id="cEs" style="color:var(--muted)"></div><div class="big" id="cInf"></div><div class="hint" id="cPh"></div></div>
+        <div class="face back">
+          <div class="row"><small>Infinitive</small><span id="cB1"></span></div>
+          <div class="row"><small>Past simple</small><span id="cB2"></span></div>
+          <div class="row"><small>Past participle</small><span id="cB3"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="cSpeak">🔊 Escuchar</button>
+      <button class="btn bad" id="cNo">No me lo sabía</button>
+      <button class="btn ok" id="cYes">¡Me lo sabía!</button>
+    </div>
+  </section>
+
+  <!-- WRITE / EXAM / REVIEW share the same quiz UI -->
+  <section id="v-write" class="card hidden"></section>
+
+  <!-- CHOICE -->
+  <section id="v-choice" class="card hidden">
+    <div class="qhead"><span id="chCount"></span><span id="chScore"></span></div>
+    <div class="prompt">
+      <div class="es" id="chEs"></div>
+      <div class="big" id="chQ"></div>
+      <div id="chAsk" style="color:var(--muted)"></div>
+    </div>
+    <div class="opts" id="chOpts"></div>
+    <div class="msg" id="chMsg"></div>
+  </section>
+
+  <footer>Verbos irregulares · 4º ESO · v1</footer>
+</div>
+
+<script>
+// [inf, ph, past, ph, participle, ph, español, hoja]
+const RAW = [
+["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
+["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
+["become","/bɪˈkʌm/","became","/bɪˈkeɪm/","become","/bɪˈkʌm/","llegar a ser, convertirse",1],
+["begin","/bɪˈɡɪn/","began","/bɪˈɡæn/","begun","/bɪˈɡʌn/","empezar",1],
+["bite","/baɪt/","bit","/bɪt/","bitten","/ˈbɪtn/","morder",1],
+["blow","/bləʊ/","blew","/bluː/","blown","/bləʊn/","soplar",1],
+["break","/breɪk/","broke","/brəʊk/","broken","/ˈbrəʊkən/","romper",1],
+["bring","/brɪŋ/","brought","/brɔːt/","brought","/brɔːt/","traer",1],
+["burn","/bɜːn/","burnt / burned","/bɜːnt/, /bɜːnd/","burnt / burned","/bɜːnt/, /bɜːnd/","quemar",1],
+["build","/bɪld/","built","/bɪlt/","built","/bɪlt/","construir",1],
+["buy","/baɪ/","bought","/bɔːt/","bought","/bɔːt/","comprar",1],
+["can","/kæn/","could","/kʊd/","—","","poder",1],
+["catch","/kætʃ/","caught","/kɔːt/","caught","/kɔːt/","coger, atrapar",1],
+["choose","/tʃuːz/","chose","/tʃəʊz/","chosen","/ˈtʃəʊzn/","elegir",1],
+["come","/kʌm/","came","/keɪm/","come","/kʌm/","venir",1],
+["cost","/kɒst/","cost","/kɒst/","cost","/kɒst/","costar",1],
+["cut","/kʌt/","cut","/kʌt/","cut","/kʌt/","cortar",1],
+["do","/duː/","did","/dɪd/","done","/dʌn/","hacer",1],
+["draw","/drɔː/","drew","/druː/","drawn","/drɔːn/","dibujar",1],
+["dream","/driːm/","dreamt / dreamed","/dremt/, /driːmd/","dreamt / dreamed","/dremt/, /driːmd/","soñar",1],
+["drink","/drɪŋk/","drank","/dræŋk/","drunk","/drʌŋk/","beber",1],
+["drive","/draɪv/","drove","/drəʊv/","driven","/ˈdrɪvn/","conducir",1],
+["eat","/iːt/","ate","/et/, /eɪt/","eaten","/ˈiːtn/","comer",1],
+["fall","/fɔːl/","fell","/fel/","fallen","/ˈfɔːlən/","caer",1],
+["feed","/fiːd/","fed","/fed/","fed","/fed/","dar de comer, alimentar",1],
+["feel","/fiːl/","felt","/felt/","felt","/felt/","sentir",1],
+["fight","/faɪt/","fought","/fɔːt/","fought","/fɔːt/","pelear, luchar",1],
+["find","/faɪnd/","found","/faʊnd/","found","/faʊnd/","encontrar",1],
+["fly","/flaɪ/","flew","/fluː/","flown","/fləʊn/","volar",1],
+["forget","/fəˈɡet/","forgot","/fəˈɡɒt/","forgotten","/fəˈɡɒtn/","olvidar",1],
+["forgive","/fəˈɡɪv/","forgave","/fəˈɡeɪv/","forgiven","/fəˈɡɪvn/","perdonar",1],
+["freeze","/friːz/","froze","/frəʊz/","frozen","/ˈfrəʊzn/","congelar(se)",1],
+["get","/ɡet/","got","/ɡɒt/","got","/ɡɒt/","conseguir, obtener",1],
+["give","/ɡɪv/","gave","/ɡeɪv/","given","/ˈɡɪvn/","dar",1],
+["go","/ɡəʊ/","went","/went/","gone / been","/ɡɒn/, /biːn/","ir",1],
+["grow","/ɡrəʊ/","grew","/ɡruː/","grown","/ɡrəʊn/","crecer, cultivar",1],
+["hang","/hæŋ/","hung","/hʌŋ/","hung","/hʌŋ/","colgar",1],
+["have","/hæv/","had","/hæd/","had","/hæd/","tener, haber",1],
+["hear","/hɪə(r)/","heard","/hɜːd/","heard","/hɜːd/","oír",1],
+["hide","/haɪd/","hid","/hɪd/","hidden","/ˈhɪdn/","esconder(se)",1],
+["hit","/hɪt/","hit","/hɪt/","hit","/hɪt/","golpear",1],
+["hold","/həʊld/","held","/held/","held","/held/","sostener, sujetar",1],
+["hurt","/hɜːt/","hurt","/hɜːt/","hurt","/hɜːt/","hacer daño, doler",1],
+["keep","/kiːp/","kept","/kept/","kept","/kept/","guardar, mantener",1],
+["know","/nəʊ/","knew","/njuː/","known","/nəʊn/","saber, conocer",2],
+["lead","/liːd/","led","/led/","led","/led/","guiar, dirigir",2],
+["learn","/lɜːn/","learnt / learned","/lɜːnt/, /lɜːnd/","learnt / learned","/lɜːnt/, /lɜːnd/","aprender",2],
+["leave","/liːv/","left","/left/","left","/left/","dejar, marcharse",2],
+["lend","/lend/","lent","/lent/","lent","/lent/","prestar",2],
+["let","/let/","let","/let/","let","/let/","dejar, permitir",2],
+["lie","/laɪ/","lay","/leɪ/","lain","/leɪn/","estar tumbado, yacer",2],
+["lose","/luːz/","lost","/lɒst/","lost","/lɒst/","perder",2],
+["make","/meɪk/","made","/meɪd/","made","/meɪd/","hacer, fabricar",2],
+["meet","/miːt/","met","/met/","met","/met/","conocer, quedar con",2],
+["pay","/peɪ/","paid","/peɪd/","paid","/peɪd/","pagar",2],
+["put","/pʊt/","put","/pʊt/","put","/pʊt/","poner",2],
+["read","/riːd/","read","/red/","read","/red/","leer",2],
+["ride","/raɪd/","rode","/rəʊd/","ridden","/ˈrɪdn/","montar (en bici, a caballo)",2],
+["ring","/rɪŋ/","rang","/ræŋ/","rung","/rʌŋ/","sonar, llamar por teléfono",2],
+["run","/rʌn/","ran","/ræn/","run","/rʌn/","correr",2],
+["say","/seɪ/","said","/sed/","said","/sed/","decir",2],
+["see","/siː/","saw","/sɔː/","seen","/siːn/","ver",2],
+["sell","/sel/","sold","/səʊld/","sold","/səʊld/","vender",2],
+["send","/send/","sent","/sent/","sent","/sent/","enviar",2],
+["set","/set/","set","/set/","set","/set/","colocar, fijar",2],
+["shake","/ʃeɪk/","shook","/ʃʊk/","shaken","/ˈʃeɪkən/","agitar, sacudir",2],
+["shine","/ʃaɪn/","shone","/ʃɒn/","shone","/ʃɒn/","brillar",2],
+["show","/ʃəʊ/","showed","/ʃəʊd/","shown","/ʃəʊn/","mostrar, enseñar",2],
+["shut","/ʃʌt/","shut","/ʃʌt/","shut","/ʃʌt/","cerrar",2],
+["sing","/sɪŋ/","sang","/sæŋ/","sung","/sʌŋ/","cantar",2],
+["sit","/sɪt/","sat","/sæt/","sat","/sæt/","sentarse",2],
+["sleep","/sliːp/","slept","/slept/","slept","/slept/","dormir",2],
+["speak","/spiːk/","spoke","/spəʊk/","spoken","/ˈspəʊkən/","hablar",2],
+["spell","/spel/","spelt / spelled","/spelt/, /speld/","spelt / spelled","/spelt/, /speld/","deletrear",2],
+["spend","/spend/","spent","/spent/","spent","/spent/","gastar, pasar (tiempo)",2],
+["stand","/stænd/","stood","/stʊd/","stood","/stʊd/","estar de pie",2],
+["steal","/stiːl/","stole","/stəʊl/","stolen","/ˈstəʊlən/","robar",2],
+["swim","/swɪm/","swam","/swæm/","swum","/swʌm/","nadar",2],
+["take","/teɪk/","took","/tʊk/","taken","/ˈteɪkən/","coger, tomar, llevar",2],
+["teach","/tiːtʃ/","taught","/tɔːt/","taught","/tɔːt/","enseñar (una materia)",2],
+["tell","/tel/","told","/təʊld/","told","/təʊld/","decir, contar",2],
+["think","/θɪŋk/","thought","/θɔːt/","thought","/θɔːt/","pensar",2],
+["throw","/θrəʊ/","threw","/θruː/","thrown","/θrəʊn/","lanzar, tirar",2],
+["understand","/ˌʌndəˈstænd/","understood","/ˌʌndəˈstʊd/","understood","/ˌʌndəˈstʊd/","entender",2],
+["wake","/weɪk/","woke","/wəʊk/","woken","/ˈwəʊkən/","despertar(se)",2],
+["wear","/weə(r)/","wore","/wɔː(r)/","worn","/wɔːn/","llevar puesto",2],
+["win","/wɪn/","won","/wʌn/","won","/wʌn/","ganar",2],
+["write","/raɪt/","wrote","/rəʊt/","written","/ˈrɪtn/","escribir",2]
+];
+const V = RAW.map(r=>({inf:r[0],phI:r[1],past:r[2],phP:r[3],part:r[4],phPP:r[5],es:r[6],sheet:r[7]}));
+const FORMS = [["inf","Infinitive"],["past","Past simple"],["part","Past participle"]];
+
+// ---------- storage ----------
+const KEY="adela-irregular-v1";
+let S={lv:{},streak:0,best:0};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)S=Object.assign(S,s);}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const lv=v=>S.lv[v.inf]??0;     // 0 nuevo, 1 fallado, 2 en camino, 3 casi, 4 dominado
+function mark(v,ok){
+  let l=lv(v);
+  if(ok){l=Math.min(4,(l===1?2:l+1)); S.streak++; S.best=Math.max(S.best,S.streak);}
+  else{l=1; S.streak=0;}
+  S.lv[v.inf]=l; save(); stats();
+}
+function stats(){
+  const list=pool();
+  sTotal.textContent=list.length;
+  sMaster.textContent=list.filter(v=>lv(v)===4).length;
+  sReview.textContent=V.filter(v=>lv(v)===1).length;
+  sStreak.textContent=S.streak;
+}
+
+// ---------- helpers ----------
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>s.toLowerCase().replace(/[’']/g,"").replace(/\s+/g," ").trim();
+const opts=s=>s.split("/").map(norm);
+function correct(ans,target){
+  const a=norm(ans); if(target==="—") return true;
+  const t=opts(target);
+  if(t.includes(a)) return true;
+  // aceptar "burnt/burned" o "burned, burnt"
+  const parts=a.split(/[\/,]| or | o /).map(norm).filter(Boolean);
+  return parts.length>0 && parts.every(p=>t.includes(p));
+}
+function speak(txt){
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(txt.replace(/\//g,", ").replace("—",""));
+    u.lang="en-GB"; u.rate=.85;
+    const vo=speechSynthesis.getVoices().find(x=>x.lang==="en-GB")||speechSynthesis.getVoices().find(x=>x.lang.startsWith("en"));
+    if(vo) u.voice=vo;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+const sayAll=v=>speak(`${v.inf}. ${v.past}. ${v.part}`);
+const CHEERS=["¡Genial, Adela! 🎉","¡Perfecto! 💪","¡Así se hace! ⭐","¡Lo clavaste! 🔥","¡Muy bien! 👏","¡Imparable! 🚀"];
+const cheer=()=>CHEERS[Math.random()*CHEERS.length|0];
+
+let SET="all";
+const pool=()=>V.filter(v=>SET==="all"||String(v.sheet)===SET);
+
+// ---------- nav ----------
+let view="study";
+$("nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;go(b.dataset.v)};
+$("setSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  SET=b.dataset.s;[...$("setSeg").children].forEach(x=>x.classList.toggle("on",x===b));stats();go(view)};
+function go(v){
+  view=v;
+  [...$("nav").children].forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  ["study","cards","write","choice"].forEach(id=>$("v-"+id).classList.add("hidden"));
+  if(v==="study"){$("v-study").classList.remove("hidden");renderTable();}
+  if(v==="cards"){$("v-cards").classList.remove("hidden");startCards();}
+  if(v==="choice"){$("v-choice").classList.remove("hidden");startChoice();}
+  if(v==="write"||v==="exam"||v==="review"){$("v-write").classList.remove("hidden");quizStart(v);}
+}
+
+// ---------- study table ----------
+function renderTable(){
+  const q=norm($("q").value);
+  const hp=$("hPast").checked,hpp=$("hPart").checked,hes=$("hEs").checked;
+  const rows=pool().filter(v=>!q||[v.inf,v.past,v.part,v.es].some(x=>norm(x).includes(q)));
+  $("tbody").innerHTML=rows.map(v=>`<tr>
+    <td><span class="dot l${lv(v)}"></span><span class="w">${v.inf}</span><span class="ph">${v.phI}</span></td>
+    <td class="${hp?"mask":""}"><span class="w">${v.past}</span><span class="ph">${v.phP}</span></td>
+    <td class="${hpp?"mask":""}"><span class="w">${v.part}</span><span class="ph">${v.phPP}</span></td>
+    <td class="es ${hes?"mask":""}">${v.es}</td>
+    <td><button class="spk" data-i="${V.indexOf(v)}" title="Escuchar">🔊</button></td></tr>`).join("");
+}
+$("tbody").onclick=e=>{
+  const m=e.target.closest(".mask"); if(m){m.classList.remove("mask");return;}
+  const b=e.target.closest(".spk"); if(b) sayAll(V[b.dataset.i]);
+};
+["q","hPast","hPart","hEs"].forEach(id=>$(id).addEventListener("input",renderTable));
+
+// ---------- flashcards ----------
+let cards=[],ci=0;
+function startCards(){
+  // primero los que peor se sabe
+  cards=shuffle(pool()).sort((a,b)=>lv(a)-lv(b)); ci=0; showCard();
+}
+function showCard(){
+  if(ci>=cards.length){startCards();return;}
+  const v=cards[ci]; $("flip").classList.remove("on");
+  $("cCount").textContent=`Tarjeta ${ci+1} de ${cards.length}`;
+  $("cEs").textContent=v.es; $("cInf").textContent=v.inf; $("cPh").textContent=v.phI;
+  setTimeout(()=>{$("cB1").textContent=v.inf;$("cB2").textContent=v.past;$("cB3").textContent=v.part;},200);
+}
+$("flip").onclick=()=>$("flip").classList.toggle("on");
+$("cSpeak").onclick=()=>sayAll(cards[ci]);
+$("cYes").onclick=()=>{mark(cards[ci],true);ci++;showCard();};
+$("cNo").onclick=()=>{mark(cards[ci],false);ci++;showCard();};
+
+// ---------- write quiz (write / exam / review) ----------
+let Q={};
+function quizStart(mode){
+  const box=$("v-write");
+  if(mode==="review"){
+    const list=V.filter(v=>lv(v)===1);
+    if(!list.length){box.innerHTML=`<div class="empty"><h2>🎉 No tienes fallos pendientes</h2><p>Cuando falles un verbo aparecerá aquí para repasarlo.</p></div>`;return;}
+    Q={mode,list:shuffle(list),i:0,ok:0,wrong:[]};return quizQ();
+  }
+  if(mode==="exam"){
+    box.innerHTML=`<div class="start"><h2>📝 Examen</h2>
+      <p>Te doy una forma del verbo y escribes las otras dos. Al final te pongo nota sobre 10.</p>
+      <button class="btn" data-n="10">10 verbos</button>
+      <button class="btn" data-n="20">20 verbos</button>
+      <button class="btn ghost" data-n="0">Todos (${pool().length})</button></div>`;
+    box.onclick=e=>{const b=e.target.closest("[data-n]");if(!b)return;box.onclick=null;
+      const n=+b.dataset.n||pool().length;Q={mode,list:shuffle(pool()).slice(0,n),i:0,ok:0,wrong:[]};quizQ();};
+    return;
+  }
+  // write: práctica infinita priorizando los menos sabidos
+  box.onclick=null;
+  Q={mode,list:[],i:0,ok:0,wrong:[]}; quizQ();
+}
+function nextPractice(){
+  const p=pool(); const w=p.map(v=>[v,[6,8,4,2,1][lv(v)]]);
+  let t=w.reduce((s,x)=>s+x[1],0)*Math.random();
+  for(const [v,k] of w){t-=k;if(t<=0)return v;} return p[0];
+}
+function quizQ(){
+  const box=$("v-write"); box.onclick=null;
+  let v;
+  if(Q.mode==="write"){v=nextPractice(); if(Q.last===v&&pool().length>1)v=nextPractice();}
+  else{ if(Q.i>=Q.list.length) return quizEnd(); v=Q.list[Q.i]; }
+  Q.last=v;
+  // qué forma se da: normalmente el infinitivo; a veces otra (no para "can")
+  let given=0;
+  if(v.part!=="—" && Math.random()<.3) given=Math.random()<.5?1:2;
+  Q.cur={v,given};
+  const head = Q.mode==="write"
+    ? `<div class="qhead"><span>Práctica libre · aciertos ${Q.ok}</span><span>Racha 🔥 ${S.streak}</span></div><div class="bar"><i style="width:0"></i></div>`
+    : `<div class="qhead"><span>${Q.mode==="exam"?"Examen":"Repaso de fallos"} · ${Q.i+1} de ${Q.list.length}</span><span>Aciertos ${Q.ok}</span></div><div class="bar"><i style="width:${Q.i/Q.list.length*100}%"></i></div>`;
+  box.innerHTML = head + `
+    <div class="prompt"><div class="es">${v.es}</div><div class="big">${v[FORMS[given][0]]}</div>
+      <div style="color:var(--muted)">Escribe las formas que faltan</div></div>
+    <form id="qf" autocomplete="off">
+    <div class="fields">${FORMS.map(([k,l],i)=>`<div class="field"><label>${l}</label>
+      <input id="f${i}" ${i===given||v[k]==="—"?"readonly":""} value="${i===given?v[k]:(v[k]==="—"?"—":"")}" autocapitalize="off" spellcheck="false">
+      <div class="sol" id="s${i}"></div></div>`).join("")}</div>
+    <div class="actions"><button type="button" class="btn ghost" id="qSpk">🔊</button><button class="btn" id="qGo">Comprobar</button></div>
+    </form><div class="msg" id="qMsg"></div>`;
+  const first=[0,1,2].find(i=>!$("f"+i).readOnly); if(first!=null) $("f"+first).focus();
+  $("qSpk").onclick=()=>speak(v[FORMS[given][0]]);
+  $("qf").onsubmit=e=>{e.preventDefault(); Q.checked?quizNext():quizCheck();};
+}
+function quizCheck(){
+  const {v,given}=Q.cur; let all=true;
+  FORMS.forEach(([k],i)=>{
+    const inp=$("f"+i); if(inp.readOnly) return;
+    const ok=correct(inp.value,v[k]);
+    inp.classList.add(ok?"ok":"bad"); inp.readOnly=true;
+    if(!ok){all=false;$("s"+i).textContent=v[k];}
+  });
+  Q.checked=true; mark(v,all);
+  if(all)Q.ok++; else Q.wrong.push(v);
+  const m=$("qMsg"); m.className="msg "+(all?"ok":"bad");
+  m.textContent=all?cheer():"Casi… fíjate en la corrección en rojo y sigue 💪";
+  $("qGo").textContent="Siguiente →";
+  if(all) sayAll(v);
+}
+function quizNext(){Q.checked=false;Q.i++;quizQ();}
+function quizEnd(){
+  const n=Q.list.length, nota=Math.round(Q.ok/n*100)/10;
+  const msg=nota>=9?"¡Sobresaliente, Adela! 🏆":nota>=7?"¡Notable! Vas muy bien 💪":nota>=5?"Aprobado. Repasa los fallos y a por más 📚":"Toca repasar un poco más. ¡Tú puedes! 🌱";
+  $("v-write").innerHTML=`<div class="result">
+    <p style="color:var(--muted)">Tu nota</p><p class="grade display" style="color:${nota>=5?"var(--ok)":"var(--bad)"}">${nota.toString().replace(".",",")}</p>
+    <h2>${msg}</h2><p>${Q.ok} de ${n} verbos completos</p>
+    ${Q.wrong.length?`<h3>Para repasar</h3><ul>${Q.wrong.map(v=>`<li><b>${v.inf}</b> – ${v.past} – ${v.part} <span style="color:var(--muted)">(${v.es})</span></li>`).join("")}</ul>`:""}
+    <div class="actions"><button class="btn" id="again">Otra vez</button>${Q.wrong.length?`<button class="btn ghost" id="toRev">Repasar fallos</button>`:""}</div></div>`;
+  $("again").onclick=()=>quizStart(Q.mode==="review"?"review":"exam");
+  if($("toRev")) $("toRev").onclick=()=>go("review");
+}
+
+// ---------- multiple choice ----------
+let C={};
+function startChoice(){C={n:0,ok:0};choiceQ();}
+function choiceQ(){
+  const p=pool().filter(v=>v.part!=="—");
+  const v=p[Math.random()*p.length|0];
+  const k=Math.random()<.5?"past":"part";
+  const right=v[k];
+  // distractores creíbles: la otra forma, la forma "regular" inventada y formas de otros verbos
+  const fake=new Set();
+  const other=k==="past"?v.part:v.past; if(norm(other)!==norm(right)) fake.add(other);
+  const reg=v.inf.endsWith("e")?v.inf+"d":v.inf+"ed"; if(!opts(right).includes(reg)) fake.add(reg);
+  while(fake.size<3){const o=p[Math.random()*p.length|0][k]; if(norm(o)!==norm(right)) fake.add(o);}
+  const choices=shuffle([right,...[...fake].slice(0,3)]);
+  $("chCount").textContent=`Pregunta ${C.n+1}`;
+  $("chScore").textContent=`Aciertos ${C.ok} · Racha 🔥 ${S.streak}`;
+  $("chEs").textContent=v.es; $("chQ").textContent=v.inf;
+  $("chAsk").textContent=k==="past"?"¿Cuál es el Past simple?":"¿Cuál es el Past participle?";
+  $("chMsg").textContent=""; $("chMsg").className="msg";
+  $("chOpts").innerHTML=choices.map(c=>`<button class="opt">${c}</button>`).join("");
+  $("chOpts").onclick=e=>{
+    const b=e.target.closest(".opt"); if(!b||C.done) return; C.done=true;
+    const ok=b.textContent===right;
+    [...$("chOpts").children].forEach(x=>{if(x.textContent===right)x.classList.add("ok")});
+    if(!ok)b.classList.add("bad");
+    mark(v,ok); C.n++; if(ok)C.ok++;
+    $("chMsg").className="msg "+(ok?"ok":"bad");
+    $("chMsg").textContent=ok?cheer():`Era: ${v.inf} – ${v.past} – ${v.part}`;
+    speak(right);
+    setTimeout(()=>{C.done=false;choiceQ();},ok?1100:2300);
+  };
+}
+
+// ---------- init ----------
+const h=new Date().getHours();
+$("hello").textContent=(h<14?"¡Buenos días, Adela!":h<21?"¡Buenas tardes, Adela!":"¡Buenas noches, Adela!")+" ¿Repasamos verbos?";
+try{speechSynthesis.getVoices();}catch(e){}
+stats(); renderTable();
+</script>
+</body>
+</html>
