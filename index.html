@@ -510,7 +510,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=24, APP_DATE="18/11/2026";
+const APP_VERSION=25, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -712,7 +712,7 @@ const lv=v=>S.lv[v.inf]??0;
 function mark(v,ok){
   askPersist();
   let l=lv(v);
-  if(ok){l=Math.min(4,l===1?2:l+1);S.streak++;S.best=Math.max(S.best,S.streak);S.ok++;}
+  if(ok){l=l<=1?2:Math.min(4,l+1);S.streak++;S.best=Math.max(S.best,S.streak);S.ok++;}
   else{l=1;S.streak=0;S.everFailed=true;}
   S.lv[v.inf]=l;save();stats(v);checkAch();
 }
@@ -1272,6 +1272,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  25:["Corregido: acertar un verbo nuevo ya no lo marca como fallado."],
   24:["Puedes deshacer la última tarjeta y la app te avisa antes de abandonar un examen.","Nuevo en Ajustes: tamaño de letra (en automático sigue el del iPhone).","Los verbos dominados llevan ✓ y los fallados ✗, no solo color."],
   23:["Los grupos de verbos se ven mejor: cada uno enseña su patrón con bloques de colores (A A A, A B B, A B A, A B C) y un ejemplo."],
   18:["Nueva pantalla de inicio: eliges los verbos y el modo, y el ejercicio ocupa toda la pantalla.","Colores más claros: cada forma del verbo tiene su color, el verde es acierto y el rojo es fallo.","Nuevo botón ⚙️ Ajustes: tema, sonidos, voz, copia de seguridad y empezar de cero.","Botones más grandes y textos más fáciles de leer."]
