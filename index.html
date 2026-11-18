@@ -324,6 +324,11 @@ textarea.code{width:100%;min-height:96px;border:2px solid var(--line);border-rad
 .news .sv{color:var(--soft);margin:0 0 12px}
 .news ul{text-align:left;margin:0 0 18px;padding-left:20px;display:grid;gap:8px}
 
+/* selector Aprender / Jugar */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--paper);border-radius:20px;padding:5px;box-shadow:0 3px 0 var(--line);margin-bottom:14px}
+.tabs button{border:0;background:none;border-radius:16px;min-height:52px;font-weight:900;font-size:17px;color:var(--soft);transition:background .2s,color .2s}
+.tabs button[aria-selected=true]{background:var(--btn);color:#fff;box-shadow:0 3px 0 var(--btn-d)}
+@media (hover:hover){.tabs button[aria-selected=false]:hover{background:var(--row);color:var(--ink)}}
 /* juegos */
 #p-game{position:relative}
 .gover{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--paper) 88%,transparent);border-radius:inherit}
@@ -500,6 +505,10 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 
   <!-- INICIO -->
   <main id="v-home">
+    <div class="tabs" id="homeTabs" role="tablist" aria-label="Qué quieres hacer">
+      <button role="tab" id="tabLearn" data-t="aprender" aria-controls="learnBox"><span aria-hidden="true">📚</span> Aprender</button>
+      <button role="tab" id="tabPlay" data-t="jugar" aria-controls="playBox"><span aria-hidden="true">🎮</span> Jugar</button>
+    </div>
     <section class="hero">
       <div>
         <h1 id="hello">¡Hola, Adela!</h1>
@@ -535,9 +544,9 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
       <button data-g="ABC" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="c">C</i></span><b>Las tres distintas</b><small>Tres formas diferentes</small><span class="w" lang="en">sing · sang · sung</span><small class="n" id="gn-ABC"></small></button>
     </div>
 
+    <div id="learnBox" role="tabpanel" aria-labelledby="tabLearn">
     <div class="step">¿Cómo quieres practicar?</div>
     <nav class="modes" id="nav" aria-label="Modos">
-      <button class="mode play" data-v="juegos"><span class="e" aria-hidden="true">🎮</span><span class="t">Jugar</span><small>Seis juegos para aprender jugando: lluvia de verbos, contrarreloj, parejas…</small></button>
       <button class="mode" data-v="estudiar"><span class="e" aria-hidden="true">📖</span><span class="t">Estudiar</span><small>La tabla con frases y audio</small></button>
       <button class="mode" data-v="tarjetas"><span class="e" aria-hidden="true">🃏</span><span class="t">Tarjetas</span><small>Gira y comprueba si te lo sabes</small></button>
       <button class="mode" data-v="escribir"><span class="e" aria-hidden="true">✍️</span><span class="t">Escribir</span><small>Escribe las formas que faltan</small></button>
@@ -545,6 +554,11 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
       <button class="mode" data-v="examen"><span class="e" aria-hidden="true">📝</span><span class="t">Examen</span><small>10 o 20 verbos con nota</small></button>
       <button class="mode" data-v="fallos"><span class="e" aria-hidden="true">🔁</span><span class="t">Mis fallos<i class="badge hidden" id="failBadge"></i></span><small>Repasa lo que has fallado</small></button>
     </nav>
+    </div>
+    <div id="playBox" role="tabpanel" aria-labelledby="tabPlay" class="hidden">
+      <div class="step">¿A qué quieres jugar?</div>
+      <div id="playInner"></div>
+    </div>
   </main>
 
   <!-- PANTALLA DE EJERCICIO -->
@@ -617,7 +631,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=33, APP_DATE="18/11/2026";
+const APP_VERSION=34, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1029,7 +1043,19 @@ try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTh
 
 // ---------- navegación (con el botón Atrás del móvil) ----------
 const TITLES={juegos:"🎮 Jugar",lluvia:"🌧️ Lluvia de verbos",crono:"⏱️ Contrarreloj",parejas:"🧩 Parejas de tres",superv:"🪜 Supervivencia",ahorcado:"🔤 Ahorcado",duelo:"⚔️ Duelo",estudiar:"📖 Estudiar",tarjetas:"🃏 Tarjetas",escribir:"✍️ Escribir",elegir:"🎯 Elegir",examen:"📝 Examen",fallos:"🔁 Mis fallos",logros:"🏆 Logros",ajustes:"⚙️ Ajustes"};
+function setTab(t){
+  S.homeTab=t;save();
+  const play=t==="jugar";
+  $("tabLearn").setAttribute("aria-selected",!play);$("tabPlay").setAttribute("aria-selected",play);
+  $("tabLearn").tabIndex=play?-1:0;$("tabPlay").tabIndex=play?0:-1;
+  $("learnBox").classList.toggle("hidden",play);$("playBox").classList.toggle("hidden",!play);
+  if(play)renderGames();
+}
+$("homeTabs").onclick=e=>{const b=e.target.closest("[role=tab]");if(b)setTab(b.dataset.t);};
+$("homeTabs").onkeydown=e=>{if(e.key==="ArrowRight"||e.key==="ArrowLeft"){const t=S.homeTab==="jugar"?"aprender":"jugar";setTab(t);$(t==="jugar"?"tabPlay":"tabLearn").focus();}};
+// "Jugar" y "Otros juegos" llevan al inicio con la pestaña Jugar
 function go(v){
+  if(v==="juegos"){S.homeTab="jugar";save();v="inicio";}
   if(v==="inicio"){if(location.hash)history.pushState("",document.title,location.pathname+location.search);render("inicio");return;}
   if(location.hash!=="#"+v)location.hash=v;else render(v);
 }
@@ -1038,7 +1064,8 @@ let allowLeave=false;
 function quizBusy(){return ["examen","fallos"].includes(view)&&Q.list&&Q.list.length>0&&Q.i<Q.list.length&&(Q.i>0||Q.checked);}
 function leaveText(){const done=Q.i+(Q.checked?1:0);return `Llevas ${done} de ${Q.list.length} verbos. Si sales ahora, ${Q.mode==="examen"?"este examen no contará":"perderás este repaso"}.`;}
 function render(force){
-  const h=force||location.hash.slice(1)||"inicio";
+  let h=force||location.hash.slice(1)||"inicio";
+  if(h==="juegos"){S.homeTab="jugar";h="inicio";}
   const target=TITLES[h]?h:"inicio";
   if(target!==view&&(quizBusy()||gameBusy())&&!allowLeave){
     history.pushState(null,"",location.pathname+location.search+"#"+view);
@@ -1054,7 +1081,8 @@ function render(force){
   if(!["logros","ajustes"].includes(view))openedFrom=null;
   $("v-home").classList.toggle("hidden",!home);$("v-screen").classList.toggle("hidden",home);
   document.querySelectorAll("#v-screen .panel").forEach(p=>p.classList.add("hidden"));
-  if(home){stats();window.scrollTo(0,0);return;}
+  if(!PLAY[view])$("p-game").innerHTML="";
+  if(home){stats();setTab(S.homeTab==="jugar"?"jugar":"aprender");window.scrollTo(0,0);return;}
   $("stitle").textContent=TITLES[view];
   $("grpSel").classList.toggle("hidden",["fallos","logros","ajustes","parejas"].includes(view));
   const show=id=>$(id).classList.remove("hidden");
@@ -1062,7 +1090,6 @@ function render(force){
   if(view==="tarjetas"){show("p-tarjetas");startCards();}
   if(view==="elegir"){show("p-elegir");startChoice();}
   if(["escribir","examen","fallos"].includes(view)){show("p-write");quizStart(view);}
-  if(view==="juegos"){show("p-game");renderGames();}
   if(PLAY[view]){show("p-game");PLAY[view]();}
   if(view==="logros"){show("p-logros");renderAch();}
   if(view==="ajustes"){show("p-ajustes");renderSettings();}
@@ -1434,17 +1461,17 @@ function gameOver(id,big,label,val,lowerBetter,extra="",recKey=id){
   ($("gPract")||$("gAgain")).focus();
   if(isNew){tone("ach");confetti();}
 }
-function renderGames(){
+function renderGames(el=$("playInner")){
   DAILY=null;const d=dailyInfo(),done=(S.daily||{}).last===d.key,st=dailyStreak();
   const gd=GAMES.find(x=>x[0]===d.game);
-  $("p-game").innerHTML=`<div class="daily ${done?"done":""}"><div class="dl"><b>🗓️ Reto del día</b><span>${gd[1]} ${gd[2]} con 10 verbos de hoy</span><span class="ds">${done?"✅ Completado hoy":"Mañana habrá otro"} · 🔥 ${st} ${st===1?"día":"días"} seguidos</span></div>
+  el.innerHTML=`<div class="daily ${done?"done":""}"><div class="dl"><b>🗓️ Reto del día</b><span>${gd[1]} ${gd[2]} con 10 verbos de hoy</span><span class="ds">${done?"✅ Completado hoy":"Mañana habrá otro"} · 🔥 ${st} ${st===1?"día":"días"} seguidos</span></div>
       <button class="btn ${done?"w":"v"}" id="gDaily">${done?"Jugar otra vez":"Jugar el reto"}</button></div>
     <div class="pick" style="justify-content:flex-start;margin:0 0 14px"><button class="btn w" id="gQuick">🎲 Partida rápida</button></div>
     <div class="glist">${GAMES.map(([id,ico,name,desc,fmt])=>`<button class="gitem" data-g="${id}"><span class="e" aria-hidden="true">${ico}</span><span><b>${name}</b><small>${desc}</small>${fmt?`<span class="gr">🏅 ${recText(id)}</span>`:""}</span></button>`).join("")}</div>
     <p class="tip">Los juegos usan el grupo de verbos elegido arriba. Tus aciertos cuentan para el muro (menos en Parejas y Duelo).</p>`;
-  $("p-game").querySelectorAll(".gitem").forEach(b=>b.onclick=()=>go(b.dataset.g));
-  $("gDaily").onclick=()=>{DAILY=d;go(d.game);};
-  $("gQuick").onclick=()=>{AUTOSTART=true;go(pick(["lluvia","crono","parejas","superv","ahorcado"]));};
+  el.querySelectorAll(".gitem").forEach(b=>b.onclick=()=>go(b.dataset.g));
+  el.querySelector("#gDaily").onclick=()=>{DAILY=d;go(d.game);};
+  el.querySelector("#gQuick").onclick=()=>{AUTOSTART=true;go(pick(["lluvia","crono","parejas","superv","ahorcado"]));};
 }
 
 // ===== 1. Lluvia de verbos =====
@@ -1877,6 +1904,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  34:["Arriba del inicio eliges 📚 Aprender o 🎮 Jugar."],
   33:["Las frases de ejemplo se ven más ordenadas."],
   31:["🗓️ Reto del día: un juego y 10 verbos nuevos cada día, con racha de días seguidos.","Al terminar una partida ves los verbos que fallaste y puedes practicarlos.","Cuenta atrás y botón de pausa, 🎲 partida rápida y más efectos al acertar.","Lluvia con velocidad y ❄️ congelar; Contrarreloj con faltas de ortografía; Parejas con 3 niveles; Supervivencia con 👹 jefes y comodines; Ahorcado con 💡 pista; Duelo con trampas más difíciles."],
   30:["Los avisos salen arriba para no tapar lo que escribes."],
