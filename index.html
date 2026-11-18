@@ -76,7 +76,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 
 /* modes */
-.modes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0 12px}
+.modes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0 16px}
 .mode{border:0;background:var(--paper);border-radius:18px;padding:12px 6px 10px;text-align:center;box-shadow:0 3px 0 var(--line);transition:transform .15s}
 .mode:hover{transform:translateY(-2px)}
 .mode .e{font-size:24px;display:block;line-height:1.2}
@@ -240,13 +240,6 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
     <button class="mode" data-v="review"><span class="e">🔁</span><span class="t">Mis fallos</span></button>
   </nav>
 
-  <div class="sets">Practicar con
-    <div class="seg" id="setSeg">
-      <button data-s="all" class="on">Todos</button>
-      <button data-s="1">Hoja 1: be → keep</button>
-      <button data-s="2">Hoja 2: know → write</button>
-    </div>
-  </div>
 
   <!-- STUDY -->
   <section id="v-study" class="panel">
@@ -299,7 +292,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=3, APP_DATE="18/11/2026";
+const APP_VERSION=4, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -474,8 +467,6 @@ $("snd").onclick=()=>{S.mute=!S.mute;save();$("snd").textContent=S.mute?"🔕":"
 // ---------- navegación ----------
 let view="study";
 $("nav").onclick=e=>{const b=e.target.closest(".mode");if(b)go(b.dataset.v)};
-$("setSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;
-  SET=b.dataset.s;[...$("setSeg").children].forEach(x=>x.classList.toggle("on",x===b));stats();go(view)};
 function go(v){
   view=v;
   [...$("nav").children].forEach(b=>b.classList.toggle("on",b.dataset.v===v));
