@@ -82,6 +82,8 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .topr{display:flex;align-items:center;gap:6px}
 .ver{font-weight:800;font-size:12px;color:var(--soft);background:var(--paper);border-radius:999px;padding:6px 11px;box-shadow:0 2px 0 var(--line)}
 .iconbtn{border:0;background:var(--paper);border-radius:14px;min-width:44px;height:44px;padding:0 10px;font-size:18px;box-shadow:0 2px 0 var(--line);display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.iconbtn[aria-pressed=true]{background:var(--btn);color:#fff;box-shadow:0 2px 0 var(--btn-d)}
+.iconbtn[aria-pressed=true] b{color:#fff}
 .iconbtn b{font-size:13px;color:var(--soft);font-weight:800}
 .offline{font-size:12px;font-weight:800;color:var(--past-x);background:var(--past-t);border-radius:999px;padding:5px 10px}
 #toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
@@ -483,7 +485,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=21, APP_DATE="18/11/2026";
+const APP_VERSION=22, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -868,6 +870,8 @@ function render(force){
   const h=force||location.hash.slice(1)||"inicio";
   view=TITLES[h]?h:"inicio";
   const home=view==="inicio";
+  $("achBtn").setAttribute("aria-pressed",view==="logros");$("setBtn").setAttribute("aria-pressed",view==="ajustes");
+  if(!["logros","ajustes"].includes(view))openedFrom=null;
   $("v-home").classList.toggle("hidden",!home);$("v-screen").classList.toggle("hidden",home);
   document.querySelectorAll("#v-screen .panel").forEach(p=>p.classList.add("hidden"));
   if(home){stats();window.scrollTo(0,0);return;}
@@ -886,8 +890,20 @@ function render(force){
 $("nav").onclick=e=>{const b=e.target.closest(".mode");if(b)go(b.dataset.v);};
 $("back").onclick=()=>{if(history.length>1&&location.hash)history.back();else go("inicio");};
 $("home").onclick=()=>go("inicio");
-$("achBtn").onclick=()=>go("logros");
-$("setBtn").onclick=()=>go("ajustes");
+// 🏆 y ⚙️ abren su pantalla y, si se vuelven a pulsar, la cierran y vuelven a donde estabas
+let openedFrom=null;
+function togglePanel(target){
+  if(view===target){
+    if(openedFrom&&openedFrom.target===target){openedFrom=null;history.back();}
+    else go("inicio");
+    return;
+  }
+  // si se pasa de Logros a Ajustes (o al revés), se vuelve a la pantalla de antes de ambos
+  if(openedFrom&&["logros","ajustes"].includes(view)){openedFrom.target=target;location.replace("#"+target);return;}
+  openedFrom={target,from:view};go(target);
+}
+$("achBtn").onclick=()=>togglePanel("logros");
+$("setBtn").onclick=()=>togglePanel("ajustes");
 
 // ---------- estudiar ----------
 const pressed=id=>$(id).getAttribute("aria-pressed")==="true";
