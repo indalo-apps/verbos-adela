@@ -251,6 +251,18 @@ button{font:inherit;cursor:pointer;color:inherit}
 .achbar{height:10px;background:var(--bg);border-radius:10px;overflow:hidden;margin-top:12px}
 .achbar i{display:block;height:100%;background:var(--sun);border-radius:10px}
 
+.vlist{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.vopt{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:var(--field);border-radius:16px;padding:10px 12px}
+.vopt.on{border-color:var(--inf);background:var(--inf-t)}
+.vopt .nm{flex:1;min-width:0}
+.vopt .nm b{display:block;font-size:15px}
+.vopt .nm small{color:var(--soft);font-size:12.5px}
+.vopt button{border:0;border-radius:12px;padding:8px 12px;font-weight:800;font-size:13px}
+.vopt .try{background:var(--bg);color:var(--ink)}
+.vopt .use{background:var(--inf);color:#fff}
+.vopt.on .use{background:var(--part)}
+.vhelp{background:var(--row);border-radius:16px;padding:12px 14px;font-size:14px;color:var(--soft);margin-top:16px}
+.vhelp b{color:var(--ink)}
 footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 
@@ -306,6 +318,7 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
       <span class="ver" id="ver"></span>
       <button class="iconbtn" id="achBtn" aria-label="Ver logros">🏆<b id="achN"></b></button>
       <button class="iconbtn" id="themeBtn" aria-label="Cambiar entre modo claro y oscuro"></button>
+      <button class="iconbtn" id="voiceBtn" aria-label="Elegir voz">🗣️</button>
       <button class="iconbtn" id="snd" aria-label="Activar o quitar sonido">🔔</button>
     </div>
   </div>
@@ -405,11 +418,13 @@ footer{text-align:center;color:var(--soft);font-size:12px;margin-top:34px}
 
   <section id="v-ach" class="panel hidden"></section>
 
+  <section id="v-voice" class="panel hidden"></section>
+
   <footer id="foot"></footer>
 </div>
 
 <script>
-const APP_VERSION=10, APP_DATE="18/11/2026";
+const APP_VERSION=11, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -647,14 +662,52 @@ function hint(v,k,ans){
   if(d===1||(d===2&&a.length>=6))return "Casi: revisa cómo se escribe.";
   return "";
 }
+// ---------- voz ----------
+// nombres de voces femeninas británicas habituales (iPhone, Mac, Windows, Android)
+const FEMALE=/(Kate|Serena|Stephanie|Martha|Female|Libby|Sonia|Hazel|Susan|Maisie|Mia|Fiona|Moira|Karen|Samantha|Tessa|Victoria|Ava|Zoe|Emily|Amy|Catherine|Jenny|Aria|gb-x-gba|gb-x-gbc|gb-x-gbg|gb-x-fis)/i;
+const MALE=/(Daniel|Arthur|Oliver|George|Ryan|Thomas|Male|Rishi|Aaron|Fred|Alex|Gordon|Lee|gb-x-gbb|gb-x-gbd|gb-x-rjs)/i;
+let VOICES=[];
+function loadVoices(){
+  try{VOICES=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang)||v.lang==="en");}catch(e){VOICES=[];}
+  if(view==="voice")renderVoices();
+}
+try{speechSynthesis.addEventListener("voiceschanged",loadVoices);}catch(e){}
+const isGB=v=>/en[-_]GB/i.test(v.lang);
+function pickVoice(){
+  if(!VOICES.length)loadVoices();
+  if(S.voice){const v=VOICES.find(x=>x.name===S.voice);if(v)return v;}
+  return VOICES.find(v=>isGB(v)&&FEMALE.test(v.name))
+      || VOICES.find(v=>isGB(v)&&!MALE.test(v.name))
+      || VOICES.find(isGB)
+      || VOICES.find(v=>FEMALE.test(v.name))
+      || VOICES[0]||null;
+}
+function voiceKind(v){return FEMALE.test(v.name)?"femenina":MALE.test(v.name)?"masculina":"";}
+const ACC={GB:"Reino Unido",US:"Estados Unidos",AU:"Australia",IE:"Irlanda",IN:"India",ZA:"Sudáfrica",NZ:"Nueva Zelanda",CA:"Canadá",SC:"Escocia"};
+function renderVoices(){
+  const cur=pickVoice();
+  const list=[...VOICES].sort((a,b)=>(isGB(b)-isGB(a))||(!!FEMALE.test(b.name)-!!FEMALE.test(a.name))||a.name.localeCompare(b.name));
+  const acc=v=>ACC[(v.lang.split(/[-_]/)[1]||"").toUpperCase()]||v.lang;
+  $("v-voice").innerHTML=`<div class="achhead"><h2>Voz</h2><span style="color:var(--soft);font-weight:700">${cur?cur.name:"Sin voz en inglés"}</span></div>
+    <p style="color:var(--soft);margin:8px 0 0">Estas son las voces en inglés de este dispositivo. Primero salen las británicas. Pulsa <b>Probar</b> para escucharlas y <b>Usar</b> para elegir una.</p>
+    <div class="vlist">${list.length?list.map((v,i)=>`<div class="vopt ${cur&&v.name===cur.name?"on":""}"><div class="nm"><b>${v.name.replace(/\s*\(.*\)$/,"")}</b><small>${acc(v)}${voiceKind(v)?" · voz "+voiceKind(v):""}</small></div>
+      <button class="try" data-i="${i}">▶ Probar</button><button class="use" data-i="${i}">${cur&&v.name===cur.name?"✓ En uso":"Usar"}</button></div>`).join(""):`<p style="color:var(--soft)">Este navegador no tiene voces en inglés.</p>`}</div>
+    <div class="vhelp"><b>¿No sale ninguna voz femenina británica?</b><br>
+      En iPhone: Ajustes → Accesibilidad → Contenido leído → Voces → Inglés (Reino Unido), descarga Kate, Serena o Stephanie y vuelve a abrir la app.<br>
+      En Android: Ajustes → Accesibilidad → Texto a voz → Motor de Google → Inglés (Reino Unido) e instala las voces.</div>
+    <div class="row-btns"><button class="btn v" id="vBack">Volver a practicar</button></div>`;
+  $("v-voice").querySelectorAll(".try").forEach(b=>b.onclick=()=>{const v=list[+b.dataset.i];try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance("go, went, gone. I have gone to London.");u.voice=v;u.lang=v.lang;u.rate=.85;speechSynthesis.speak(u);}catch(e){}});
+  $("v-voice").querySelectorAll(".use").forEach(b=>b.onclick=()=>{S.voice=list[+b.dataset.i].name;save();renderVoices();sayAll(V.find(x=>x.inf==="go"));});
+  $("vBack").onclick=()=>go("study");
+}
+$("voiceBtn").onclick=()=>{if(view==="voice")go("study");else go("voice");};
+
 function speak(txt){
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(txt.replace(/\//g,", ").replace("—",""));
     u.lang="en-GB";u.rate=.85;
-    const vs=speechSynthesis.getVoices();
-    const vo=vs.find(x=>x.lang==="en-GB")||vs.find(x=>x.lang.startsWith("en"));
-    if(vo)u.voice=vo;
+    const vo=pickVoice();if(vo){u.voice=vo;u.lang=vo.lang;}
     speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -662,7 +715,7 @@ let playTok=0,curAudio=null;
 function stopAudio(){playTok++;if(curAudio){curAudio.pause();curAudio=null;}try{speechSynthesis.cancel();}catch(e){}}
 function ttsWord(w){return new Promise(res=>{try{
   const u=new SpeechSynthesisUtterance(w);u.lang="en-GB";u.rate=.85;
-  const vs=speechSynthesis.getVoices();const vo=vs.find(x=>x.lang==="en-GB")||vs.find(x=>x.lang.startsWith("en"));if(vo)u.voice=vo;
+  const vo=pickVoice();if(vo){u.voice=vo;u.lang=vo.lang;}
   u.onend=u.onerror=()=>res();speechSynthesis.speak(u);setTimeout(res,2500);
 }catch(e){res();}});}
 function playWords(list){
@@ -771,12 +824,13 @@ $("nav").onclick=e=>{const b=e.target.closest(".mode");if(b)go(b.dataset.v)};
 function go(v){
   view=v;
   [...$("nav").children].forEach(b=>b.classList.toggle("on",b.dataset.v===v));
-  ["study","cards","write","choice","ach"].forEach(id=>$("v-"+id).classList.add("hidden"));
-  $("groupsBar").classList.toggle("hidden",v==="ach"||v==="review");
+  ["study","cards","write","choice","ach","voice"].forEach(id=>$("v-"+id).classList.add("hidden"));
+  $("groupsBar").classList.toggle("hidden",v==="ach"||v==="review"||v==="voice");
   if(v==="study"){$("v-study").classList.remove("hidden");renderRows();}
   if(v==="cards"){$("v-cards").classList.remove("hidden");startCards();}
   if(v==="choice"){$("v-choice").classList.remove("hidden");startChoice();}
   if(v==="ach"){$("v-ach").classList.remove("hidden");renderAch();}
+  if(v==="voice"){$("v-voice").classList.remove("hidden");renderVoices();}
   if(["write","exam","review"].includes(v)){$("v-write").classList.remove("hidden");quizStart(v);}
 }
 
