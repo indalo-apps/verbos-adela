@@ -89,7 +89,7 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .iconbtn[aria-pressed=true] b{color:#fff}
 .iconbtn b{font-size:13px;color:var(--soft);font-weight:800}
 .offline{font-size:12px;font-weight:800;color:var(--past-x);background:var(--past-t);border-radius:999px;padding:5px 10px}
-#toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
+#toasts{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
 .toast button{pointer-events:auto;border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:10px;min-height:40px;padding:0 12px;font-weight:900;margin-left:10px}
 .toast{display:flex;align-items:center;background:var(--hero);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 24px rgba(20,10,60,.35);text-align:center;animation:rise .35s ease-out}
 @keyframes rise{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
@@ -587,7 +587,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=29, APP_DATE="18/11/2026";
+const APP_VERSION=30, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1195,7 +1195,7 @@ function quizEnd(){
   const msg=nota>=9?"¡Sobresaliente, Adela!":nota>=7?"¡Notable! Vas muy bien.":nota>=5?"Aprobado. Repasa los fallos y sube nota.":"Hoy toca repasar. Mañana sale mejor.";
   const col=nota>=9?"var(--ok-x)":nota>=7?"var(--inf-x)":nota>=5?"var(--ink)":"var(--bad-x)";
   $("p-write").innerHTML=`<div class="center">
-    <p style="margin:0">Tu nota</p><div class="grade" style="color:${col}">${String(nota).replace(".",",")}</div>
+    <p style="margin:0 auto">Tu nota</p><div class="grade" style="color:${col}">${String(nota).replace(".",",")}</div>
     <h2>${msg}</h2><p>${Q.ok} de ${n} verbos completos</p>
     ${Q.wrong.length?`<h3 style="font-size:17px;margin-top:10px">Para repasar</h3><div class="misses">${Q.wrong.map(v=>rowHTML(v,false)).join("")}</div>`:""}
     <div class="pick"><button class="btn v" id="again">${Q.mode==="fallos"?"Seguir repasando":"Hacer otro examen"}</button>${Q.wrong.length&&Q.mode!=="fallos"?`<button class="btn w" id="toRev">Repasar fallos</button>`:""}</div></div>`;
@@ -1288,7 +1288,7 @@ function gameOver(id,big,label,val,lowerBetter,extra=""){
   if(GAME)GAME.running=false;
   const g=GAMES.find(x=>x[0]===id);
   $("p-game").innerHTML=`<div class="center"><div class="gico" aria-hidden="true">${g[1]}</div>
-    <p style="margin:0">${label}</p><div class="grade" style="font-size:84px;color:var(--inf-x)">${big}</div>
+    <p style="margin:0 auto">${label}</p><div class="grade" style="font-size:84px;color:var(--inf-x)">${big}</div>
     ${isNew?`<h2>🏅 ¡Nuevo récord!</h2>`:g[4]?`<p>Tu récord: <b>${recText(id)}</b></p>`:""}${extra}
     <div class="pick"><button class="btn v" id="gAgain">Jugar otra vez</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
   $("gAgain").onclick=()=>render(id);$("gBack").onclick=()=>go("juegos");$("gAgain").focus();
@@ -1692,6 +1692,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  30:["Los avisos salen arriba para no tapar lo que escribes."],
   29:["¡Nuevo modo 🎮 Jugar con seis juegos! Lluvia de verbos, Contrarreloj, Parejas de tres, Supervivencia, Ahorcado y Duelo para dos.","Cada juego tiene su récord y hay 6 logros nuevos."],
   25:["Corregido: acertar un verbo nuevo ya no lo marca como fallado."],
   24:["Puedes deshacer la última tarjeta y la app te avisa antes de abandonar un examen.","Nuevo en Ajustes: tamaño de letra (en automático sigue el del iPhone).","Los verbos dominados llevan ✓ y los fallados ✗, no solo color."],
