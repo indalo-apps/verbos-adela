@@ -135,7 +135,7 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .seg button{border:0;background:none;border-radius:18px;min-height:44px;padding:6px 14px;font-weight:800;font-size:14px;color:var(--soft);line-height:1.2}
 .seg button small{display:block;font-weight:600;font-size:12px}
 .seg button.on{background:var(--btn);color:#fff}
-.groups{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.groups{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .gcard{border:2px solid var(--line);background:var(--paper);border-radius:20px;padding:14px 10px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 3px 0 var(--line);transition:transform .15s,border-color .15s}
 @media (hover:hover){.gcard:hover{transform:translateY(-2px);border-color:var(--inf)}}
 .gcard.on{border-color:var(--btn);box-shadow:0 0 0 2px var(--btn) inset,0 3px 0 var(--line);background:var(--row)}
@@ -148,10 +148,11 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .gcard .w{font-size:13px;font-weight:800;margin-top:4px}
 .gcard .n{font-weight:800;margin-top:2px}
 .gcard.on::after{content:"✓ Elegido";font-size:12px;font-weight:900;color:#fff;background:var(--btn);border-radius:999px;padding:2px 9px;margin-top:6px}
-.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .mode{border:2px solid var(--line);background:var(--paper);border-radius:20px;padding:14px;text-align:left;display:grid;grid-template-columns:48px 1fr;column-gap:12px;align-items:center;min-height:84px;box-shadow:0 3px 0 var(--line);transition:transform .15s,border-color .15s}
 .mode .e{grid-row:1/3;width:48px;height:48px;border-radius:14px;background:var(--row);display:flex;align-items:center;justify-content:center;font-size:24px}
 .mode .t{font-weight:900;font-size:17px;line-height:1.2}
+.mode small,.mode .t,.gcard b,.gcard small{overflow-wrap:anywhere;hyphens:auto}
 .mode small{font-weight:600;font-size:13.5px;color:var(--soft);line-height:1.3}
 .mode .badge{font-style:normal;background:var(--bad);color:#fff;border-radius:999px;font-size:12px;font-weight:900;padding:1px 8px;margin-left:6px;vertical-align:2px}
 @media (hover:hover){.mode:hover{transform:translateY(-2px);border-color:var(--inf)}}
@@ -340,7 +341,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .wmore{display:block;border:0;background:rgba(255,255,255,.16);color:#fff;font-weight:900;font-size:13.5px;border-radius:999px;min-height:44px;padding:0 16px;margin:8px auto 0}
   .legend{font-size:12px}
   .step{margin:16px 2px 8px;font-size:16.5px}
-  .groups{grid-template-columns:1fr 1fr;gap:8px}
+  .groups{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .gcard{padding:10px 8px}
   .gcard .blocks i{width:28px;height:28px;font-size:14px;border-radius:8px}
   .gcard small{font-size:12px}
@@ -349,7 +350,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .gcard[data-g=all] .w{display:none}
   .gcard[data-g=all] .n{grid-column:3;grid-row:1/3}
   .gcard[data-g=all].on::after{grid-column:3;grid-row:3;margin:0}
-  .modes{grid-template-columns:1fr 1fr;gap:8px}
+  .modes{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .mode{grid-template-columns:40px 1fr;column-gap:10px;padding:10px 12px;min-height:72px;border-radius:18px}
   .mode .e{width:40px;height:40px;font-size:21px;border-radius:12px}
   .mode .t{font-size:15.5px}
@@ -512,7 +513,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=26, APP_DATE="18/11/2026";
+const APP_VERSION=27, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
