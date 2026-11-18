@@ -321,6 +321,29 @@ textarea.code{width:100%;min-height:96px;border:2px solid var(--line);border-rad
 .news ul{text-align:left;margin:0 0 18px;padding-left:20px;display:grid;gap:8px}
 
 /* juegos */
+#p-game{position:relative}
+.gover{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--paper) 88%,transparent);border-radius:inherit}
+.gcnt{font-size:110px;font-weight:900;color:var(--inf-x);animation:pulse .7s ease-out}
+@keyframes pulse{from{transform:scale(1.6);opacity:0}to{transform:none;opacity:1}}
+.gbtn{border:2px solid var(--line);background:var(--field);border-radius:12px;min-height:44px;min-width:44px;padding:0 10px;font-weight:900;font-size:15px}
+.gbtn:disabled{opacity:.4}
+.gpow{display:flex;gap:8px;justify-content:center;margin:-6px 0 10px;min-height:0}
+.spark{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:90;animation:spark .6s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy));opacity:0}}
+.gdiff{margin:0 auto 14px}
+.daily{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;background:var(--hero);color:#fff;border-radius:20px;padding:14px 16px;margin-bottom:12px}
+.daily .dl{display:flex;flex-direction:column;gap:1px}
+.daily .dl b{font-size:17px}.daily .dl span{color:var(--hero-soft);font-size:14px}
+.daily .ds{font-weight:800}
+.daily.done{background:var(--ok-d)}
+.dailytag{display:inline-block;background:var(--hero);color:#fff!important;border-radius:999px;padding:4px 12px;font-weight:800;font-size:13.5px;margin:0 auto 8px!important}
+.dailydone{background:var(--ok-t);color:var(--ok-x)!important;font-weight:800;border-radius:14px;padding:8px 12px;display:inline-block}
+.boss{text-align:center;font-weight:900;font-size:20px;color:var(--bad-x);margin-bottom:6px;animation:pulse .5s}
+.hint{text-align:center;color:var(--soft);font-size:15.5px;margin:-6px 0 10px;min-height:0}
+.rain.frozen{background:linear-gradient(#DDF3FF,#BFE6FF);border-color:#7CC4F0}
+.rain.frozen .drop{filter:saturate(.3)}
+.pairs{grid-template-columns:repeat(var(--cols,5),minmax(0,1fr))!important}
+.pairs.plain .pc .pf{color:var(--ink)!important}
 .mode.play{grid-column:1/-1;background:var(--btn);border-color:var(--btn);color:#fff;box-shadow:0 4px 0 var(--btn-d)}
 .mode.play small{color:#E3DEFF}.mode.play .e{background:rgba(255,255,255,.16)}
 .glist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -363,7 +386,9 @@ textarea.code{width:100%;min-height:96px;border:2px solid var(--line);border-rad
 .hword{display:flex;justify-content:center;gap:8px;margin:6px 0 16px;flex-wrap:wrap}
 .hword span{min-width:30px;border-bottom:4px solid var(--line);text-align:center;font-weight:900;font-size:30px;line-height:1.3;color:var(--soft)}
 .hword span.on{color:var(--ink);border-color:var(--inf)}
-.kbd{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;max-width:560px;margin:0 auto}
+.kbd{display:flex;flex-direction:column;gap:6px;max-width:560px;margin:0 auto}
+.kbd div{display:flex;justify-content:center;gap:6px}
+.kbd button{flex:1 1 0;max-width:52px}
 .kbd button{min-height:46px;border:2px solid var(--line);background:var(--field);border-radius:12px;font-weight:900;font-size:18px;text-transform:lowercase}
 .kbd button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
 .kbd button.bad{background:var(--bad-t);border-color:var(--bad-t);color:var(--bad-x);opacity:.7}
@@ -428,9 +453,9 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .slots{grid-template-columns:1fr}
   .glist{grid-template-columns:1fr}
   .rain{height:300px}
-  .pairs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pairs{grid-template-columns:repeat(3,minmax(0,1fr))!important}
   .pc{aspect-ratio:auto;min-height:60px;font-size:15.5px}
-  .kbd{gap:4px}.kbd button{min-height:44px;font-size:16px;border-radius:10px}
+  .kbd,.kbd div{gap:4px}.kbd button{min-height:44px;font-size:16px;border-radius:10px;padding:0}
   .hword span{min-width:24px;font-size:26px}
   .duel{grid-template-columns:1fr;gap:8px}
   .dside.p2{transform:rotate(180deg)}
@@ -587,7 +612,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=30, APP_DATE="18/11/2026";
+const APP_VERSION=31, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -894,12 +919,13 @@ const sayAll=v=>playWords([...wordsOf(v,"inf"),...wordsOf(v,"past"),...wordsOf(v
 
 // ---------- sonidos ----------
 let AC;
-function tone(kind){
+function tone(kind,combo=0){
   if(S.mute)return;
   try{
     AC=AC||new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state==="suspended")AC.resume();
-    const notes=kind==="ach"?[784,988,1175,1568]:kind?[660,880,1320]:[300,220];
+    const up=1+Math.min(combo,12)*.045;
+    const notes=kind==="ach"?[784,988,1175,1568]:kind==="tick"?[520]:kind?[660*up,880*up,1320*up]:[300,220];
     notes.forEach((f,i)=>{
       const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+i*.09;
       o.type=kind?"triangle":"sine";o.frequency.value=f;
@@ -1016,6 +1042,7 @@ function render(force){
     return;
   }
   allowLeave=false;stopGame();
+  if(DAILY&&target!==DAILY.game)DAILY=null;
   view=TITLES[h]?h:"inicio";
   const home=view==="inicio";
   $("achBtn").setAttribute("aria-pressed",view==="logros");$("setBtn").setAttribute("aria-pressed",view==="ajustes");
@@ -1120,6 +1147,7 @@ $("cNo").onclick=()=>cardAnswer(false);
 let Q={};
 function quizStart(mode){
   const box=$("p-write");box.onclick=null;
+  if(mode==="fallos"&&PRACTICE){const list=PRACTICE;PRACTICE=null;Q={mode,list:shuffle(list),i:0,ok:0,wrong:[]};return quizQ();}
   if(mode==="fallos"){
     const list=V.filter(v=>lv(v)===1);
     if(!list.length){box.innerHTML=`<div class="center empty"><div class="big">🌈</div><h2>No tienes fallos pendientes</h2><p>Los verbos que falles en cualquier modo aparecerán aquí para repasarlos.</p><button class="btn v" id="goW">Practicar escribiendo</button></div>`;
@@ -1241,172 +1269,281 @@ function choiceQ(){
 // ---------- juegos ----------
 const GAMES=[
  ["lluvia","🌧️","Lluvia de verbos","Escribe el pasado o el participio antes de que el verbo toque el suelo.",r=>`${r} puntos`],
- ["crono","⏱️","Contrarreloj","60 segundos: ¿la terna es correcta o es una trampa?",r=>`${r} puntos`],
+ ["crono","⏱️","Contrarreloj","60 segundos: ¿la terna es correcta o tiene una trampa?",r=>`${r} puntos`],
  ["parejas","🧩","Parejas de tres","Encuentra las tres formas de cada verbo con los menos movimientos posibles.",r=>`${r} movimientos`],
- ["superv","🪜","Supervivencia","Preguntas cada vez más difíciles. Tienes 3 vidas.",r=>`nivel ${r}`],
+ ["superv","🪜","Supervivencia","Preguntas cada vez más difíciles, jefes y comodines. Tienes 3 vidas.",r=>`nivel ${r}`],
  ["ahorcado","🔤","Ahorcado","Adivina la forma del verbo letra a letra.",r=>`${r} seguidas`],
  ["duelo","⚔️","Duelo","Dos jugadores en el mismo móvil: gana quien acierte antes.",null]
 ];
-let GAME=null;
+let GAME=null,DAILY=null,AUTOSTART=false,PRACTICE=null;
 function stopGame(){
   if(!GAME)return;
   GAME.running=false;GAME.timers.forEach(t=>{clearTimeout(t);clearInterval(t);});
   cancelAnimationFrame(GAME.raf);GAME.off.forEach(f=>{try{f()}catch(e){}});GAME=null;
 }
-function newGame(id){stopGame();GAME={id,running:false,score:0,timers:[],raf:0,off:[]};return GAME;}
+function newGame(id){stopGame();GAME={id,running:false,paused:false,score:0,timers:[],raf:0,off:[],missed:new Map(),onPause:null,onResume:null};return GAME;}
 const GT=(f,ms)=>{const t=setTimeout(f,ms);GAME&&GAME.timers.push(t);return t;};
 const GI=(f,ms)=>{const t=setInterval(f,ms);GAME&&GAME.timers.push(t);return t;};
 function gOn(target,ev,fn,opt){target.addEventListener(ev,fn,opt);GAME.off.push(()=>target.removeEventListener(ev,fn,opt));}
 const gameBusy=()=>!!(GAME&&GAME.running&&GAME.score>0);
-const gPool=(f=()=>true)=>{const p=pool().filter(f);return p.length>=6?p:V.filter(f);};
+// verbos del juego: los del reto del día, o los del grupo elegido
+const gPool=(f=()=>true)=>{
+  if(DAILY){const d=DAILY.verbs.filter(f);if(d.length>=3)return d;}
+  const p=pool().filter(f);return p.length>=6?p:V.filter(f);
+};
 const pick=a=>a[Math.random()*a.length|0];
 const firstForm=s=>s.split("/")[0].trim();
 const FORMNAME={past:"past simple",part:"past participle"};
 const FCLS={inf:"a",past:"b",part:"c"};
-function askForm(v){return v.part==="—"?"past":(Math.random()<.5?"past":"part");}
-function setRecord(id,val,lowerBetter){
-  S.rec=S.rec||{};const old=S.rec[id];
+const askForm=v=>v.part==="—"?"past":(Math.random()<.5?"past":"part");
+const missed=v=>{if(GAME)GAME.missed.set(v.inf,v);};
+const triple=(f,cls="")=>`<div class="gtrip ${cls}" lang="en"><span class="a">${f[0]}</span><span class="b">${f[1]}</span><span class="c">${f[2]}</span></div>`;
+const lives3=n=>"❤️".repeat(Math.max(0,n))+"🤍".repeat(Math.max(0,3-n));
+
+// ---- sensación de juego: chispas y vibración ----
+function burst(el){
+  if(!el||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const r=el.getBoundingClientRect();
+  for(let i=0;i<12;i++){
+    const p=document.createElement("i");p.className="spark";
+    const a=Math.random()*Math.PI*2,d=30+Math.random()*45;
+    p.style.left=(r.left+r.width/2)+"px";p.style.top=(r.top+r.height/2)+"px";
+    p.style.setProperty("--dx",Math.cos(a)*d+"px");p.style.setProperty("--dy",Math.sin(a)*d+"px");
+    p.style.background=pick(["#6741D9","#C2410C","#0B7285","#FFD43B","#237A36"]);
+    document.body.appendChild(p);setTimeout(()=>p.remove(),650);
+  }
+}
+const buzz=ok=>{try{navigator.vibrate&&navigator.vibrate(ok?12:[40,30,40]);}catch(e){}};
+
+// ---- trampas realistas (errores típicos de examen) ----
+function misspell(w){
+  const c=[];
+  if(/ght/.test(w))c.push(w.replace("ght","gt"),w.replace("ght","ht"));
+  if(/(tt|nn|dd|ll|mm|pp|ss)/.test(w))c.push(w.replace(/(tt|nn|dd|ll|mm|pp|ss)/,m=>m[0]));
+  const m=w.match(/^([a-z]*[aeiou])([dmnt])(en)$/);if(m)c.push(m[1]+m[2]+m[2]+m[3]);
+  if(/ou/.test(w))c.push(w.replace("ou","uo"));
+  if(/ew$/.test(w))c.push(w.replace(/ew$/,"ewed"));
+  if(/ea/.test(w))c.push(w.replace("ea","ee"));
+  if(w.length>4){const i=1+Math.floor(Math.random()*(w.length-2));c.push(w.slice(0,i)+w.slice(i+1));}
+  const ok=c.filter(x=>x&&x!==w&&!V.some(v=>[v.inf,v.past,v.part].some(f=>opts(f).includes(x))));
+  return ok.length?pick(ok):null;
+}
+function trapsFor(v,k){            // respuestas falsas creíbles para v[k]
+  const t=new Set();const right=opts(v[k]);
+  regular(v.inf).forEach(r=>t.add(r));
+  const other=k==="past"?v.part:v.past;if(other!=="—")t.add(firstForm(other));
+  t.add(v.inf);
+  const ms=misspell(norm(firstForm(v[k])));if(ms)t.add(ms);
+  return [...t].filter(x=>!right.includes(norm(x)));
+}
+function makeTrap(v){
+  const f=[v.inf,v.past,v.part];const o=[];
+  const k=v.part==="—"?"past":pick(["past","part"]);const i=k==="past"?1:2;
+  const reg=[...regular(v.inf)].filter(r=>!opts(v[k]).includes(r));
+  if(reg.length)o.push(()=>{f[i]=pick(reg);});
+  const ms=misspell(norm(firstForm(v[k])));if(ms){o.push(()=>{f[i]=ms;});o.push(()=>{f[i]=ms;});}
+  if(v.part!=="—"&&norm(v.past)!==norm(v.part))o.push(()=>{f[1]=v.part;f[2]=v.past;});
+  if(v.part!=="—"&&norm(v.inf)!==norm(v.part))o.push(()=>{f[2]=v.inf;});
+  if(!o.length)o.push(()=>{f[1]=v.inf+"ed";});
+  pick(o)();return f;
+}
+
+// ---- récords ----
+function setRecord(key,val,lowerBetter){
+  S.rec=S.rec||{};const old=S.rec[key];
   const better=old==null||(lowerBetter?val<old:val>old);
-  if(better&&val>0)S.rec[id]=val;
-  S.games=(S.games||0)+1;save();checkAch();
+  if(better&&val>0)S.rec[key]=val;
+  S.games=(S.games||0)+1;save();
   return better&&val>0&&old!=null;
 }
-function recText(id){const g=GAMES.find(x=>x[0]===id);const r=(S.rec||{})[id];return g&&g[4]&&r!=null?g[4](r):"todavía sin récord";}
+function recText(id,key=id){const g=GAMES.find(x=>x[0]===id);const r=(S.rec||{})[key];return g&&g[4]&&r!=null?g[4](r):"todavía sin récord";}
 
-// pantalla de inicio de cada juego
-function gameIntro(id,rules,onStart){
+// ---- reto del día ----
+const dayKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+function seeded(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%100000)/100000;};}
+function dailyInfo(){
+  const key=dayKey(),r=seeded("iv"+key);
+  const game=["lluvia","crono","superv","ahorcado"][Math.floor(r()*4)];
+  const vs=V.filter(v=>v.part!=="—"),sel=[];
+  while(sel.length<10){const v=vs[Math.floor(r()*vs.length)];if(!sel.includes(v))sel.push(v);}
+  return{key,game,verbs:sel};
+}
+function dailyStreak(){
+  const d=S.daily||{};const y=new Date();y.setDate(y.getDate()-1);
+  return d.last===dayKey()||d.last===dayKey(y)?(d.streak||0):0;
+}
+function completeDaily(){
+  if(!DAILY)return "";
+  const key=DAILY.key;DAILY=null;S.daily=S.daily||{};
+  if(S.daily.last===key)return "";
+  const y=new Date();y.setDate(y.getDate()-1);
+  S.daily.streak=S.daily.last===dayKey(y)?(S.daily.streak||0)+1:1;
+  S.daily.best=Math.max(S.daily.best||0,S.daily.streak);S.daily.last=key;save();
+  return `<p class="dailydone">🗓️ ¡Reto del día completado! Racha: <b>${S.daily.streak} ${S.daily.streak===1?"día":"días"}</b></p>`;
+}
+
+// ---- cuenta atrás y pausa ----
+function countdown(cb){
+  const o=document.createElement("div");o.className="gover";$("p-game").appendChild(o);
+  const seq=["3","2","1","¡Ya!"];let i=0;
+  const step=()=>{if(!GAME){o.remove();return;}if(i>=seq.length){o.remove();cb();return;}
+    o.innerHTML=`<span class="gcnt">${seq[i]}</span>`;if(!S.mute)tone(i===3?true:"tick");i++;GT(step,i===4?450:700);};
+  step();
+}
+function pauseGame(){
+  const G=GAME;if(!G||!G.running||G.paused)return;G.paused=true;G.onPause&&G.onPause();
+  const o=document.createElement("div");o.className="gover";o.id="gPaused";
+  o.innerHTML=`<div class="center"><div class="gcnt" style="font-size:54px">⏸</div><h2>En pausa</h2><div class="pick" style="margin-top:14px"><button class="btn v" id="gResume">Seguir jugando</button></div></div>`;
+  $("p-game").appendChild(o);$("gResume").focus();
+  $("gResume").onclick=()=>{o.remove();G.paused=false;G.onResume&&G.onResume();};
+}
+function pauseButton(){return `<button class="gbtn" id="gPause" aria-label="Pausa">⏸</button>`;}
+function wirePause(){
+  if($("gPause"))$("gPause").onclick=pauseGame;
+  gOn(document,"visibilitychange",()=>{if(document.hidden)pauseGame();});
+}
+
+// ---- pantallas comunes ----
+function gameIntro(id,rules,extra,onStart){
   const g=GAMES.find(x=>x[0]===id);
-  $("p-game").innerHTML=`<div class="center gintro"><div class="gico" aria-hidden="true">${g[1]}</div><h2>${g[2]}</h2>
-    <ul class="grules">${rules.map(r=>`<li>${r}</li>`).join("")}</ul>
-    ${g[4]?`<p class="grec">🏅 Tu récord: <b>${recText(id)}</b></p>`:""}
+  $("p-game").innerHTML=`<div class="center gintro">${DAILY?`<p class="dailytag">🗓️ Reto del día · 10 verbos</p>`:""}<div class="gico" aria-hidden="true">${g[1]}</div><h2>${g[2]}</h2>
+    <ul class="grules">${rules.map(r=>`<li>${r}</li>`).join("")}</ul>${extra||""}
+    ${g[4]?`<p class="grec" id="gRec">🏅 Tu récord: <b>${recText(id)}</b></p>`:""}
     <div class="pick"><button class="btn v" id="gStart">Empezar</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
   $("gStart").onclick=onStart;$("gBack").onclick=()=>go("juegos");$("gStart").focus();
+  if(AUTOSTART){AUTOSTART=false;onStart();}
 }
-// pantalla final
-function gameOver(id,big,label,val,lowerBetter,extra=""){
-  const isNew=setRecord(id,val,lowerBetter);
-  if(GAME)GAME.running=false;
+function gameOver(id,big,label,val,lowerBetter,extra="",recKey=id){
+  const G=GAME;if(G)G.running=false;
+  const isNew=setRecord(recKey,val,lowerBetter);
+  const daily=completeDaily();checkAch();
+  const miss=G?[...G.missed.values()]:[];
   const g=GAMES.find(x=>x[0]===id);
   $("p-game").innerHTML=`<div class="center"><div class="gico" aria-hidden="true">${g[1]}</div>
     <p style="margin:0 auto">${label}</p><div class="grade" style="font-size:84px;color:var(--inf-x)">${big}</div>
-    ${isNew?`<h2>🏅 ¡Nuevo récord!</h2>`:g[4]?`<p>Tu récord: <b>${recText(id)}</b></p>`:""}${extra}
-    <div class="pick"><button class="btn v" id="gAgain">Jugar otra vez</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
-  $("gAgain").onclick=()=>render(id);$("gBack").onclick=()=>go("juegos");$("gAgain").focus();
+    ${isNew?`<h2>🏅 ¡Nuevo récord!</h2>`:g[4]?`<p>Tu récord: <b>${recText(id,recKey)}</b></p>`:""}${extra}${daily}
+    ${miss.length?`<h3 style="font-size:17px;margin-top:8px">Para repasar (${miss.length})</h3><div class="misses">${miss.slice(0,8).map(v=>rowHTML(v,false)).join("")}</div>`:""}
+    <div class="pick">${miss.length?`<button class="btn g" id="gPract">Practicar ${miss.length===1?"este verbo":`estos ${miss.length}`}</button>`:""}<button class="btn v" id="gAgain">Jugar otra vez</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
+  $("gAgain").onclick=()=>render(id);$("gBack").onclick=()=>go("juegos");
+  if($("gPract"))$("gPract").onclick=()=>{PRACTICE=miss;go("fallos");};
+  ($("gPract")||$("gAgain")).focus();
   if(isNew){tone("ach");confetti();}
 }
 function renderGames(){
-  $("p-game").innerHTML=`<p class="tip" style="margin:0 0 14px">Todos los juegos usan el grupo de verbos elegido arriba. Tus aciertos cuentan para el muro (menos en Parejas y Duelo).</p>
-  <div class="glist">${GAMES.map(([id,ico,name,desc,fmt])=>`<button class="gitem" data-g="${id}"><span class="e" aria-hidden="true">${ico}</span><span><b>${name}</b><small>${desc}</small>${fmt?`<span class="gr">🏅 ${recText(id)}</span>`:""}</span></button>`).join("")}</div>`;
+  DAILY=null;const d=dailyInfo(),done=(S.daily||{}).last===d.key,st=dailyStreak();
+  const gd=GAMES.find(x=>x[0]===d.game);
+  $("p-game").innerHTML=`<div class="daily ${done?"done":""}"><div class="dl"><b>🗓️ Reto del día</b><span>${gd[1]} ${gd[2]} con 10 verbos de hoy</span><span class="ds">${done?"✅ Completado hoy":"Mañana habrá otro"} · 🔥 ${st} ${st===1?"día":"días"} seguidos</span></div>
+      <button class="btn ${done?"w":"v"}" id="gDaily">${done?"Jugar otra vez":"Jugar el reto"}</button></div>
+    <div class="pick" style="justify-content:flex-start;margin:0 0 14px"><button class="btn w" id="gQuick">🎲 Partida rápida</button></div>
+    <div class="glist">${GAMES.map(([id,ico,name,desc,fmt])=>`<button class="gitem" data-g="${id}"><span class="e" aria-hidden="true">${ico}</span><span><b>${name}</b><small>${desc}</small>${fmt?`<span class="gr">🏅 ${recText(id)}</span>`:""}</span></button>`).join("")}</div>
+    <p class="tip">Los juegos usan el grupo de verbos elegido arriba. Tus aciertos cuentan para el muro (menos en Parejas y Duelo).</p>`;
   $("p-game").querySelectorAll(".gitem").forEach(b=>b.onclick=()=>go(b.dataset.g));
+  $("gDaily").onclick=()=>{DAILY=d;go(d.game);};
+  $("gQuick").onclick=()=>{AUTOSTART=true;go(pick(["lluvia","crono","parejas","superv","ahorcado"]));};
 }
-const triple=(f,cls="")=>`<div class="gtrip ${cls}" lang="en"><span class="a">${f[0]}</span><span class="b">${f[1]}</span><span class="c">${f[2]}</span></div>`;
 
 // ===== 1. Lluvia de verbos =====
 function playRain(){
   const G=newGame("lluvia");
-  gameIntro("lluvia",["Caen verbos en infinitivo. Cada uno pide su <b style='color:var(--past-x)'>past simple</b> o su <b style='color:var(--part-x)'>past participle</b>.","Escríbelo y pulsa Intro antes de que toque el suelo.","Cada acierto seguido suma más puntos. Tienes 3 vidas.","La lluvia se acelera poco a poco."],start);
+  const DIFF={lenta:[1.4,"🐢 Lenta"],normal:[1,"🙂 Normal"],rapida:[.72,"🔥 Rápida"]};
+  let diff=S.rainDiff||"normal";
+  gameIntro("lluvia",["Caen verbos en infinitivo. Cada uno pide su <b style='color:var(--past-x)'>past simple</b> o su <b style='color:var(--part-x)'>past participle</b>.","Escríbelo y pulsa Intro antes de que toque el suelo.","Cada 5 aciertos seguidos los puntos se multiplican. Cada 10 ganas un ❄️ para congelar la lluvia 5 segundos.","Tienes 3 vidas."],
+    `<div class="seg gdiff" id="gDiff" role="group" aria-label="Velocidad">${Object.entries(DIFF).map(([k,[,l]])=>`<button data-d="${k}" class="${k===diff?"on":""}" aria-pressed="${k===diff}">${l}</button>`).join("")}</div>`,
+    ()=>countdown(start));
+  if($("gDiff"))$("gDiff").onclick=e=>{const b=e.target.closest("button");if(!b)return;diff=b.dataset.d;S.rainDiff=diff;save();
+    [...$("gDiff").children].forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-pressed",x===b);});};
   function start(){
-    G.running=true;G.score=0;let lives=3,combo=0,drops=[],last=0,spawnAcc=99;
-    $("p-game").innerHTML=`<div class="ghud"><span>⭐ <b id="gScore">0</b></span><span id="gCombo"></span><span id="gLives" aria-label="Vidas">❤️❤️❤️</span></div>
+    const F=DIFF[diff][0];
+    G.running=true;G.score=0;let lives=3,combo=0,drops=[],last=0,spawnAcc=99,ice=0,frozen=0;
+    $("p-game").innerHTML=`<div class="ghud"><span>⭐ <b id="gScore">0</b></span><span id="gCombo"></span><button class="gbtn hidden" id="gIce">❄️ <b id="gIceN">0</b></button><span id="gLives" aria-label="Vidas">${lives3(3)}</span>${pauseButton()}</div>
       <div class="rain" id="rain"><div class="ground"></div></div>
       <form id="rainF" class="rainf" autocomplete="off"><input id="rainIn" lang="en" placeholder="Escribe aquí y pulsa Intro" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Tu respuesta"><button class="btn v">OK</button></form>
       <div class="say" id="rainMsg" role="status" aria-live="polite"></div>`;
+    wirePause();
     const rain=$("rain"),inp=$("rainIn");
     const size=()=>{const vh=window.visualViewport?visualViewport.height:innerHeight;rain.style.height=Math.max(200,Math.min(440,vh-260))+"px";};
     size();if(window.visualViewport)gOn(visualViewport,"resize",size);
+    G.onResume=()=>{last=0;inp.focus();};
     inp.focus();
-    const pool=gPool();
+    const P=gPool();
     function spawn(){
       if(drops.length>=4)return;
-      const v=pick(pool),k=askForm(v);
-      if(drops.some(d=>d.v===v))return;
+      const v=pick(P),k=askForm(v);if(drops.some(d=>d.v===v))return;
       const el=document.createElement("div");el.className="drop";
       el.innerHTML=`<b lang="en">${v.inf}</b><span class="k ${FCLS[k]}">${k==="past"?"past":"participle"}</span>`;
-      el.style.left=(4+Math.random()*62)+"%";rain.appendChild(el);
-      drops.push({v,k,el,y:-40});
+      el.style.left=(4+Math.random()*62)+"%";rain.appendChild(el);drops.push({v,k,el,y:-40});
     }
     function loop(t){
       if(!G.running)return;
+      if(G.paused){last=0;G.raf=requestAnimationFrame(loop);return;}
       const dt=Math.min(.1,last?(t-last)/1000:0);last=t;
-      const H=rain.clientHeight;
-      const fall=Math.max(5.5,12-G.score/60);           // segundos en caer
-      const every=Math.max(1.4,3.4-G.score/150);         // segundos entre verbos
-      spawnAcc+=dt;if(spawnAcc>=every){spawnAcc=0;spawn();}
-      for(const d of [...drops]){
-        d.y+=H/fall*dt;d.el.style.transform=`translateY(${d.y}px)`;
-        if(d.y>H-44)miss(d);
+      const now=Date.now(),isFrozen=now<frozen;rain.classList.toggle("frozen",isFrozen);
+      if(!isFrozen){
+        const H=rain.clientHeight,fall=Math.max(5.5,12-G.score/60)*F,every=Math.max(1.4,3.4-G.score/150)*F;
+        spawnAcc+=dt;if(spawnAcc>=every){spawnAcc=0;spawn();}
+        for(const d of [...drops]){d.y+=H/fall*dt;d.el.style.transform=`translateY(${d.y}px)`;if(d.y>H-44)lose(d);}
       }
       if(G.running)G.raf=requestAnimationFrame(loop);
     }
     function remove(d,cls){drops=drops.filter(x=>x!==d);d.el.classList.add(cls);GT(()=>d.el.remove(),450);}
-    function miss(d){
-      remove(d,"lost");lives--;combo=0;mark(d.v,false);tone(false);
-      $("gLives").textContent="❤️".repeat(lives)+"🤍".repeat(3-lives);$("gCombo").textContent="";
+    function lose(d){
+      remove(d,"lost");lives--;combo=0;mark(d.v,false);missed(d.v);tone(false);buzz(false);
+      $("gLives").textContent=lives3(lives);$("gCombo").textContent="";
       $("rainMsg").className="say bad";$("rainMsg").innerHTML=`<span lang="en">${d.v.inf} → ${d.v[d.k]}</span>`;
-      if(lives<=0)end();
+      if(lives<=0){G.running=false;GT(()=>gameOver("lluvia",G.score,"Puntos",G.score,false),600);}
     }
+    $("gIce").onclick=()=>{if(ice<=0||!G.running)return;ice--;frozen=Date.now()+5000;$("gIceN").textContent=ice;$("gIce").classList.toggle("hidden",!ice);toast("❄️ ¡Lluvia congelada 5 segundos!",1500);inp.focus();};
     $("rainF").onsubmit=e=>{
-      e.preventDefault();if(!G.running)return;
+      e.preventDefault();if(!G.running||G.paused)return;
       const val=inp.value;if(!val.trim())return;inp.value="";
       const hit=[...drops].sort((a,b)=>b.y-a.y).find(d=>correct(val,d.v[d.k]));
       if(hit){
-        combo++;const pts=10*(1+Math.floor(combo/5));G.score+=pts;
-        remove(hit,"pop");mark(hit.v,true);tone(true);
-        $("gScore").textContent=G.score;$("gCombo").textContent=combo>=5?`🔥 x${1+Math.floor(combo/5)}`:"";
+        combo++;const mult=1+Math.floor(combo/5),pts=10*mult;G.score+=pts;
+        burst(hit.el);remove(hit,"pop");mark(hit.v,true);tone(true,combo);buzz(true);
+        if(combo%10===0&&ice<2){ice++;$("gIceN").textContent=ice;$("gIce").classList.remove("hidden");toast("❄️ ¡Comodín! Pulsa ❄️ para congelar la lluvia",2000);}
+        $("gScore").textContent=G.score;$("gCombo").textContent=mult>1?`🔥 x${mult}`:"";
         $("rainMsg").className="say ok";$("rainMsg").textContent=`+${pts}`;
       }else{
         combo=0;$("gCombo").textContent="";
         const near=drops.find(d=>hint(d.v,d.k,val));
         $("rainMsg").className="say bad";$("rainMsg").textContent=near?hint(near.v,near.k,val):"No coincide con ningún verbo";
-        $("rainF").classList.remove("shake");void $("rainF").offsetWidth;$("rainF").classList.add("shake");
+        $("rainF").classList.remove("shake");void $("rainF").offsetWidth;$("rainF").classList.add("shake");buzz(false);
       }
     };
-    function end(){G.running=false;gameOver("lluvia",G.score,"Puntos",G.score,false);}
     G.raf=requestAnimationFrame(loop);
   }
 }
 
 // ===== 2. Contrarreloj: correcto o trampa =====
-function makeTrap(v){
-  const f=[v.inf,v.past,v.part];
-  const opts=[];
-  const reg=[...regular(v.inf)][0];
-  if(!opts.includes(reg)&&norm(reg)!==norm(v.past))opts.push(()=>{f[1]=reg;});
-  if(v.part!=="—"&&norm(reg)!==norm(v.part))opts.push(()=>{f[2]=reg;});
-  if(v.part!=="—"&&norm(v.past)!==norm(v.part))opts.push(()=>{f[1]=v.part;f[2]=v.past;});
-  if(v.part!=="—"&&norm(v.inf)!==norm(v.part))opts.push(()=>{f[2]=v.inf;});
-  const o=pick(V.filter(x=>x!==v&&norm(x.past)!==norm(v.past)));opts.push(()=>{f[1]=o.past;});
-  pick(opts)();return f;
-}
 function playCrono(){
   const G=newGame("crono");
-  gameIntro("crono",["Verás un verbo con sus tres formas.","Pulsa <b style='color:var(--ok-x)'>✓ Correcto</b> si está bien o <b style='color:var(--bad-x)'>✗ Trampa</b> si hay algo mal.","Con el teclado: flecha derecha = correcto, flecha izquierda = trampa.","Aciertos seguidos multiplican los puntos. Cada fallo resta 3 segundos."],start);
+  gameIntro("crono",["Verás un verbo con sus tres formas.","Pulsa <b style='color:var(--ok-x)'>✓ Correcto</b> si está bien o <b style='color:var(--bad-x)'>✗ Trampa</b> si hay algo mal. Ojo con las faltas de ortografía.","Con el teclado: flecha derecha = correcto, flecha izquierda = trampa.","Aciertos seguidos multiplican los puntos. Cada fallo resta 3 segundos."],"",()=>countdown(start));
   function start(){
-    G.running=true;G.score=0;let combo=0,left=60,item=null,lock=false;
-    $("p-game").innerHTML=`<div class="ghud"><span>⭐ <b id="gScore">0</b></span><span id="gCombo"></span><span>⏱️ <b id="gTime">60</b> s</span></div>
+    G.running=true;G.score=0;let combo=0,left=60,item=null,lock=false,lastTick=Date.now();
+    $("p-game").innerHTML=`<div class="ghud"><span>⭐ <b id="gScore">0</b></span><span id="gCombo"></span><span>⏱️ <b id="gTime">60</b> s</span>${pauseButton()}</div>
       <div class="track"><i id="gBar" style="width:100%"></i></div>
       <div class="ask"><span class="es" id="cEs2"></span><div id="cTrip"></div></div>
       <div class="tfbtns"><button class="btn r tf" id="tfNo">✗ Trampa</button><button class="btn g tf" id="tfYes">✓ Correcto</button></div>
       <div class="say" id="cMsg" role="status" aria-live="polite"></div>`;
-    const pool=gPool();
+    wirePause();G.onResume=()=>{lastTick=Date.now();};
+    const P=gPool();
     function next(){
-      lock=false;const v=pick(pool);const ok=Math.random()<.5;
+      lock=false;const v=pick(P);const ok=Math.random()<.5;
       item={v,ok,f:ok?[v.inf,v.past,v.part]:makeTrap(v)};
       $("cEs2").textContent=v.es;$("cTrip").innerHTML=triple(item.f,"big");
     }
     function answer(said){
-      if(lock||!G.running)return;lock=true;
-      const right=said===item.ok;mark(item.v,right);tone(right);
+      if(lock||!G.running||G.paused)return;lock=true;
+      const right=said===item.ok;mark(item.v,right);tone(right,combo+1);buzz(right);
       if(right){combo++;const m=combo>=10?3:combo>=5?2:1;G.score+=m;$("gScore").textContent=G.score;$("gCombo").textContent=m>1?`🔥 x${m}`:"";
-        $("cMsg").className="say ok";$("cMsg").textContent=item.ok?"¡Correcto!":"¡Bien visto, era trampa!";GT(next,350);}
-      else{combo=0;left=Math.max(0,left-3);$("gCombo").textContent="";
-        $("cMsg").className="say bad";$("cMsg").innerHTML=item.ok?"Era correcta. −3 s":`Era trampa: <span lang="en">${item.v.inf} – ${item.v.past} – ${item.v.part}</span>. −3 s`;
-        $("cTrip").innerHTML=triple([item.v.inf,item.v.past,item.v.part],"big");GT(next,1300);}
+        burst($(said?"tfYes":"tfNo"));$("cMsg").className="say ok";$("cMsg").textContent=item.ok?"¡Correcto!":"¡Bien visto, era trampa!";GT(next,350);}
+      else{combo=0;left=Math.max(0,left-3);missed(item.v);$("gCombo").textContent="";
+        $("cMsg").className="say bad";$("cMsg").innerHTML=item.ok?"Era correcta. −3 s":"Era trampa. Arriba tienes las formas correctas. −3 s";
+        $("cTrip").innerHTML=triple([item.v.inf,item.v.past,item.v.part],"big");GT(next,1500);}
     }
     $("tfYes").onclick=()=>answer(true);$("tfNo").onclick=()=>answer(false);
     gOn(document,"keydown",e=>{if(e.key==="ArrowRight"){e.preventDefault();answer(true);}if(e.key==="ArrowLeft"){e.preventDefault();answer(false);}});
-    const t0=Date.now();let lastTick=t0;
-    GI(()=>{const now=Date.now();left-=(now-lastTick)/1000;lastTick=now;
+    GI(()=>{const now=Date.now();if(!G.paused)left-=(now-lastTick)/1000;lastTick=now;
       $("gTime").textContent=Math.max(0,Math.ceil(left));$("gBar").style.width=Math.max(0,left/60*100)+"%";
       if(left<=0&&G.running){G.running=false;gameOver("crono",G.score,"Puntos",G.score,false);}},100);
     next();
@@ -1416,32 +1553,38 @@ function playCrono(){
 // ===== 3. Parejas de tres =====
 function playPairs(){
   const G=newGame("parejas");
-  gameIntro("parejas",["Hay 15 cartas boca abajo: las tres formas de 5 verbos.","Levanta cartas hasta juntar las tres formas de un mismo verbo.","Si las dos primeras no son del mismo verbo, se vuelven a tapar.","Gana con los menos movimientos posibles."],start);
+  const LV={facil:[4,"Fácil · 4 verbos",true],normal:[5,"Normal · 5 verbos",true],dificil:[6,"Difícil · 6 verbos, sin colores",false]};
+  let lvl=S.pairsLvl||"normal";
+  const recKey=()=>lvl==="normal"?"parejas":"parejas-"+lvl;
+  gameIntro("parejas",["Hay cartas boca abajo con las tres formas de varios verbos.","Levanta cartas hasta juntar las tres formas de un mismo verbo.","Si dos cartas no son del mismo verbo, se vuelven a tapar.","Gana con los menos movimientos posibles. En difícil, las cartas no llevan el color de la forma."],
+    `<div class="seg gdiff" id="gLv" role="group" aria-label="Nivel">${Object.entries(LV).map(([k,[,l]])=>`<button data-l="${k}" class="${k===lvl?"on":""}" aria-pressed="${k===lvl}">${l}</button>`).join("")}</div>`,start);
+  if($("gLv"))$("gLv").onclick=e=>{const b=e.target.closest("button");if(!b)return;lvl=b.dataset.l;S.pairsLvl=lvl;save();
+    [...$("gLv").children].forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-pressed",x===b);});
+    $("gRec").innerHTML=`🏅 Tu récord: <b>${recText("parejas",recKey())}</b>`;};
   function start(){
+    const [N,,colors]=LV[lvl];
     G.running=true;G.score=1;let moves=0,found=0,open=[],busy=false;const t0=Date.now();
-    // 5 verbos con las tres formas distintas y sin palabras repetidas entre ellos
-    const cand=shuffle(gPool(v=>v.part!=="—"&&new Set([v.inf,v.past,v.part].map(norm)).size===3));
+    const distinct=v=>v.part!=="—"&&new Set([v.inf,v.past,v.part].map(norm)).size===3;
+    const cand=shuffle(gPool(distinct));const src=cand.length>=N?cand:shuffle(V.filter(distinct));
     const pickV=[],seen=new Set();
-    for(const v of cand.length>=5?cand:shuffle(V.filter(v=>v.part!=="—"&&new Set([v.inf,v.past,v.part].map(norm)).size===3))){
-      const w=[v.inf,v.past,v.part].map(norm);if(w.some(x=>seen.has(x)))continue;w.forEach(x=>seen.add(x));pickV.push(v);if(pickV.length===5)break;}
+    for(const v of src){const w=[v.inf,v.past,v.part].map(norm);if(w.some(x=>seen.has(x)))continue;w.forEach(x=>seen.add(x));pickV.push(v);if(pickV.length===N)break;}
     const cards=shuffle(pickV.flatMap((v,i)=>FORMS.map(([k])=>({vi:i,k,w:v[k]}))));
-    $("p-game").innerHTML=`<div class="ghud"><span>🔁 <b id="gMoves">0</b> movimientos</span><span>✅ <b id="gFound">0</b>/5</span><span>⏱️ <b id="gT">0</b> s</span></div>
-      <div class="pairs" id="pairs">${cards.map((c,i)=>`<button class="pc" data-i="${i}" aria-label="Carta ${i+1}"><span class="pf ${FCLS[c.k]}" lang="en">${c.w}</span><span class="pb" aria-hidden="true">?</span></button>`).join("")}</div>
+    $("p-game").innerHTML=`<div class="ghud"><span>🔁 <b id="gMoves">0</b> movimientos</span><span>✅ <b id="gFound">0</b>/${N}</span><span>⏱️ <b id="gT">0</b> s</span></div>
+      <div class="pairs ${colors?"":"plain"}" id="pairs" style="--cols:${N}">${cards.map((c,i)=>`<button class="pc" data-i="${i}" aria-label="Carta ${i+1}"><span class="pf ${FCLS[c.k]}" lang="en">${c.w}</span><span class="pb" aria-hidden="true">?</span></button>`).join("")}</div>
       <div class="say" id="pMsg" role="status" aria-live="polite"></div>`;
     GI(()=>{$("gT").textContent=Math.round((Date.now()-t0)/1000);},1000);
     const els=[...$("pairs").children];
-    const hide=list=>list.forEach(i=>{els[i].classList.remove("up");els[i].setAttribute("aria-label",`Carta ${i+1}`);});
+    const hide=l=>l.forEach(i=>{els[i].classList.remove("up");els[i].setAttribute("aria-label",`Carta ${i+1}`);});
     $("pairs").onclick=e=>{
       const b=e.target.closest(".pc");if(!b||busy||!G.running)return;const i=+b.dataset.i;
       if(b.classList.contains("up")||b.classList.contains("done"))return;
       b.classList.add("up");b.setAttribute("aria-label",cards[i].w);open.push(i);
-      const same=open.every(j=>cards[j].vi===cards[open[0]].vi);
-      if(!same){moves++;$("gMoves").textContent=moves;busy=true;tone(false);GT(()=>{hide(open);open=[];busy=false;},850);return;}
+      if(!open.every(j=>cards[j].vi===cards[open[0]].vi)){moves++;$("gMoves").textContent=moves;busy=true;tone(false);buzz(false);GT(()=>{hide(open);open=[];busy=false;},850);return;}
       if(open.length===3){
-        moves++;$("gMoves").textContent=moves;found++;$("gFound").textContent=found;
-        const v=pickV[cards[open[0]].vi];open.forEach(j=>els[j].classList.add("done"));open=[];tone(true);sayAll(v);
+        moves++;found++;$("gMoves").textContent=moves;$("gFound").textContent=found;
+        const v=pickV[cards[open[0]].vi];open.forEach(j=>{els[j].classList.add("done");burst(els[j]);});open=[];tone(true,found*2);buzz(true);sayAll(v);
         $("pMsg").className="say ok";$("pMsg").innerHTML=`<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
-        if(found===5){G.running=false;GT(()=>gameOver("parejas",moves,"Movimientos",moves,true,`<p>Tiempo: ${Math.round((Date.now()-t0)/1000)} segundos</p>`),900);}
+        if(found===N){G.running=false;GT(()=>gameOver("parejas",moves,"Movimientos",moves,true,`<p>${LV[lvl][1]} · ${Math.round((Date.now()-t0)/1000)} segundos</p>`,recKey()),900);}
       }
     };
   }
@@ -1450,46 +1593,69 @@ function playPairs(){
 // ===== 4. Supervivencia =====
 function playSurvival(){
   const G=newGame("superv");
-  gameIntro("superv",["Preguntas variadas: escribir, elegir y verdadero o falso.","Cada 5 aciertos subes de nivel: menos tiempo y verbos más difíciles.","Si se acaba el tiempo o fallas, pierdes una vida. Tienes 3."],start);
+  gameIntro("superv",["Preguntas variadas: escribir, elegir y verdadero o falso.","Cada 5 aciertos subes de nivel: menos tiempo y verbos más difíciles.","Cada 5 niveles llega un 👹 jefe: escribe las dos formas de un verbo difícil. Si lo vences, recuperas una vida.","Cada 7 aciertos seguidos ganas un comodín: ✂️ 50/50 o ⏳ +5 segundos.","Si se acaba el tiempo o fallas, pierdes una vida. Tienes 3."],"",()=>countdown(start));
   function start(){
-    G.running=true;G.score=0;let lvl=1,lives=3,inLvl=0,deadline=0,dur=0,q=null,lock=false;
-    $("p-game").innerHTML=`<div class="ghud"><span>🪜 Nivel <b id="gLvl">1</b></span><span>⭐ <b id="gScore">0</b></span><span id="gLives" aria-label="Vidas">❤️❤️❤️</span></div>
-      <div class="track"><i id="gBar" style="width:100%"></i></div><div id="svQ"></div><div class="say" id="svMsg" role="status" aria-live="polite"></div>`;
+    G.running=true;G.score=0;let lvl=1,lives=3,inLvl=0,streak=0,deadline=0,dur=0,q=null,lock=false,boss=false,fifty=0,plus=0,remain=0;
+    $("p-game").innerHTML=`<div class="ghud"><span>🪜 Nivel <b id="gLvl">1</b></span><span>⭐ <b id="gScore">0</b></span><span id="gLives" aria-label="Vidas">${lives3(3)}</span>${pauseButton()}</div>
+      <div class="track"><i id="gBar" style="width:100%"></i></div>
+      <div class="gpow"><button class="gbtn hidden" id="pw50">✂️ 50/50 <b id="pw50n"></b></button><button class="gbtn hidden" id="pwT">⏳ +5 s <b id="pwTn"></b></button></div>
+      <div id="svQ"></div><div class="say" id="svMsg" role="status" aria-live="polite"></div>`;
+    wirePause();
+    G.onPause=()=>{remain=deadline-Date.now();};G.onResume=()=>{deadline=Date.now()+remain;};
     const poolFor=()=>{const easy=v=>["AAA","ABB","ABA"].includes(v.group);return lvl<=2?gPool(easy):lvl<=4?gPool():gPool(v=>v.group==="ABC");};
+    const powers=()=>{$("pw50n").textContent=fifty;$("pwTn").textContent=plus;$("pw50").classList.toggle("hidden",!fifty);$("pwT").classList.toggle("hidden",!plus);
+      $("pw50").disabled=!(q&&q.type==="choice");};
+    $("pw50").onclick=()=>{if(!fifty||!q||q.type!=="choice"||lock)return;fifty--;let n=0;
+      $("svQ").querySelectorAll(".opt").forEach(b=>{if(b.textContent!==q.v[q.k]&&n<2){b.disabled=true;b.style.visibility="hidden";n++;}});powers();};
+    $("pwT").onclick=()=>{if(!plus||lock)return;plus--;deadline+=5000;dur+=5000;powers();toast("⏳ +5 segundos",1200);};
     function next(){
       if(!G.running)return;lock=false;$("svMsg").textContent="";
+      const ask=(v,k)=>`<div class="ask"><span class="es">${v.es}</span><div class="big" lang="en">${v.inf}</div><div class="how">¿Cuál es el <b style="color:var(--${k==="past"?"past":"part"}-x)">${FORMNAME[k]}</b>?</div></div>`;
+      if(boss){
+        const v=pick(gPool(x=>x.group==="ABC"&&x.part!=="—"));dur=25000;deadline=Date.now()+dur;q={v,k:"part",type:"boss"};
+        $("svQ").innerHTML=`<div class="boss">👹 ¡Jefe del nivel ${lvl}!</div><div class="ask"><span class="es">${v.es}</span><div class="big" lang="en">${v.inf}</div><div class="how">Escribe las dos formas</div></div>
+          <form id="svF" autocomplete="off"><div class="slots" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="slot b"><label for="bP">Past simple</label><input id="bP" lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next"></div><div class="slot c"><label for="bPP">Past participle</label><input id="bPP" lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div></div><div class="row-btns"><button class="btn v">Atacar</button></div></form>`;
+        $("bP").focus();$("bP").addEventListener("keydown",e=>{if(e.key==="Enter"&&!$("bPP").value){e.preventDefault();$("bPP").focus();}});
+        $("svF").onsubmit=e=>{e.preventDefault();answer(correct($("bP").value,v.past)&&correct($("bPP").value,v.part),null);};
+        powers();return;
+      }
       const v=pick(poolFor()),k=askForm(v);
       const type=pick(lvl<=2?["choice","choice","tf","write"]:["choice","tf","write","write"]);
       dur=Math.max(6,16-lvl)*1000;deadline=Date.now()+dur;q={v,k,type};
-      const ask=`<div class="ask"><span class="es">${v.es}</span><div class="big" lang="en">${v.inf}</div><div class="how">¿Cuál es el <b style="color:var(--${k==="past"?"past":"part"}-x)">${FORMNAME[k]}</b>?</div></div>`;
       if(type==="write"){
-        $("svQ").innerHTML=ask+`<form id="svF" class="rainf" autocomplete="off"><input id="svIn" lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Tu respuesta"><button class="btn v">OK</button></form>`;
+        $("svQ").innerHTML=ask(v,k)+`<form id="svF" class="rainf" autocomplete="off"><input id="svIn" lang="en" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Tu respuesta"><button class="btn v">OK</button></form>`;
         $("svIn").focus();$("svF").onsubmit=e=>{e.preventDefault();answer(correct($("svIn").value,v[k]),$("svIn").value);};
       }else if(type==="choice"){
-        const fake=new Set();const other=k==="past"?v.part:v.past;if(other!=="—"&&norm(other)!==norm(v[k]))fake.add(other);
-        const reg=[...regular(v.inf)][0];if(!opts(v[k]).includes(reg))fake.add(reg);
-        let g=0;while(fake.size<3&&g++<60){const o=pick(V)[k];if(o!=="—"&&norm(o)!==norm(v[k]))fake.add(o);}
-        const ch=shuffle([v[k],...[...fake].slice(0,3)]);
-        $("svQ").innerHTML=ask+`<div class="opts" lang="en">${ch.map(c=>`<button class="opt">${c}</button>`).join("")}</div>`;
+        const ch=shuffle([v[k],...shuffle(trapsFor(v,k)).slice(0,3)]);
+        $("svQ").innerHTML=ask(v,k)+`<div class="opts" lang="en">${ch.map(c=>`<button class="opt">${c}</button>`).join("")}</div>`;
         $("svQ").querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const ok=b.textContent===v[k];b.classList.add(ok?"ok":"bad");answer(ok,b.textContent);});
       }else{
-        const ok=Math.random()<.5;const f=ok?[v.inf,v.past,v.part]:makeTrap(v);q.tf=ok;
+        const ok=Math.random()<.5;const f=ok?[v.inf,v.past,v.part]:makeTrap(v);
         $("svQ").innerHTML=`<div class="ask"><span class="es">${v.es}</span><div class="how" style="margin-top:8px">¿Está bien escrito?</div>${triple(f,"big")}</div><div class="tfbtns"><button class="btn r tf" id="svNo">✗ Trampa</button><button class="btn g tf" id="svYes">✓ Correcto</button></div>`;
         $("svYes").onclick=()=>answer(ok===true);$("svNo").onclick=()=>answer(ok===false);
       }
+      powers();
     }
-    function answer(ok,given){
-      if(lock||!G.running)return;lock=true;const{v,k}=q;
-      mark(v,ok);tone(ok);
-      if(ok){G.score+=lvl*10;inSum();$("svMsg").className="say ok";$("svMsg").textContent=cheer();GT(next,700);}
-      else{lives--;$("gLives").textContent="❤️".repeat(Math.max(0,lives))+"🤍".repeat(3-Math.max(0,lives));
+    function answer(ok,given,timeout){
+      if(lock||!G.running||G.paused)return;lock=true;const{v,k,type}=q;
+      mark(v,ok);tone(ok,streak+1);buzz(ok);
+      if(ok){
+        streak++;G.score+=type==="boss"?50:lvl*10;
+        if(type==="boss"){boss=false;if(lives<3){lives++;$("gLives").textContent=lives3(lives);}$("svMsg").className="say ok";$("svMsg").textContent="👹 ¡Jefe vencido! +50 y una vida";burst($("svQ"));}
+        else{$("svMsg").className="say ok";$("svMsg").textContent=cheer();inLvl++;
+          if(inLvl>=5){inLvl=0;lvl++;$("gLvl").textContent=lvl;toast(`🪜 ¡Nivel ${lvl}!`,1500);if(lvl%5===0)boss=true;}}
+        if(streak%7===0){if(Math.random()<.5&&fifty<2)fifty++;else if(plus<2)plus++;else if(fifty<2)fifty++;toast("🎁 ¡Comodín ganado!",1500);}
+        GT(next,800);
+      }else{
+        streak=0;lives--;missed(v);if(type==="boss")boss=false;
+        $("gLives").textContent=lives3(lives);
         const h=given!=null?hint(v,k,given):"";
-        $("svMsg").className="say bad";$("svMsg").innerHTML=`${h?h+" ":""}<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
-        if(lives<=0){G.running=false;GT(()=>gameOver("superv",lvl,"Has llegado al nivel",lvl,false,`<p>${G.score} puntos</p>`),1600);}else GT(next,1800);}
-      $("gScore").textContent=G.score;
+        $("svMsg").className="say bad";$("svMsg").innerHTML=`${timeout?"⏰ ¡Se acabó el tiempo! ":h?h+" ":""}<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
+        if(lives<=0){G.running=false;GT(()=>gameOver("superv",lvl,"Has llegado al nivel",lvl,false,`<p>${G.score} puntos</p>`),1800);}else GT(next,2000);
+      }
+      $("gScore").textContent=G.score;powers();
     }
-    function inSum(){inLvl++;if(inLvl>=5){inLvl=0;lvl++;$("gLvl").textContent=lvl;toast(`🪜 ¡Nivel ${lvl}!`,1600);}}
-    GI(()=>{if(!G.running||lock)return;const left=deadline-Date.now();$("gBar").style.width=Math.max(0,left/dur*100)+"%";if(left<=0)answer(false,null);},100);
+    GI(()=>{if(!G.running||lock||G.paused)return;const left=deadline-Date.now();$("gBar").style.width=Math.max(0,left/dur*100)+"%";if(left<=0)answer(false,null,true);},100);
     next();
   }
 }
@@ -1497,29 +1663,39 @@ function playSurvival(){
 // ===== 5. Ahorcado =====
 function playHangman(){
   const G=newGame("ahorcado");
-  gameIntro("ahorcado",["Te doy un verbo y te pido su pasado o su participio.","Adivínalo letra a letra. Cada letra que no está explota un globo 🎈.","Tienes 6 globos por palabra. Suma palabras seguidas sin perder."],start);
+  gameIntro("ahorcado",["Te doy un verbo y te pido su pasado o su participio.","Adivínalo letra a letra. Cada letra que no está explota un globo 🎈. Tienes 6.","💡 La pista enseña una frase de ejemplo con el hueco, pero cuesta un globo.","Suma palabras seguidas sin perder."],"",start);
   function start(){
     G.running=true;G.score=0;let streak=0;
+    const kb=["qwertyuiop","asdfghjkl","zxcvbnm"];
     function word(){
       if(!G.running)return;
       const v=pick(gPool(x=>x.part!=="—")),k=askForm(v);const w=norm(firstForm(v[k]));
-      let miss=0;const got=new Set();
+      let miss=0,hinted=false;const got=new Set();
       $("p-game").innerHTML=`<div class="ghud"><span>🔤 Seguidas: <b>${streak}</b></span><span id="hBal" aria-label="Globos">🎈🎈🎈🎈🎈🎈</span></div>
         <div class="ask"><span class="es">${v.es}</span><div class="big" lang="en">${v.inf}</div><div class="how">¿Cuál es el <b style="color:var(--${k==="past"?"past":"part"}-x)">${FORMNAME[k]}</b>?</div></div>
         <div class="hword" id="hWord" lang="en" aria-live="polite"></div>
-        <div class="kbd" id="kbd">${"qwertyuiopasdfghjklzxcvbnm".split("").map(c=>`<button data-c="${c}">${c}</button>`).join("")}</div>
+        <div class="hint" id="hHint"></div>
+        <div class="kbd" id="kbd">${kb.map(r=>`<div>${r.split("").map(c=>`<button data-c="${c}">${c}</button>`).join("")}</div>`).join("")}</div>
+        <div class="row-btns" style="margin-top:12px"><button class="btn w" id="hHintBtn">💡 Pista (cuesta un globo)</button></div>
         <div class="say" id="hMsg" role="status" aria-live="polite"></div>`;
       const draw=()=>{$("hWord").innerHTML=[...w].map(c=>`<span class="${got.has(c)?"on":""}">${got.has(c)?c:"_"}</span>`).join("");};draw();
+      const balloons=()=>{$("hBal").textContent="🎈".repeat(Math.max(0,6-miss))+"💥".repeat(Math.min(6,miss));};
+      const lost=()=>{mark(v,false);missed(v);[...w].forEach(x=>got.add(x));draw();
+        $("hMsg").className="say bad";$("hMsg").innerHTML=`Era <b lang="en">${v[k]}</b>`;buzz(false);
+        G.running=false;GT(()=>gameOver("ahorcado",streak,"Palabras seguidas",streak,false),1800);};
+      $("hHintBtn").onclick=()=>{
+        if(hinted||miss>=6||!G.running)return;hinted=true;miss++;balloons();$("hHintBtn").disabled=true;
+        const e=EX[v.inf];const s=e&&e[k==="past"?0:1];
+        $("hHint").innerHTML=s?`<span lang="en">${s.replace(/\*(.+?)\*/,(m,inner)=>inner.split(" ").map(t=>norm(t)===w?"___":t).join(" "))}</span>`:"";
+        if(miss>=6)lost();
+      };
       const guess=c=>{
         if(!G.running||got.has(c)||miss>=6)return;const b=$("kbd").querySelector(`[data-c="${c}"]`);if(!b||b.disabled)return;
         b.disabled=true;
         if(w.includes(c)){got.add(c);b.classList.add("ok");draw();
-          if([...w].every(x=>got.has(x))){streak++;G.score=streak;mark(v,true);tone(true);speakForm(v,k);
+          if([...w].every(x=>got.has(x))){streak++;G.score=streak;mark(v,true);tone(true,streak);buzz(true);burst($("hWord"));speakForm(v,k);
             $("hMsg").className="say ok";$("hMsg").textContent=cheer();GT(word,1300);}}
-        else{miss++;b.classList.add("bad");tone(false);$("hBal").textContent="🎈".repeat(6-miss)+"💥".repeat(miss);
-          if(miss>=6){mark(v,false);[...w].forEach(x=>got.add(x));draw();
-            $("hMsg").className="say bad";$("hMsg").innerHTML=`Era <b lang="en">${v[k]}</b>`;
-            G.running=false;GT(()=>gameOver("ahorcado",streak,"Palabras seguidas",streak,false),1800);}}
+        else{miss++;b.classList.add("bad");tone(false);balloons();if(miss>=6)lost();}
       };
       $("kbd").onclick=e=>{const b=e.target.closest("button");if(b)guess(b.dataset.c);};
       if(GAME.keyOff)GAME.keyOff();
@@ -1533,37 +1709,40 @@ function playHangman(){
 // ===== 6. Duelo =====
 function playDuel(){
   const G=newGame("duelo");
-  const names=S.duelNames||["Jugador 1","Jugador 2"];
+  const names=S.duelNames||["Jugador 1","Jugador 2"];let target=S.duelTarget||7;
   $("p-game").innerHTML=`<div class="center gintro"><div class="gico" aria-hidden="true">⚔️</div><h2>Duelo</h2>
-    <ul class="grules"><li>Dos jugadores, un móvil en medio, cada uno a un lado.</li><li>Sale la misma pregunta para los dos. El primero que toque la respuesta correcta gana el punto.</li><li>Si te equivocas, te quedas sin turno en esa pregunta. Gana quien llegue a 7.</li></ul>
+    <ul class="grules"><li>Dos jugadores, un móvil en medio, cada uno a un lado.</li><li>Sale la misma pregunta para los dos. El primero que toque la respuesta correcta gana el punto.</li><li>Si te equivocas, te quedas sin turno en esa pregunta.</li></ul>
     <div class="dnames"><label>Jugador de abajo<input id="dn1" value="${esc(names[0])}" maxlength="14"></label><label>Jugador de arriba<input id="dn2" value="${esc(names[1])}" maxlength="14"></label></div>
+    <p style="margin:0 auto 8px;font-weight:800">¿A cuántos puntos?</p>
+    <div class="seg gdiff" id="dT" role="group" aria-label="Puntos para ganar">${[5,7,10].map(n=>`<button data-n="${n}" class="${n===target?"on":""}" aria-pressed="${n===target}">${n} puntos</button>`).join("")}</div>
     <div class="pick"><button class="btn v" id="gStart">Empezar</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
   $("gBack").onclick=()=>go("juegos");
-  $("gStart").onclick=()=>{S.duelNames=[$("dn1").value.trim()||"Jugador 1",$("dn2").value.trim()||"Jugador 2"];save();start(S.duelNames);};
+  $("dT").onclick=e=>{const b=e.target.closest("button");if(!b)return;target=+b.dataset.n;[...$("dT").children].forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-pressed",x===b);});};
+  $("gStart").onclick=()=>{S.duelNames=[$("dn1").value.trim()||"Jugador 1",$("dn2").value.trim()||"Jugador 2"];S.duelTarget=target;save();start(S.duelNames);};
   function start(n){
     G.running=true;G.score=1;const pts=[0,0];let q=null,locked=[false,false],done=false;
-    $("p-game").innerHTML=`<div class="duel"><div class="dside p2" id="ds1"></div><div class="dmid"><b id="dSc">0 – 0</b></div><div class="dside p1" id="ds0"></div></div>`;
-    const pool=gPool(v=>v.part!=="—");
+    $("p-game").innerHTML=`<div class="duel"><div class="dside p2" id="ds1"></div><div class="dmid"><b id="dSc">0 – 0</b><div id="dTrip"></div></div><div class="dside p1" id="ds0"></div></div>`;
+    const P=gPool(v=>v.part!=="—");
     function next(){
-      if(!G.running)return;done=false;locked=[false,false];
-      const v=pick(pool),k=askForm(v);
-      const fake=new Set();const other=k==="past"?v.part:v.past;if(norm(other)!==norm(v[k]))fake.add(other);
-      const reg=[...regular(v.inf)][0];if(!opts(v[k]).includes(reg))fake.add(reg);
-      let g=0;while(fake.size<2&&g++<60){const o=pick(V)[k];if(o!=="—"&&norm(o)!==norm(v[k]))fake.add(o);}
-      q={v,k,ch:shuffle([v[k],...[...fake].slice(0,2)])};
-      [0,1].forEach(p=>{$("ds"+p).innerHTML=`<div class="dname">${esc(n[p])} · <b>${pts[p]}</b></div><div class="dq"><span lang="en">${v.inf}</span> → <span style="color:var(--${k==="past"?"past":"part"}-x)">${k==="past"?"past":"participle"}</span></div>
+      if(!G.running)return;done=false;locked=[false,false];$("dTrip").innerHTML="";[0,1].forEach(pp=>$("ds"+pp).classList.remove("locked"));
+      const v=pick(P),k=askForm(v);
+      const fakes=shuffle(trapsFor(v,k)).slice(0,2);
+      let g=0;while(fakes.length<2&&g++<40){const o=pick(V)[k];if(o!=="—"&&norm(o)!==norm(v[k])&&!fakes.includes(o))fakes.push(o);}
+      q={v,k,ch:shuffle([v[k],...fakes])};
+      [0,1].forEach(p=>{$("ds"+p).innerHTML=`<div class="dname">${esc(n[p])} · <b>${pts[p]}</b>/${target}</div><div class="dq"><span lang="en">${v.inf}</span> → <span style="color:var(--${k==="past"?"past":"part"}-x)">${k==="past"?"past":"participle"}</span></div>
         <div class="dopts" lang="en">${q.ch.map(c=>`<button class="opt" data-p="${p}">${c}</button>`).join("")}</div>`;});
     }
+    const showTrip=()=>{$("dTrip").innerHTML=triple([q.v.inf,q.v.past,q.v.part]);};
     $("p-game").querySelector(".duel").onclick=e=>{
       const b=e.target.closest(".opt");if(!b||done||!G.running)return;const p=+b.dataset.p;if(locked[p])return;
       if(b.textContent===q.v[q.k]){
-        done=true;pts[p]++;b.classList.add("ok");tone(true);$("dSc").textContent=`${pts[0]} – ${pts[1]}`;
-        if(pts[p]>=7){G.running=false;GT(()=>{$("p-game").innerHTML=`<div class="center"><div class="gico">🏆</div><h2>¡Gana ${esc(n[p])}!</h2><p>${pts[0]} – ${pts[1]}</p><div class="pick"><button class="btn v" id="gAgain">Revancha</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
-          $("gAgain").onclick=()=>start(n);$("gBack").onclick=()=>go("juegos");S.games=(S.games||0)+1;save();checkAch();confetti();},900);}
-        else GT(next,1100);
+        done=true;pts[p]++;b.classList.add("ok");tone(true,pts[p]);buzz(true);burst(b);$("dSc").textContent=`${pts[0]} – ${pts[1]}`;showTrip();
+        if(pts[p]>=target){G.running=false;GT(()=>{$("p-game").innerHTML=`<div class="center"><div class="gico">🏆</div><h2>¡Gana ${esc(n[p])}!</h2><p>${pts[0]} – ${pts[1]}</p><div class="pick"><button class="btn v" id="gAgain">Revancha</button><button class="btn w" id="gBack">Otros juegos</button></div></div>`;
+          $("gAgain").onclick=()=>start(n);$("gBack").onclick=()=>go("juegos");S.games=(S.games||0)+1;save();checkAch();confetti();},1200);}
+        else GT(next,1700);
       }else{
-        locked[p]=true;b.classList.add("bad");tone(false);$("ds"+p).classList.add("locked");GT(()=>$("ds"+p).classList.remove("locked"),900);
-        if(locked[0]&&locked[1]){done=true;[0,1].forEach(pp=>$("ds"+pp).querySelectorAll(".opt").forEach(x=>{if(x.textContent===q.v[q.k])x.classList.add("ok");}));GT(next,1500);}
+        locked[p]=true;b.classList.add("bad");tone(false);buzz(false);$("ds"+p).classList.add("locked");
+        if(locked[0]&&locked[1]){done=true;showTrip();[0,1].forEach(pp=>$("ds"+pp).querySelectorAll(".opt").forEach(x=>{if(x.textContent===q.v[q.k])x.classList.add("ok");}));GT(next,1900);}
       }
     };
     next();
@@ -1596,7 +1775,8 @@ const ACH=[
  ["crono20","⏱️","Rayo","20 puntos en el Contrarreloj",()=>((S.rec||{}).crono||0)>=20],
  ["pairs14","🧩","Memoria de elefante","Parejas de tres en 14 movimientos o menos",()=>!!(S.rec||{}).parejas&&S.rec.parejas<=14],
  ["superv10","🪜","Superviviente","Llega al nivel 10 en Supervivencia",()=>((S.rec||{}).superv||0)>=10],
- ["hang5","🔤","Adivina, adivinanza","5 palabras seguidas en el Ahorcado",()=>((S.rec||{}).ahorcado||0)>=5]
+ ["hang5","🔤","Adivina, adivinanza","5 palabras seguidas en el Ahorcado",()=>((S.rec||{}).ahorcado||0)>=5],
+ ["daily7","🗓️","Constancia","Completa el reto del día 7 días seguidos",()=>((S.daily||{}).best||0)>=7]
 ];
 function checkAch(silent){
   const got=[];
@@ -1662,7 +1842,7 @@ function renderSettings(){
   }else $("rsAsk").onclick=()=>{confirmReset=true;renderSettings();$("rsNo").focus();};
 }
 function makeCode(){
-  const d={lv:S.lv,streak:S.streak,best:S.best,ach:S.ach,ok:S.ok,exams:S.exams,bestGrade:S.bestGrade,everFailed:S.everFailed,rec:S.rec,games:S.games};
+  const d={lv:S.lv,streak:S.streak,best:S.best,ach:S.ach,ok:S.ok,exams:S.exams,bestGrade:S.bestGrade,everFailed:S.everFailed,rec:S.rec,games:S.games,daily:S.daily};
   return "IV1:"+btoa(unescape(encodeURIComponent(JSON.stringify(d))));
 }
 function readCode(txt){
@@ -1692,6 +1872,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  31:["🗓️ Reto del día: un juego y 10 verbos nuevos cada día, con racha de días seguidos.","Al terminar una partida ves los verbos que fallaste y puedes practicarlos.","Cuenta atrás y botón de pausa, 🎲 partida rápida y más efectos al acertar.","Lluvia con velocidad y ❄️ congelar; Contrarreloj con faltas de ortografía; Parejas con 3 niveles; Supervivencia con 👹 jefes y comodines; Ahorcado con 💡 pista; Duelo con trampas más difíciles."],
   30:["Los avisos salen arriba para no tapar lo que escribes."],
   29:["¡Nuevo modo 🎮 Jugar con seis juegos! Lluvia de verbos, Contrarreloj, Parejas de tres, Supervivencia, Ahorcado y Duelo para dos.","Cada juego tiene su récord y hay 6 logros nuevos."],
   25:["Corregido: acertar un verbo nuevo ya no lo marca como fallado."],
