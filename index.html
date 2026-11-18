@@ -169,7 +169,7 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 /* estudiar */
 .search{width:100%;min-height:48px;padding:10px 16px;border:2px solid var(--line);border-radius:14px;font:600 16px Nunito,sans-serif;background:var(--field);color:var(--ink);margin-bottom:10px}
 .search:focus{outline:none;border-color:var(--inf)}
-.vhead,.vrow{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 44px;gap:8px;align-items:center}
+.vhead,.vrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 44px;gap:8px;align-items:center}
 .vhead{position:sticky;top:0;z-index:3;background:var(--paper);padding:8px 8px 10px;margin:0 -8px 4px}
 .hl{font-size:14px;font-weight:900;padding-left:10px;color:var(--inf-x)}
 .hb{border:2px solid var(--line);background:var(--field);border-radius:12px;min-height:46px;padding:5px 9px;text-align:left;font-weight:900;font-size:14px;line-height:1.2;display:flex;flex-direction:column;justify-content:center}
@@ -181,7 +181,8 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .vitem{border-radius:16px;padding:6px 8px}
 .vitem:nth-child(even){background:var(--row)}
 .f{border-radius:12px;padding:6px 10px;min-height:52px;display:flex;flex-direction:column;justify-content:center}
-.f b{font-size:16.5px;font-weight:900}
+.f b{font-size:16.5px;font-weight:900;overflow-wrap:anywhere}
+.f small{overflow-wrap:anywhere}
 .f small{font-size:13px;opacity:.85}
 .f.a{background:var(--inf-t);color:var(--inf-x)}
 .f.b{background:var(--past-t);color:var(--past-x)}
@@ -266,7 +267,7 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .pick{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .grade{font-weight:900;font-size:110px;line-height:1;letter-spacing:-.05em;margin:6px 0}
 .misses{display:flex;flex-direction:column;gap:6px;max-width:520px;margin:18px auto}
-.misses .vrow{grid-template-columns:1fr 1fr 1fr}
+.misses .vrow{grid-template-columns:repeat(3,minmax(0,1fr))}
 .empty .big{font-size:54px}
 
 /* logros */
@@ -356,13 +357,13 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .mode .t{font-size:15.5px}
   .mode small{font-size:12.5px}
   .shead h2{font-size:19px}
-  .vhead{grid-template-columns:1fr 1fr 1fr 44px;gap:6px;margin:0 -4px 4px;padding:6px 4px 8px}
+  .vhead{grid-template-columns:repeat(3,minmax(0,1fr)) 44px;gap:6px;margin:0 -4px 4px;padding:6px 4px 8px}
   .vhead>span:last-child{display:none}
   .hl{font-size:13px;padding-left:6px}
   .hb{padding:4px 7px;font-size:13px}
   .hb .full{display:none}.hb .short{display:inline}
   .hb.d{padding:4px 2px;align-items:center}
-  .vrow{grid-template-columns:1fr 1fr 1fr 44px;gap:6px}
+  .vrow{grid-template-columns:repeat(3,minmax(0,1fr)) 44px;gap:6px}
   .vrow .d{grid-column:1/4;order:5;min-height:0;padding:0 4px 4px}
   .f{padding:6px 8px}
   .f b{font-size:15px}
@@ -513,7 +514,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=27, APP_DATE="18/11/2026";
+const APP_VERSION=28, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
