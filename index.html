@@ -70,7 +70,9 @@ h1,h2,h3{letter-spacing:-.02em;margin:0}
 button,select{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input,textarea{-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:10px}
-.wrap{max-width:960px;margin:0 auto;padding:16px 16px 70px;zoom:var(--z,1)}
+.wrap{max-width:960px;margin:0 auto;padding:16px 16px 70px}
+/* el tamaño de letra agranda el contenido; la barra de arriba se queda igual para que siempre quepa */
+#v-home,#v-screen,footer{zoom:var(--z,1)}
 .newsbg .news,#toasts,.updbar{zoom:var(--z,1)}
 .hidden{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -510,7 +512,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=25, APP_DATE="18/11/2026";
+const APP_VERSION=26, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
