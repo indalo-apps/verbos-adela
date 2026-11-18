@@ -129,6 +129,19 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .seg button{border:0;background:none;border-radius:18px;min-height:44px;padding:6px 14px;font-weight:800;font-size:14px;color:var(--soft);line-height:1.2}
 .seg button small{display:block;font-weight:600;font-size:12px}
 .seg button.on{background:var(--btn);color:#fff}
+.groups{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.gcard{border:2px solid var(--line);background:var(--paper);border-radius:20px;padding:14px 10px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 3px 0 var(--line);transition:transform .15s,border-color .15s}
+@media (hover:hover){.gcard:hover{transform:translateY(-2px);border-color:var(--inf)}}
+.gcard.on{border-color:var(--btn);box-shadow:0 0 0 2px var(--btn) inset,0 3px 0 var(--line);background:var(--row)}
+.gcard .blocks{display:flex;gap:5px;margin-bottom:6px}
+.gcard .blocks i{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-weight:900;font-size:16px}
+.gcard .blocks .a{background:var(--inf)}.gcard .blocks .b{background:var(--past)}.gcard .blocks .c{background:var(--part)}
+.gcard .blocks .x{background:var(--line);color:var(--soft)}
+.gcard b{font-size:15px;line-height:1.2;font-weight:900}
+.gcard small{color:var(--soft);font-size:12.5px;font-weight:600;line-height:1.3}
+.gcard .w{font-size:13px;font-weight:800;margin-top:4px}
+.gcard .n{font-weight:800;margin-top:2px}
+.gcard.on::after{content:"✓ Elegido";font-size:12px;font-weight:900;color:#fff;background:var(--btn);border-radius:999px;padding:2px 9px;margin-top:6px}
 .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .mode{border:2px solid var(--line);background:var(--paper);border-radius:20px;padding:14px;text-align:left;display:grid;grid-template-columns:48px 1fr;column-gap:12px;align-items:center;min-height:84px;box-shadow:0 3px 0 var(--line);transition:transform .15s,border-color .15s}
 .mode .e{grid-row:1/3;width:48px;height:48px;border-radius:14px;background:var(--row);display:flex;align-items:center;justify-content:center;font-size:24px}
@@ -320,8 +333,15 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .wmore{display:block;border:0;background:rgba(255,255,255,.16);color:#fff;font-weight:900;font-size:13.5px;border-radius:999px;min-height:44px;padding:0 16px;margin:8px auto 0}
   .legend{font-size:12px}
   .step{margin:16px 2px 8px;font-size:16.5px}
-  .seg{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
-  .seg button{flex:none}
+  .groups{grid-template-columns:1fr 1fr;gap:8px}
+  .gcard{padding:10px 8px}
+  .gcard .blocks i{width:28px;height:28px;font-size:14px;border-radius:8px}
+  .gcard small{font-size:12px}
+  .gcard[data-g=all]{grid-column:1/3;display:grid;grid-template-columns:auto 1fr auto;column-gap:10px;text-align:left;align-items:center}
+  .gcard[data-g=all] .blocks{grid-row:1/4;margin:0}
+  .gcard[data-g=all] .w{display:none}
+  .gcard[data-g=all] .n{grid-column:3;grid-row:1/3}
+  .gcard[data-g=all].on::after{grid-column:3;grid-row:3;margin:0}
   .modes{grid-template-columns:1fr 1fr;gap:8px}
   .mode{grid-template-columns:40px 1fr;column-gap:10px;padding:10px 12px;min-height:72px;border-radius:18px}
   .mode .e{width:40px;height:40px;font-size:21px;border-radius:12px}
@@ -396,13 +416,13 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
       </div>
     </section>
 
-    <div class="step">¿Qué verbos? <span id="grpHint"></span></div>
-    <div class="seg" id="grpSeg" role="group" aria-label="Grupo de verbos">
-      <button data-g="all" class="on">Todos<small id="gn-all"></small></button>
-      <button data-g="AAA">No cambian<small id="gn-AAA"></small></button>
-      <button data-g="ABB">Pasado = participio<small id="gn-ABB"></small></button>
-      <button data-g="ABA">Participio = infinitivo<small id="gn-ABA"></small></button>
-      <button data-g="ABC">Las tres distintas<small id="gn-ABC"></small></button>
+    <div class="step">¿Qué verbos quieres practicar?</div>
+    <div class="groups" id="grpSeg" role="group" aria-label="Grupo de verbos">
+      <button data-g="all" class="gcard on" aria-pressed="true"><span class="blocks" aria-hidden="true"><i class="x">?</i><i class="x">?</i><i class="x">?</i></span><b>Todos</b><small>Los verbos mezclados</small><span class="w" lang="en">write · wrote · written</span><small class="n" id="gn-all"></small></button>
+      <button data-g="AAA" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="a">A</i><i class="a">A</i></span><b>No cambian</b><small>Las tres formas son iguales</small><span class="w" lang="en">cut · cut · cut</span><small class="n" id="gn-AAA"></small></button>
+      <button data-g="ABB" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="b">B</i></span><b>Pasado = participio</b><small>Pasado y participio iguales</small><span class="w" lang="en">bring · brought · brought</span><small class="n" id="gn-ABB"></small></button>
+      <button data-g="ABA" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="a">A</i></span><b>Participio = infinitivo</b><small>El participio vuelve al infinitivo</small><span class="w" lang="en">come · came · come</span><small class="n" id="gn-ABA"></small></button>
+      <button data-g="ABC" class="gcard" aria-pressed="false"><span class="blocks" aria-hidden="true"><i class="a">A</i><i class="b">B</i><i class="c">C</i></span><b>Las tres distintas</b><small>Tres formas diferentes</small><span class="w" lang="en">sing · sang · sung</span><small class="n" id="gn-ABC"></small></button>
     </div>
 
     <div class="step">¿Cómo quieres practicar?</div>
@@ -485,7 +505,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=22, APP_DATE="18/11/2026";
+const APP_VERSION=23, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -846,7 +866,7 @@ function stats(changed){
   const nf=V.filter(v=>lv(v)===1).length;
   $("sReview").textContent=nf;
   $("failBadge").textContent=nf;$("failBadge").classList.toggle("hidden",!nf);
-  $("grpHint").textContent=SET==="all"?"":GNAME[SET];
+
 }
 function trainOf(v){$("train").innerHTML=`<span class="a">${v.inf}</span><span class="b">${v.past}</span><span class="c">${v.part==="—"?"–":v.part}</span>`;}
 
@@ -1188,6 +1208,8 @@ const CHANGELOG={
   15:["Tu progreso se ve en un muro con los 88 verbos."],
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
+  19:["En Ajustes salen primero las voces británicas."],
+  23:["Los grupos de verbos se ven mejor: cada uno enseña su patrón con bloques de colores (A A A, A B B, A B A, A B C) y un ejemplo."],
   18:["Nueva pantalla de inicio: eliges los verbos y el modo, y el ejercicio ocupa toda la pantalla.","Colores más claros: cada forma del verbo tiene su color, el verde es acierto y el rojo es fallo.","Nuevo botón ⚙️ Ajustes: tema, sonidos, voz, copia de seguridad y empezar de cero.","Botones más grandes y textos más fáciles de leer."]
 };
 $("ver").textContent="v"+APP_VERSION;
