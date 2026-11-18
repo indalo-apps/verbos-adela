@@ -482,7 +482,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=18, APP_DATE="18/11/2026";
+const APP_VERSION=19, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1097,10 +1097,12 @@ function renderAch(){
 
 // ---------- ajustes ----------
 const ACC={GB:"Reino Unido",US:"Estados Unidos",AU:"Australia",IE:"Irlanda",IN:"India",ZA:"Sudáfrica",NZ:"Nueva Zelanda",CA:"Canadá"};
-let confirmReset=false;
+let confirmReset=false,allVoices=false;
 function renderSettings(){
   const cur=pickVoice();
-  const list=[...VOICES].sort((a,b)=>(isGB(b)-isGB(a))||(!!FEMALE.test(b.name)-!!FEMALE.test(a.name))||a.name.localeCompare(b.name));
+  const sorted=[...VOICES].sort((a,b)=>(isGB(b)-isGB(a))||(!!FEMALE.test(b.name)-!!FEMALE.test(a.name))||a.name.localeCompare(b.name));
+  const nGB=sorted.filter(isGB).length;
+  const list=allVoices||!nGB?sorted:sorted.filter(v=>isGB(v)||(cur&&v.name===cur.name));
   const acc=v=>ACC[(v.lang.split(/[-_]/)[1]||"").toUpperCase()]||v.lang;
   const nM=nMastered(),nA=Object.keys(S.ach).length;
   $("p-ajustes").innerHTML=`
@@ -1111,6 +1113,7 @@ function renderSettings(){
   <div class="set"><h3>Voz</h3><p>Las voces en inglés de este dispositivo. Primero salen las británicas. Ahora: <b>${cur?esc(cur.name):"ninguna"}</b>.</p>
     <div class="vlist">${list.length?list.map((v,i)=>`<div class="vopt ${cur&&v.name===cur.name?"on":""}"><div class="nm"><b>${esc(v.name.replace(/\s*\(.*\)$/,""))}</b><small>${acc(v)}${voiceKind(v)?" · voz "+voiceKind(v):""}</small></div>
       <button class="try" data-i="${i}" aria-label="Probar ${esc(v.name)}">▶ Probar</button><button class="use" data-i="${i}">${cur&&v.name===cur.name?"✓ En uso":"Usar"}</button></div>`).join(""):`<p>Este navegador no tiene voces en inglés.</p>`}</div>
+    ${nGB&&sorted.length>list.length?`<button class="btn w" id="moreV" style="margin-top:10px">Ver otras voces en inglés (${sorted.length-list.length})</button>`:""}
     <div class="vhelp"><b>¿No hay ninguna voz femenina británica?</b><br>En iPhone: Ajustes → Accesibilidad → Contenido leído → Voces → Inglés (Reino Unido), descarga Kate, Serena o Stephanie y vuelve a abrir la app.<br>En Android: Ajustes → Accesibilidad → Texto a voz → Motor de Google → Inglés (Reino Unido).</div></div>
   <div class="set"><h3>Copia de seguridad</h3><p>Tu progreso se guarda solo en este dispositivo. Copia el código y guárdalo (por ejemplo, envíatelo por WhatsApp) para recuperarlo si cambias de móvil o se borra la app.</p>
     <div class="pick" style="justify-content:flex-start"><button class="btn v" id="bkCopy">Copiar mi código</button><button class="btn w" id="bkShow">Restaurar desde un código</button></div>
@@ -1119,6 +1122,7 @@ function renderSettings(){
     ${confirmReset?`<div class="confirm"><p>¿Seguro? Se borrarán ${nM} verbos dominados y ${nA} logros. No se puede deshacer.</p><div class="pick" style="justify-content:flex-start"><button class="btn r" id="rsYes">Sí, borrar mi progreso</button><button class="btn w" id="rsNo">Cancelar</button></div></div>`:`<button class="btn w" id="rsAsk">Borrar mi progreso</button>`}</div>`;
   $("themeSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.theme=b.dataset.t;save();applyTheme();renderSettings();};
   $("sndSw").onclick=()=>{S.mute=!S.mute;save();if(!S.mute)tone(true);renderSettings();$("sndSw").focus();};
+  if($("moreV"))$("moreV").onclick=()=>{allVoices=true;renderSettings();};
   $("p-ajustes").querySelectorAll(".try").forEach(b=>b.onclick=()=>sayText("go, went, gone. I have gone to London.",list[+b.dataset.i]));
   $("p-ajustes").querySelectorAll(".use").forEach(b=>b.onclick=()=>{S.voice=list[+b.dataset.i].name;save();renderSettings();sayAll(V.find(x=>x.inf==="go"));});
   $("bkCopy").onclick=async()=>{
