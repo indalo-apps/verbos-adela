@@ -336,6 +336,37 @@ textarea.code{width:100%;min-height:96px;border:2px solid var(--line);border-rad
 :root[data-theme=dark].play{--bg:#22111F;--glow1:#3A1A2C;--glow2:#3A2014}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]).play{--bg:#22111F;--glow1:#3A1A2C;--glow2:#3A2014}}
 body{transition:background .4s}
+/* juegos de arrastrar */
+.ghost{position:fixed;z-index:100;pointer-events:none;opacity:.92;transform:scale(1.08) rotate(-2deg);box-shadow:0 10px 24px rgba(30,20,80,.25)!important}
+.lifted{opacity:.35}
+.lboard{position:relative;max-width:520px;margin:0 auto}
+.lline{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible}
+.lline polyline{fill:none;stroke:var(--inf);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+.lgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;touch-action:none;user-select:none;-webkit-user-select:none}
+.ltile{min-height:74px;border:3px solid var(--line);background:var(--field);border-radius:18px;font-weight:900;font-size:19px;box-shadow:0 3px 0 var(--line);transition:transform .15s,background .2s,opacity .35s;overflow-wrap:anywhere;padding:4px}
+.ltile.sel{border-color:var(--inf);background:var(--inf-t);color:var(--inf-x);transform:scale(1.05)}
+.ltile.gone{opacity:0;transform:scale(.6);pointer-events:none}
+.tower{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:0;max-height:140px;overflow:hidden;margin-bottom:10px}
+.floor{background:var(--ok);color:#fff;font-weight:900;font-size:13.5px;border-radius:10px;padding:4px 12px;box-shadow:0 2px 0 var(--ok-d);animation:pulse .4s}
+.tslots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:560px;margin:0 auto}
+.tslot{min-height:84px;border:3px dashed var(--line);background:var(--row);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:900;padding:6px}
+.tslot small{font-size:12.5px;font-weight:900}
+.tslot.a small{color:var(--inf-x)}.tslot.b small{color:var(--past-x)}.tslot.c small{color:var(--part-x)}
+.tslot span{font-size:19px;min-height:26px;overflow-wrap:anywhere}
+.tslot.full{border-style:solid;background:var(--field)}
+.tslot.a.full{border-color:var(--inf)}.tslot.b.full{border-color:var(--past)}.tslot.c.full{border-color:var(--part)}
+.tslot.over,.gap.over{background:var(--sun)!important;border-color:var(--sun)!important}
+.tslot.okk{background:var(--ok-t)!important;border-color:var(--ok)!important}
+.tpool,.hchips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px auto 0;max-width:560px}
+.ttile,.hchip{min-height:56px;min-width:96px;border:3px solid var(--line);background:var(--paper);border-radius:16px;font-weight:900;font-size:19px;padding:6px 16px;box-shadow:0 4px 0 var(--line);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.ttile.used{visibility:hidden}
+.hchip.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.hchip.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.hsent{text-align:center;font-size:22px;font-weight:700;line-height:1.9;margin:10px auto 6px;max-width:620px}
+.gap{display:inline-block;min-width:110px;border-bottom:4px solid var(--inf);background:var(--row);border-radius:10px 10px 0 0;padding:0 10px;font-weight:900;text-align:center;line-height:1.5;transition:background .2s}
+.gap.ok{background:var(--ok-t);border-color:var(--ok)}.gap.bad{background:var(--bad-t);border-color:var(--bad)}
+.gap.b{color:var(--past-x)}.gap.c{color:var(--part-x)}
+.gapv{color:var(--soft);font-size:15px;font-weight:700}
 /* juegos */
 #p-game{position:relative}
 .gover{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--paper) 88%,transparent);border-radius:inherit}
@@ -469,6 +500,10 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .slots{grid-template-columns:1fr}
   .ex{grid-template-columns:1fr}
   .glist{grid-template-columns:1fr}
+  .ltile{min-height:64px;font-size:16.5px}
+  .tslot{min-height:74px}.tslot span{font-size:16.5px}
+  .ttile,.hchip{font-size:17px;min-width:84px}
+  .hsent{font-size:19px}
   .rain{height:300px}
   .pairs{grid-template-columns:repeat(3,minmax(0,1fr))!important}
   .pc{aspect-ratio:auto;min-height:60px;font-size:15.5px}
@@ -640,7 +675,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=37, APP_DATE="18/11/2026";
+const APP_VERSION=38, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1051,7 +1086,7 @@ function applyTheme(){
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme);}catch(e){}
 
 // ---------- navegación (con el botón Atrás del móvil) ----------
-const TITLES={juegos:"🎮 Jugar",lluvia:"🌧️ Lluvia de verbos",crono:"⏱️ Contrarreloj",parejas:"🧩 Parejas de tres",superv:"🪜 Supervivencia",ahorcado:"🔤 Ahorcado",duelo:"⚔️ Duelo",estudiar:"📖 Estudiar",tarjetas:"🃏 Tarjetas",escribir:"✍️ Escribir",elegir:"🎯 Elegir",examen:"📝 Examen",fallos:"🔁 Mis fallos",logros:"🏆 Logros",ajustes:"⚙️ Ajustes"};
+const TITLES={juegos:"🎮 Jugar",unir:"🔗 Une las tres formas",torre:"🧱 Ordena la torre",hueco:"🎯 Arrastra al hueco",lluvia:"🌧️ Lluvia de verbos",crono:"⏱️ Contrarreloj",parejas:"🧩 Parejas de tres",superv:"🪜 Supervivencia",ahorcado:"🔤 Ahorcado",duelo:"⚔️ Duelo",estudiar:"📖 Estudiar",tarjetas:"🃏 Tarjetas",escribir:"✍️ Escribir",elegir:"🎯 Elegir",examen:"📝 Examen",fallos:"🔁 Mis fallos",logros:"🏆 Logros",ajustes:"⚙️ Ajustes"};
 function setTab(t){
   S.homeTab=t;save();
   const play=t==="jugar";
@@ -1316,6 +1351,9 @@ const GAMES=[
  ["parejas","🧩","Parejas de tres","Encuentra las tres formas de cada verbo con los menos movimientos posibles.",r=>`${r} movimientos`],
  ["superv","🪜","Supervivencia","Preguntas cada vez más difíciles, jefes y comodines. Tienes 3 vidas.",r=>`nivel ${r}`],
  ["ahorcado","🔤","Ahorcado","Adivina la forma del verbo letra a letra.",r=>`${r} seguidas`],
+ ["unir","🔗","Une las tres formas","Une con el dedo infinitivo → pasado → participio. Sin escribir.",r=>`${r} verbos`],
+ ["torre","🧱","Ordena la torre","Arrastra las tres formas a su sitio y sube tu torre. Sin escribir.",r=>`${r} pisos`],
+ ["hueco","🎯","Arrastra al hueco","Completa frases arrastrando la forma correcta. Sin escribir.",r=>`${r}/10`],
  ["duelo","⚔️","Duelo","Dos jugadores en el mismo móvil: gana quien acierte antes.",null]
 ];
 let GAME=null,DAILY=null,AUTOSTART=false,PRACTICE=null;
@@ -1482,7 +1520,7 @@ function renderGames(el=$("playInner")){
     <p class="tip">Los juegos usan el grupo de verbos elegido arriba. Tus aciertos cuentan para el muro (menos en Parejas y Duelo).</p>`;
   el.querySelectorAll(".gitem").forEach(b=>b.onclick=()=>go(b.dataset.g));
   el.querySelector("#gDaily").onclick=()=>{DAILY=d;go(d.game);};
-  el.querySelector("#gQuick").onclick=()=>{AUTOSTART=true;go(pick(["lluvia","crono","parejas","superv","ahorcado"]));};
+  el.querySelector("#gQuick").onclick=()=>{AUTOSTART=true;go(pick(["lluvia","crono","parejas","superv","ahorcado","unir","torre","hueco"]));};
 }
 
 // ===== 1. Lluvia de verbos =====
@@ -1791,7 +1829,217 @@ function playDuel(){
     next();
   }
 }
-const PLAY={lluvia:playRain,crono:playCrono,parejas:playPairs,superv:playSurvival,ahorcado:playHangman,duelo:playDuel};
+// ---------- juegos de arrastrar (sin escribir) ----------
+// Busca la ficha o la zona que hay bajo el dedo
+const under=(x,y,sel)=>{const el=document.elementFromPoint(x,y);return el&&el.closest(sel);};
+// Arrastrar una ficha: se mueve una copia con el dedo y al soltar se llama a onDrop(zona)
+function makeDraggable(el,zoneSel,onDrop,onTap){
+  let ghost=null,sx=0,sy=0,moved=false,id=null;
+  el.addEventListener("pointerdown",e=>{
+    if(el.disabled)return;id=e.pointerId;sx=e.clientX;sy=e.clientY;moved=false;
+    el.setPointerCapture(id);
+  });
+  el.addEventListener("pointermove",e=>{
+    if(e.pointerId!==id)return;
+    if(!moved&&Math.hypot(e.clientX-sx,e.clientY-sy)>8){
+      moved=true;const r=el.getBoundingClientRect();
+      ghost=el.cloneNode(true);ghost.classList.add("ghost");ghost.style.width=r.width+"px";document.body.appendChild(ghost);el.classList.add("lifted");
+    }
+    if(ghost){
+      ghost.style.left=(e.clientX-ghost.offsetWidth/2)+"px";ghost.style.top=(e.clientY-ghost.offsetHeight/2)+"px";
+      document.querySelectorAll(zoneSel).forEach(z=>z.classList.remove("over"));
+      ghost.style.display="none";const z=under(e.clientX,e.clientY,zoneSel);ghost.style.display="";
+      if(z)z.classList.add("over");
+    }
+  });
+  const end=e=>{
+    if(e.pointerId!==id)return;id=null;
+    document.querySelectorAll(zoneSel).forEach(z=>z.classList.remove("over"));
+    if(ghost){ghost.style.display="none";const z=under(e.clientX,e.clientY,zoneSel);ghost.remove();ghost=null;el.classList.remove("lifted");if(z)onDrop(z);}
+    else if(!moved&&e.type==="pointerup")onTap&&onTap();
+  };
+  el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
+  el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onTap&&onTap();}});
+}
+
+// ===== 7. Une las tres formas =====
+function playLink(){
+  const G=newGame("unir");
+  gameIntro("unir",["En el tablero hay fichas con las formas de 3 verbos, mezcladas.","Une con el dedo las tres formas de un verbo <b>en orden</b>: infinitivo → pasado → participio. También puedes tocarlas una a una.","Cada verbo unido suma un punto. Tienes 60 segundos."],"",()=>countdown(start));
+  function start(){
+    G.running=true;G.score=0;let left=60,lastTick=Date.now(),path=[],board=[],drawing=false,combo=0;
+    $("p-game").innerHTML=`<div class="ghud"><span>🔗 <b id="gScore">0</b></span><span id="gCombo"></span><span>⏱️ <b id="gTime">60</b> s</span>${pauseButton()}</div>
+      <div class="track"><i id="gBar" style="width:100%"></i></div>
+      <div class="lboard" id="lb"><svg class="lline" id="lline" aria-hidden="true"></svg><div class="lgrid" id="lg"></div></div>
+      <div class="say" id="lMsg" role="status" aria-live="polite">Une infinitivo → pasado → participio</div>`;
+    wirePause();G.onResume=()=>{lastTick=Date.now();};
+    const P=gPool(v=>v.part!=="—"&&v.group!=="AAA");
+    function newBoard(){
+      const pickV=[],seen=new Set();
+      for(const v of shuffle(P.length>=3?P:V.filter(v=>v.part!=="—"&&v.group!=="AAA"))){
+        const w=[v.inf,v.past,v.part].map(norm);if(w.some(x=>seen.has(x)))continue;w.forEach(x=>seen.add(x));pickV.push(v);if(pickV.length===3)break;}
+      board=shuffle(pickV.flatMap(v=>FORMS.map(([k])=>({v,k,w:v[k]}))));
+      $("lg").innerHTML=board.map((t,i)=>`<button class="ltile" data-i="${i}" lang="en">${t.w}</button>`).join("");
+      path=[];draw();
+    }
+    const tiles=()=>[...$("lg").children];
+    function draw(){
+      const svg=$("lline"),r=$("lb").getBoundingClientRect();
+      tiles().forEach((t,i)=>t.classList.toggle("sel",path.includes(i)));
+      const pts=path.map(i=>{const b=tiles()[i].getBoundingClientRect();return [b.left+b.width/2-r.left,b.top+b.height/2-r.top];});
+      svg.innerHTML=pts.length>1?`<polyline points="${pts.map(p=>p.join(",")).join(" ")}" />`:"";
+    }
+    function add(i){
+      if(path.includes(i)||!board[i]||tiles()[i].classList.contains("gone"))return;
+      path.push(i);draw();if(!S.mute)tone("tick");
+      if(path.length===3)check();
+    }
+    function check(){
+      const t=path.map(i=>board[i]),v=t[0].v;
+      const ok=t.every(x=>x.v===v)&&t.map(x=>norm(x.w)).join("|")===[v.inf,v.past,v.part].map(norm).join("|");
+      if(ok){
+        combo++;G.score++;$("gScore").textContent=G.score;$("gCombo").textContent=combo>=3?`🔥 ${combo}`:"";
+        mark(v,true);tone(true,combo);buzz(true);
+        path.forEach(i=>{const el=tiles()[i];el.classList.add("gone",FCLS[board[i].k]);burst(el);});
+        $("lMsg").className="say ok";$("lMsg").innerHTML=`<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;speakForm(v,"inf");
+        path=[];draw();
+        if(tiles().every(x=>x.classList.contains("gone")))GT(newBoard,500);
+      }else{
+        combo=0;$("gCombo").textContent="";tone(false);buzz(false);
+        const same=t.every(x=>x.v===v);
+        $("lMsg").className="say bad";$("lMsg").textContent=same?"Son del mismo verbo, pero en otro orden":"No son del mismo verbo";
+        if(same)missed(v);
+        $("lg").classList.remove("shake");void $("lg").offsetWidth;$("lg").classList.add("shake");
+        path=[];draw();
+      }
+    }
+    // trazar con el dedo
+    const lg=$("lg");
+    gOn(lg,"pointerdown",e=>{if(!G.running||G.paused)return;const t=e.target.closest(".ltile");if(!t)return;
+      e.preventDefault();drawing=true;try{lg.setPointerCapture(e.pointerId);}catch(_){}
+      const i=+t.dataset.i;if(path.length&&path[path.length-1]===i)return;add(i);});
+    gOn(lg,"pointermove",e=>{if(!drawing)return;const t=under(e.clientX,e.clientY,".ltile");if(t)add(+t.dataset.i);});
+    const stop=()=>{drawing=false;};
+    gOn(lg,"pointerup",stop);gOn(lg,"pointercancel",stop);
+    gOn(lg,"keydown",e=>{const t=e.target.closest(".ltile");if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault();add(+t.dataset.i);}});
+    gOn(window,"resize",draw);
+    GI(()=>{const now=Date.now();if(!G.paused)left-=(now-lastTick)/1000;lastTick=now;
+      $("gTime").textContent=Math.max(0,Math.ceil(left));$("gBar").style.width=Math.max(0,left/60*100)+"%";
+      if(left<=0&&G.running){G.running=false;gameOver("unir",G.score,"Verbos unidos",G.score,false);}},100);
+    newBoard();
+  }
+}
+
+// ===== 8. Ordena la torre =====
+function playTower(){
+  const G=newGame("torre");
+  gameIntro("torre",["Te doy las tres formas de un verbo desordenadas.","Arrástralas a su sitio: infinitivo, pasado y participio. También puedes tocarlas y se colocan en el primer hueco libre.","Cada verbo bien ordenado sube un piso tu torre. Tienes 3 vidas."],"",start);
+  function start(){
+    G.running=true;G.score=0;let lives=3,cur=null,slots=[null,null,null],lock=false;
+    $("p-game").innerHTML=`<div class="ghud"><span>🧱 Pisos: <b id="gScore">0</b></span><span id="gLives" aria-label="Vidas">${lives3(3)}</span></div>
+      <div class="tower" id="tw" aria-label="Tu torre"></div>
+      <div class="ask"><span class="es" id="tEs"></span><div class="how">Pon cada forma en su sitio</div></div>
+      <div class="tslots" id="ts">${FORMS.map(([k,l,c],i)=>`<button class="tslot ${c}" data-s="${i}" aria-label="${l}: vacío"><small>${l}</small><span></span></button>`).join("")}</div>
+      <div class="tpool" id="tp" lang="en"></div>
+      <div class="row-btns"><button class="btn w" id="tReset">↺ Deshacer</button></div>
+      <div class="say" id="tMsg" role="status" aria-live="polite"></div>`;
+    const P=gPool(v=>v.part!=="—"&&v.group!=="AAA");
+    function next(){
+      if(!G.running)return;lock=false;slots=[null,null,null];$("tMsg").textContent="";
+      const v=pick(P);let order=shuffle([0,1,2]);
+      while(order.join("")==="012")order=shuffle([0,1,2]);
+      cur={v,words:order.map(i=>({k:FORMS[i][0],w:v[FORMS[i][0]]}))};
+      $("tEs").textContent=v.es;
+      $("tp").innerHTML=cur.words.map((t,i)=>`<button class="ttile" data-t="${i}">${t.w}</button>`).join("");
+      paint();
+      [...$("tp").children].forEach(b=>makeDraggable(b,".tslot",z=>place(+b.dataset.t,+z.dataset.s),()=>place(+b.dataset.t,slots.indexOf(null))));
+    }
+    function paint(){
+      [...$("ts").children].forEach((s,i)=>{const t=slots[i];s.querySelector("span").textContent=t==null?"":cur.words[t].w;s.classList.toggle("full",t!=null);
+        s.setAttribute("aria-label",`${FORMS[i][1]}: ${t==null?"vacío":cur.words[t].w}`);});
+      [...$("tp").children].forEach((b,i)=>{const used=slots.includes(i);b.classList.toggle("used",used);b.disabled=used;});
+    }
+    function place(t,s){
+      if(lock||!G.running||s<0||s>2)return;
+      const old=slots.indexOf(t);if(old>=0)slots[old]=null;
+      if(slots[s]!=null&&old>=0)slots[old]=slots[s];
+      slots[s]=t;paint();if(!S.mute)tone("tick");
+      if(slots.every(x=>x!=null))check();
+    }
+    $("ts").onclick=e=>{const s=e.target.closest(".tslot");if(!s||lock)return;const i=+s.dataset.s;if(slots[i]!=null){slots[i]=null;paint();}};
+    $("tReset").onclick=()=>{if(lock)return;slots=[null,null,null];paint();};
+    function check(){
+      lock=true;const v=cur.v;
+      const ok=slots.every((t,i)=>norm(cur.words[t].w)===norm(v[FORMS[i][0]]));
+      mark(v,ok);tone(ok,G.score+1);buzz(ok);
+      if(ok){
+        G.score++;$("gScore").textContent=G.score;
+        const f=document.createElement("div");f.className="floor";f.setAttribute("lang","en");f.textContent=`${v.inf} · ${v.past} · ${v.part}`;$("tw").prepend(f);burst(f);
+        [...$("ts").children].forEach(s=>s.classList.add("okk"));
+        $("tMsg").className="say ok";$("tMsg").textContent=cheer();sayAll(v);
+        GT(()=>{[...$("ts").children].forEach(s=>s.classList.remove("okk"));next();},1100);
+      }else{
+        lives--;missed(v);$("gLives").textContent=lives3(lives);
+        $("tMsg").className="say bad";$("tMsg").innerHTML=`Es: <span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
+        $("ts").classList.remove("shake");void $("ts").offsetWidth;$("ts").classList.add("shake");
+        if(lives<=0){G.running=false;GT(()=>gameOver("torre",G.score,"Pisos de tu torre",G.score,false),1800);}else GT(next,2000);
+      }
+    }
+    next();
+  }
+}
+
+// ===== 9. Arrastra al hueco =====
+function gapSentence(v,k){
+  const e=EX[v.inf];if(!e)return null;const s=e[k==="past"?0:1];if(!s)return null;
+  const targets=opts(v[k]);let found=false;
+  const html=s.replace(/\*(.+?)\*/g,(m,inner)=>inner.split(" ").map(t=>{if(!found&&targets.includes(norm(t))){found=true;return "@@GAP@@";}return t;}).join(" "));
+  return found?{html,plain:s.replace(/\*/g,"")}:null;
+}
+function playGap(){
+  const G=newGame("hueco");
+  gameIntro("hueco",["Te doy una frase con un hueco y tres fichas.","Arrastra al hueco la forma correcta del verbo (o tócala).","Fíjate en la frase: con <i>yesterday</i> o <i>last week</i> va el pasado; con <i>have</i> o <i>has</i>, el participio.","Son 10 frases. Al final tienes tu nota."],"",start);
+  function start(){
+    G.running=true;G.score=0;let n=0,ok=0,lock=false,cur=null;
+    $("p-game").innerHTML=`<div class="qtop"><span id="hCount"></span><span id="hOk"></span></div><div class="track"><i id="gBar" style="width:0"></i></div>
+      <div class="hsent" id="hs" lang="en"></div>
+      <div class="hchips" id="hc" lang="en"></div>
+      <div class="say" id="hMsg" role="status" aria-live="polite"></div>`;
+    const P=gPool(v=>v.part!=="—");
+    function next(){
+      if(n>=10){G.running=false;const nota=ok;gameOver("hueco",String(nota),"Aciertos de 10",nota,false);return;}
+      lock=false;$("hMsg").textContent="";
+      let v,k,g,tries=0;
+      do{v=pick(P);k=askForm(v);g=gapSentence(v,k);}while(!g&&tries++<50);
+      cur={v,k,g};
+      $("hCount").textContent=`Frase ${n+1} de 10`;$("hOk").textContent=`${ok} aciertos`;$("gBar").style.width=n*10+"%";
+      $("hs").innerHTML=g.html.replace("@@GAP@@",`<span class="gap" id="gap" tabindex="-1">&nbsp;</span> <small class="gapv">(${v.inf})</small>`);
+      // trampa principal: la otra forma del mismo verbo; luego -ed, infinitivo o faltas
+      const other=k==="past"?v.part:v.past;const fakes=[];
+      if(other!=="—"&&!opts(v[k]).includes(norm(firstForm(other))))fakes.push(firstForm(other));
+      shuffle(trapsFor(v,k)).forEach(t=>{if(fakes.length<2&&!fakes.includes(t))fakes.push(t);});
+      const chips=shuffle([firstForm(v[k]),...fakes.slice(0,2)]);
+      $("hc").innerHTML=chips.map(c=>`<button class="hchip">${c}</button>`).join("");
+      [...$("hc").children].forEach(b=>makeDraggable(b,".gap",()=>answer(b),()=>answer(b)));
+    }
+    function answer(b){
+      if(lock||!G.running)return;lock=true;n++;
+      const {v,k}=cur;const right=correct(b.textContent,v[k]);
+      mark(v,right);tone(right,ok+1);buzz(right);
+      const gap=$("gap");gap.textContent=right?b.textContent:firstForm(v[k]);gap.classList.add(right?"ok":"bad",FCLS[k]);
+      [...$("hc").children].forEach(x=>{x.disabled=true;if(correct(x.textContent,v[k]))x.classList.add("ok");});
+      if(right){ok++;G.score=ok;b.classList.add("ok");burst(gap);$("hMsg").className="say ok";$("hMsg").textContent=cheer();}
+      else{b.classList.add("bad");missed(v);const h=hint(v,k,b.textContent);
+        $("hMsg").className="say bad";$("hMsg").textContent=h||(k==="past"?"Aquí va el pasado (past simple).":"Aquí va el participio (past participle).");}
+      $("hOk").textContent=`${ok} aciertos`;
+      sayText(cur.g.plain);
+      GT(next,right?1700:2600);
+    }
+    next();
+  }
+}
+
+const PLAY={lluvia:playRain,crono:playCrono,parejas:playPairs,superv:playSurvival,ahorcado:playHangman,unir:playLink,torre:playTower,hueco:playGap,duelo:playDuel};
 
 // ---------- logros ----------
 const mastered=g=>V.filter(v=>v.group===g).every(v=>lv(v)===4);
@@ -1819,7 +2067,10 @@ const ACH=[
  ["pairs14","🧩","Memoria de elefante","Parejas de tres en 14 movimientos o menos",()=>!!(S.rec||{}).parejas&&S.rec.parejas<=14],
  ["superv10","🪜","Superviviente","Llega al nivel 10 en Supervivencia",()=>((S.rec||{}).superv||0)>=10],
  ["hang5","🔤","Adivina, adivinanza","5 palabras seguidas en el Ahorcado",()=>((S.rec||{}).ahorcado||0)>=5],
- ["daily7","🗓️","Constancia","Completa el reto del día 7 días seguidos",()=>((S.daily||{}).best||0)>=7]
+ ["daily7","🗓️","Constancia","Completa el reto del día 7 días seguidos",()=>((S.daily||{}).best||0)>=7],
+ ["link15","🔗","Tejedora","Une 15 verbos en una partida de Une las tres formas",()=>((S.rec||{}).unir||0)>=15],
+ ["tower15","🧱","Rascacielos","Una torre de 15 pisos",()=>((S.rec||{}).torre||0)>=15],
+ ["gap10","🎯","Puntería","10 de 10 en Arrastra al hueco",()=>((S.rec||{}).hueco||0)>=10]
 ];
 function checkAch(silent){
   const got=[];
@@ -1915,6 +2166,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  38:["Tres juegos nuevos sin escribir, solo con el dedo: 🔗 Une las tres formas, 🧱 Ordena la torre y 🎯 Arrastra al hueco."],
   36:["El selector Aprender / Jugar se desliza y, en Jugar, la app cambia a colores cálidos."],
   35:["Inicio reordenado: primero eliges cómo practicar, luego los verbos y abajo tu muro de 88 verbos."],
   34:["Arriba del inicio eliges 📚 Aprender o 🎮 Jugar."],
