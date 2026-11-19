@@ -338,6 +338,22 @@ textarea.code{width:100%;min-height:96px;border:2px solid var(--line);border-rad
 :root[data-theme=dark].play{--bg:#22111F;--glow1:#3A1A2C;--glow2:#3A2014}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]).play{--bg:#22111F;--glow1:#3A1A2C;--glow2:#3A2014}}
 body{transition:background .4s}
+/* juego de traducción */
+.tdir{text-align:center;font-weight:900;font-size:15px;color:var(--soft);margin:-4px 0 10px}
+.tboard{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:44px;max-width:620px;margin:0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.tcol{display:flex;flex-direction:column;gap:10px;position:relative;z-index:3}
+.tlines{z-index:2}
+.tlines line{stroke:var(--inf);stroke-width:5;stroke-linecap:round;opacity:.6}
+.tlines line.ok{stroke:var(--ok);opacity:.5}
+.tlines line.drag{stroke-dasharray:8 8}
+.ttr{min-height:60px;border:3px solid var(--line);background:var(--field);border-radius:16px;padding:6px 10px;font-weight:800;font-size:16px;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 0 var(--line);transition:background .2s,border-color .2s,opacity .3s}
+.ttr .tw{overflow-wrap:anywhere}
+.ttr [lang=en].tw{font-weight:900;font-size:18px}
+.ttr .tk{font-size:11.5px;font-weight:900;color:#fff;border-radius:999px;padding:0 8px}
+.ttr .tk.a{background:var(--inf)}.ttr .tk.b{background:var(--past)}.ttr .tk.c{background:var(--part)}
+.ttr.sel{border-color:var(--inf);background:var(--inf-t);transform:scale(1.03)}
+.ttr.ok{border-color:var(--ok);background:var(--ok-t);opacity:.75}
+.ttr.bad{border-color:var(--bad);background:var(--bad-t);animation:shake .35s}
 /* juegos de arrastrar */
 .ghost{position:fixed;z-index:100;pointer-events:none;opacity:.92;transform:scale(1.08) rotate(-2deg);box-shadow:0 10px 24px rgba(30,20,80,.25)!important}
 .lifted{opacity:.35}
@@ -506,6 +522,9 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
   .slots{grid-template-columns:1fr}
   .ex{grid-template-columns:1fr}
   .glist{grid-template-columns:1fr}
+  .tboard{gap:26px}
+  .ttr{min-height:56px;font-size:14.5px;padding:5px 6px}
+  .ttr [lang=en].tw{font-size:16px}
   .ltile{min-height:64px;font-size:16.5px}
   .tslot{min-height:74px}.tslot span{font-size:16.5px}
   .ttile,.hchip{font-size:17px;min-width:84px}
@@ -681,7 +700,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=40, APP_DATE="18/11/2026";
+const APP_VERSION=41, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1183,7 +1202,7 @@ function applyTheme(){
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme);}catch(e){}
 
 // ---------- navegación (con el botón Atrás del móvil) ----------
-const TITLES={juegos:"🎮 Jugar",unir:"🔗 Une las tres formas",torre:"🧱 Ordena la torre",hueco:"🎯 Arrastra al hueco",crono:"⏱️ Contrarreloj",parejas:"🧩 Parejas de tres",ahorcado:"🔤 Ahorcado",duelo:"⚔️ Duelo",estudiar:"📖 Estudiar",tarjetas:"🃏 Tarjetas",escribir:"✍️ Escribir",elegir:"🎯 Elegir",examen:"📝 Examen",fallos:"🔁 Mis fallos",logros:"🏆 Logros",ajustes:"⚙️ Ajustes"};
+const TITLES={juegos:"🎮 Jugar",traduce:"🔀 Une las parejas",unir:"🔗 Une las tres formas",torre:"🧱 Ordena la torre",hueco:"🎯 Arrastra al hueco",crono:"⏱️ Contrarreloj",parejas:"🧩 Parejas de tres",ahorcado:"🔤 Ahorcado",duelo:"⚔️ Duelo",estudiar:"📖 Estudiar",tarjetas:"🃏 Tarjetas",escribir:"✍️ Escribir",elegir:"🎯 Elegir",examen:"📝 Examen",fallos:"🔁 Mis fallos",logros:"🏆 Logros",ajustes:"⚙️ Ajustes"};
 function setTab(t){
   S.homeTab=t;save();
   const play=t==="jugar";
@@ -1450,6 +1469,7 @@ const GAMES=[
  ["unir","🔗","Une las tres formas","Une con el dedo infinitivo → pasado → participio. Sin escribir.",r=>`${r} verbos`],
  ["torre","🧱","Ordena la torre","Arrastra las tres formas a su sitio y sube tu torre. Sin escribir.",r=>`${r} pisos`],
  ["hueco","🎯","Arrastra al hueco","Completa frases arrastrando la forma correcta. Sin escribir.",r=>`${r}/10`],
+ ["traduce","🔀","Une las parejas","Une cada palabra en inglés con su significado en castellano, y al revés.",r=>`${r} parejas`],
  ["duelo","⚔️","Duelo","Dos jugadores en el mismo móvil: gana quien acierte antes.",null]
 ];
 let GAME=null,DAILY=null,AUTOSTART=false,PRACTICE=null;
@@ -1540,7 +1560,7 @@ const dayKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padSta
 function seeded(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%100000)/100000;};}
 function dailyInfo(){
   const key=dayKey(),r=seeded("iv"+key);
-  const DG=["crono","ahorcado","unir","torre","hueco"];const game=DG[Math.floor(r()*DG.length)];
+  const DG=["crono","ahorcado","unir","torre","hueco","traduce"];const game=DG[Math.floor(r()*DG.length)];
   const vs=V.filter(v=>v.part!=="—"),sel=[];
   while(sel.length<10){const v=vs[Math.floor(r()*vs.length)];if(!sel.includes(v))sel.push(v);}
   return{key,game,verbs:sel};
@@ -1616,7 +1636,7 @@ function renderGames(el=$("playInner")){
     <p class="tip">Los juegos usan el grupo de verbos elegido arriba. Tus aciertos cuentan para el muro (menos en Parejas y Duelo).</p>`;
   el.querySelectorAll(".gitem").forEach(b=>b.onclick=()=>go(b.dataset.g));
   el.querySelector("#gDaily").onclick=()=>{DAILY=d;go(d.game);};
-  el.querySelector("#gQuick").onclick=()=>{AUTOSTART=true;go(pick(["crono","parejas","ahorcado","unir","torre","hueco"]));};
+  el.querySelector("#gQuick").onclick=()=>{AUTOSTART=true;go(pick(["crono","parejas","ahorcado","unir","torre","hueco","traduce"]));};
 }
 
 // ===== 2. Contrarreloj: correcto o trampa =====
@@ -1994,7 +2014,90 @@ function playGap(){
   }
 }
 
-const PLAY={crono:playCrono,parejas:playPairs,ahorcado:playHangman,unir:playLink,torre:playTower,hueco:playGap,duelo:playDuel};
+// ===== 10. Une las parejas (traducción) =====
+function playTranslate(){
+  const G=newGame("traduce");
+  gameIntro("traduce",["Dos columnas: palabras en inglés (en cualquier forma: infinitivo, pasado o participio) y su significado en castellano.","Toca una de cada lado para unirlas, o arrastra una línea de una a otra.","Cada 5 parejas cambia la dirección: castellano a la izquierda e inglés a la derecha.","Tienes 90 segundos. Cada error resta 2 segundos."],"",()=>countdown(start));
+  function start(){
+    G.running=true;G.score=0;let left=90,lastTick=Date.now(),round=0,sel=null,pairs=[],done=0,combo=0,dragLine=null;
+    $("p-game").innerHTML=`<div class="ghud"><span>🔀 <b id="gScore">0</b></span><span id="gCombo"></span><span>⏱️ <b id="gTime">90</b> s</span>${pauseButton()}</div>
+      <div class="track"><i id="gBar" style="width:100%"></i></div>
+      <div class="tdir" id="tDir"></div>
+      <div class="tboard" id="tb"><svg class="lline tlines" id="tl" aria-hidden="true"></svg><div class="tcol" id="tcL"></div><div class="tcol" id="tcR"></div></div>
+      <div class="say" id="tMsg" role="status" aria-live="polite"></div>`;
+    wirePause();G.onResume=()=>{lastTick=Date.now();};
+    const P=gPool();
+    const FLBL={inf:"infinitive",past:"past",part:"participle"};
+    function newRound(){
+      round++;done=0;sel=null;
+      // 5 verbos con significados distintos y palabras inglesas que no se repitan
+      const pickV=[],seenEs=new Set(),seenEn=new Set();
+      for(const v of shuffle(P.length>=5?P:V)){
+        const k=v.part==="—"?pick(["inf","past"]):pick(["inf","past","part"]);
+        const w=norm(firstForm(v[k]));
+        if(seenEs.has(v.es)||seenEn.has(w)||V.some(o=>o!==v&&[o.inf,o.past,o.part].some(f=>opts(f).includes(w))))continue;
+        seenEs.add(v.es);seenEn.add(w);pickV.push({v,k,w:firstForm(v[k])});if(pickV.length===5)break;
+      }
+      pairs=pickV;
+      const enLeft=round%2===1;
+      const en=p=>`<span class="tw" lang="en">${p.w}</span><small class="tk ${FCLS[p.k]}">${FLBL[p.k]}</small>`;
+      const es=p=>`<span class="tw" lang="es">${p.v.es}</span>`;
+      $("tDir").innerHTML=enLeft?"🇬🇧 Inglés → 🇪🇸 Castellano":"🇪🇸 Castellano → 🇬🇧 Inglés";
+      $("tcL").innerHTML=shuffle(pairs.map((p,i)=>i)).map(i=>`<button class="ttr" data-i="${i}" data-side="L">${enLeft?en(pairs[i]):es(pairs[i])}</button>`).join("");
+      $("tcR").innerHTML=shuffle(pairs.map((p,i)=>i)).map(i=>`<button class="ttr" data-i="${i}" data-side="R">${enLeft?es(pairs[i]):en(pairs[i])}</button>`).join("");
+      $("tl").innerHTML="";
+    }
+    const center=(el)=>{const r=$("tb").getBoundingClientRect(),b=el.getBoundingClientRect();return [b.left+b.width/2-r.left,b.top+b.height/2-r.top];};
+    const edge=(el,side)=>{const r=$("tb").getBoundingClientRect(),b=el.getBoundingClientRect();return [(side==="L"?b.right:b.left)-r.left,b.top+b.height/2-r.top];};
+    function lineBetween(a,b,cls){const p1=edge(a,a.dataset.side),p2=edge(b,b.dataset.side);
+      const l=document.createElementNS("http://www.w3.org/2000/svg","line");l.setAttribute("x1",p1[0]);l.setAttribute("y1",p1[1]);l.setAttribute("x2",p2[0]);l.setAttribute("y2",p2[1]);l.setAttribute("class",cls);$("tl").appendChild(l);return l;}
+    function select(el){
+      if(sel)sel.classList.remove("sel");
+      sel=el;if(el)el.classList.add("sel");
+    }
+    function tryMatch(a,b){
+      if(!a||!b||a.dataset.side===b.dataset.side)return;
+      const ok=a.dataset.i===b.dataset.i;const p=pairs[+a.dataset.i];
+      select(null);
+      if(ok){
+        done++;combo++;G.score++;$("gScore").textContent=G.score;$("gCombo").textContent=combo>=3?`🔥 ${combo}`:"";
+        a.classList.add("ok");b.classList.add("ok");a.disabled=b.disabled=true;lineBetween(a,b,"ok");
+        mark(p.v,true);tone(true,combo);buzz(true);burst(b);speak(p.w);
+        $("tMsg").className="say ok";$("tMsg").innerHTML=`<span lang="en">${p.v.inf} – ${p.v.past} – ${p.v.part}</span> <span class="esm">(${p.v.es})</span>`;
+        if(done===5)GT(newRound,700);
+      }else{
+        combo=0;left=Math.max(0,left-2);$("gCombo").textContent="";
+        const en=a.querySelector('[lang="en"]')?a:b;const pv=pairs[+en.dataset.i];
+        mark(pv.v,false);missed(pv.v);tone(false);buzz(false);
+        [a,b].forEach(x=>{x.classList.add("bad");GT(()=>x.classList.remove("bad"),600);});
+        $("tMsg").className="say bad";$("tMsg").innerHTML=`<span lang="en">${pv.w}</span> es <b>${pv.v.es}</b>. −2 s`;
+      }
+    }
+    // tocar o arrastrar una línea
+    const tb=$("tb");let down=null;
+    gOn(tb,"pointerdown",e=>{if(!G.running||G.paused)return;const t=e.target.closest(".ttr");if(!t||t.disabled)return;
+      e.preventDefault();down=t;try{tb.setPointerCapture(e.pointerId);}catch(_){}
+      if(sel&&sel.dataset.side!==t.dataset.side){tryMatch(sel,t);down=null;return;}
+      select(t);});
+    gOn(tb,"pointermove",e=>{if(!down)return;const p1=edge(down,down.dataset.side),r=tb.getBoundingClientRect();
+      if(!dragLine){dragLine=document.createElementNS("http://www.w3.org/2000/svg","line");dragLine.setAttribute("class","drag");$("tl").appendChild(dragLine);}
+      dragLine.setAttribute("x1",p1[0]);dragLine.setAttribute("y1",p1[1]);dragLine.setAttribute("x2",e.clientX-r.left);dragLine.setAttribute("y2",e.clientY-r.top);});
+    const up=e=>{if(dragLine){dragLine.remove();dragLine=null;}
+      if(!down)return;const t=under(e.clientX,e.clientY,".ttr");
+      if(t&&t!==down&&!t.disabled&&t.dataset.side!==down.dataset.side)tryMatch(down,t);
+      down=null;};
+    gOn(tb,"pointerup",up);gOn(tb,"pointercancel",()=>{if(dragLine){dragLine.remove();dragLine=null;}down=null;});
+    gOn(tb,"keydown",e=>{const t=e.target.closest(".ttr");if(!t||!(e.key==="Enter"||e.key===" "))return;e.preventDefault();
+      if(sel&&sel.dataset.side!==t.dataset.side)tryMatch(sel,t);else select(t);});
+    gOn(window,"resize",()=>{$("tl").innerHTML="";[...$("tcL").children].filter(x=>x.classList.contains("ok")).forEach(a=>{const b=[...$("tcR").children].find(y=>y.dataset.i===a.dataset.i);if(b)lineBetween(a,b,"ok");});});
+    GI(()=>{const now=Date.now();if(!G.paused)left-=(now-lastTick)/1000;lastTick=now;
+      $("gTime").textContent=Math.max(0,Math.ceil(left));$("gBar").style.width=Math.max(0,left/90*100)+"%";
+      if(left<=0&&G.running){G.running=false;gameOver("traduce",G.score,"Parejas unidas",G.score,false);}},100);
+    newRound();
+  }
+}
+
+const PLAY={traduce:playTranslate,crono:playCrono,parejas:playPairs,ahorcado:playHangman,unir:playLink,torre:playTower,hueco:playGap,duelo:playDuel};
 
 // ---------- logros ----------
 const mastered=g=>V.filter(v=>v.group===g).every(v=>lv(v)===4);
@@ -2023,6 +2126,7 @@ const ACH=[
  ["daily7","🗓️","Constancia","Completa el reto del día 7 días seguidos",()=>((S.daily||{}).best||0)>=7],
  ["link15","🔗","Tejedora","Une 15 verbos en una partida de Une las tres formas",()=>((S.rec||{}).unir||0)>=15],
  ["tower15","🧱","Rascacielos","Una torre de 15 pisos",()=>((S.rec||{}).torre||0)>=15],
+ ["trad25","🔀","Traductora","Une 25 parejas en una partida de Une las parejas",()=>((S.rec||{}).traduce||0)>=25],
  ["gap10","🎯","Puntería","10 de 10 en Arrastra al hueco",()=>((S.rec||{}).hueco||0)>=10]
 ];
 function checkAch(silent){
@@ -2119,6 +2223,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  41:["Nuevo juego 🔀 Une las parejas: une cada verbo en inglés con su significado en castellano, y al revés."],
   40:["Fuera la Lluvia de verbos y la Supervivencia: ahora todos los juegos se juegan sin escribir (salvo el Ahorcado, con su teclado de letras)."],
   39:["Las frases de ejemplo tienen su traducción al castellano, y los juegos y las listas de repaso muestran el significado de cada verbo."],
   38:["Tres juegos nuevos sin escribir, solo con el dedo: 🔗 Une las tres formas, 🧱 Ordena la torre y 🎯 Arrastra al hueco."],
