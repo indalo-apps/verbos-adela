@@ -700,7 +700,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=41, APP_DATE="18/11/2026";
+const APP_VERSION=42, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -2062,7 +2062,7 @@ function playTranslate(){
       if(ok){
         done++;combo++;G.score++;$("gScore").textContent=G.score;$("gCombo").textContent=combo>=3?`🔥 ${combo}`:"";
         a.classList.add("ok");b.classList.add("ok");a.disabled=b.disabled=true;lineBetween(a,b,"ok");
-        mark(p.v,true);tone(true,combo);buzz(true);burst(b);speak(p.w);
+        mark(p.v,true);tone(true,combo);buzz(true);burst(b);sayText(p.k==="inf"||p.w!=="read"?p.w:"red");
         $("tMsg").className="say ok";$("tMsg").innerHTML=`<span lang="en">${p.v.inf} – ${p.v.past} – ${p.v.part}</span> <span class="esm">(${p.v.es})</span>`;
         if(done===5)GT(newRound,700);
       }else{
