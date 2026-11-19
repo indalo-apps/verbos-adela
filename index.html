@@ -205,6 +205,7 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .ex .sen{display:block;font-size:15.5px;line-height:1.4}
 .ex mark{background:none;font-weight:900}
 .ex mark.b{color:var(--past-x)}.ex mark.c{color:var(--part-x)}
+.ex .tr{display:block;font-size:13.5px;color:var(--soft);margin-top:2px;font-style:italic}
 .ex .es2{font-size:13.5px;color:var(--soft)}
 .after .ex{grid-template-columns:1fr}
 .after .exl{background:var(--paper)}
@@ -271,6 +272,7 @@ input,textarea{-webkit-tap-highlight-color:transparent}
 .pick{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .grade{font-weight:900;font-size:110px;line-height:1;letter-spacing:-.05em;margin:6px 0}
 .misses{display:flex;flex-direction:column;gap:6px;max-width:520px;margin:18px auto}
+.misses .esrow{grid-column:1/-1;min-height:0;padding:0 6px 2px;text-align:left}
 .misses .vrow{grid-template-columns:repeat(3,minmax(0,1fr))}
 .empty .big{font-size:54px}
 
@@ -366,6 +368,10 @@ body{transition:background .4s}
 .gap{display:inline-block;min-width:110px;border-bottom:4px solid var(--inf);background:var(--row);border-radius:10px 10px 0 0;padding:0 10px;font-weight:900;text-align:center;line-height:1.5;transition:background .2s}
 .gap.ok{background:var(--ok-t);border-color:var(--ok)}.gap.bad{background:var(--bad-t);border-color:var(--bad)}
 .gap.b{color:var(--past-x)}.gap.c{color:var(--part-x)}
+.hes{display:block;font-size:15px;font-weight:600;font-style:italic;color:var(--soft);line-height:1.4;margin-top:6px}
+.esm{font-weight:600;color:var(--soft);font-size:.85em}
+.floor .esm{color:#E7F7EA}
+.des{display:block;font-size:13px;font-weight:700;color:var(--soft);margin-top:2px}
 .gapv{color:var(--soft);font-size:15px;font-weight:700}
 /* juegos */
 #p-game{position:relative}
@@ -675,7 +681,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=38, APP_DATE="18/11/2026";
+const APP_VERSION=39, APP_DATE="18/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -857,7 +863,98 @@ wake:["I *woke* up at seven this morning.","The baby *has* just *woken* up."],
 wear:["She *wore* a blue dress to the wedding.","I *have* never *worn* a suit."],
 win:["Our team *won* the match.","She *has won* three medals this year."],
 write:["I *wrote* a letter to my grandma.","I *have written* three emails today."]
+};// traducción al castellano de las frases de ejemplo [pasado, presente perfecto]
+const EXES={
+be:["Estaba cansado después del partido.","Somos amigas desde primaria."],
+beat:["España ganó a Italia 2-1 anoche.","Nadie le ha ganado nunca al ajedrez."],
+become:["Se hizo médica en 2015.","Hoy se ha puesto a hacer mucho frío."],
+begin:["La película empezó a las ocho.","¿Has empezado ya tu proyecto?"],
+bite:["Un perro mordió a mi hermano el verano pasado.","Nunca me ha mordido una serpiente."],
+blow:["El viento sopló toda la noche.","La tormenta ha tirado la valla."],
+break:["Ayer rompí mi móvil.","¡Alguien ha roto la ventana!"],
+bring:["Trajo una tarta a la fiesta.","¿Has traído los deberes?"],
+burn:["Me quemé el dedo con el horno.","El fuego lleva dos días ardiendo."],
+build:["Construyeron un colegio nuevo en 2019.","Hemos construido una casa en el árbol del jardín."],
+buy:["Me compré unas zapatillas nuevas el sábado.","Mamá acaba de comprarse un coche nuevo."],
+can:["Sabía nadar cuando tenía cinco años.",""],
+catch:["Cogió la pelota con una mano.","La policía ha atrapado al ladrón."],
+choose:["Eligió el vestido rojo.","¿Has elegido un libro para leer?"],
+come:["Mis primos vinieron de visita la semana pasada.","Este año el invierno ha llegado pronto."],
+cost:["Las entradas costaron 20 euros.","Este viaje ha costado mucho dinero."],
+cut:["Me corté el pelo el mes pasado.","¡Oh, no, me he cortado el dedo!"],
+do:["Hice los deberes después de cenar.","¿Has fregado los platos?"],
+draw:["Dibujó un caballo precioso.","He dibujado un mapa del pueblo."],
+dream:["Anoche soñé con la playa.","Siempre he soñado con visitar Japón."],
+drink:["Bebimos limonada en el picnic.","¿Quién se ha bebido toda la leche?"],
+drive:["Papá nos llevó en coche al aeropuerto.","Nunca he conducido un coche."],
+eat:["Comimos paella el domingo.","¿Has comido sushi alguna vez?"],
+fall:["Ayer se cayó de la bici.","Las hojas se han caído de los árboles."],
+feed:["Esta mañana le di de comer al gato.","¿Le has dado de comer hoy al perro?"],
+feel:["Estaba nerviosa antes del examen.","Nunca me he sentido tan feliz."],
+fight:["Los dos gatos se pelearon en el jardín.","Llevan años discutiendo por eso."],
+find:["Encontré las llaves debajo del sofá.","¿Has encontrado ya tu móvil?"],
+fly:["Volamos a Londres el verano pasado.","Nunca he volado en helicóptero."],
+forget:["Me olvidé el paraguas en el instituto.","He olvidado cómo se llama."],
+forgive:["Le perdonó por llegar tarde.","¿Has perdonado a tu hermana?"],
+freeze:["El lago se congeló el invierno pasado.","El agua de la botella se ha congelado."],
+get:["Saqué buena nota en inglés.","Ha conseguido un trabajo nuevo."],
+give:["Mi abuela me regaló un libro.","He dado mi ropa vieja a una ONG."],
+go:["Fuimos al cine el viernes.","Laura se ha ido a París. Ahora está allí."],
+grow:["Los tomates crecieron bien el verano pasado.","¡Cuánto has crecido este año!"],
+hang:["Colgué el cuadro en la pared.","¿Has colgado el abrigo?"],
+have:["Lo pasamos genial en la fiesta.","Llevo tres días resfriada."],
+hear:["Anoche oí un ruido raro.","¿Te has enterado de la noticia?"],
+hide:["Los niños se escondieron detrás del árbol.","¿Dónde has escondido los regalos?"],
+hit:["La pelota golpeó la ventana.","Se ha dado un golpe en la cabeza con la puerta."],
+hold:["Sostuvo al bebé con cuidado.","Tiene el récord del mundo desde 2020."],
+hurt:["Me hice daño en la rodilla jugando al fútbol.","¿Te has hecho daño?"],
+keep:["Guardó el secreto durante años.","He guardado todas tus cartas."],
+know:["Me sabía la respuesta a la pregunta.","Conozco a Pablo desde que tenía seis años."],
+lead:["Llevó al equipo a la victoria.","Lleva dos años dirigiendo el grupo."],
+learn:["Aprendí a nadar con siete años.","Hemos aprendido mucho este año."],
+leave:["Salimos de casa a las siete.","El tren acaba de salir."],
+lend:["Le dejé mis apuntes.","¿Le has prestado tu bici a alguien?"],
+let:["Mis padres me dejaron quedarme despierta hasta tarde.","La profesora nos ha dejado salir antes."],
+lie:["Estuvo tumbada en la playa toda la tarde.","El libro lleva semanas sobre la mesa."],
+lose:["Nuestro equipo perdió la final.","¡He perdido la cartera!"],
+make:["La abuela hizo una tarta de chocolate.","¿Has hecho la cama?"],
+meet:["Conocí a mi mejor amiga en el colegio.","¿Has conocido a nuestro nuevo vecino?"],
+pay:["Pagué las entradas por internet.","¿Has pagado la cuenta?"],
+put:["Puse la leche en la nevera.","¿Dónde has puesto mis gafas?"],
+read:["Leí un libro genial el verano pasado.","¿Has leído Harry Potter?"],
+ride:["Fuimos en bici a la playa.","Nunca he montado a caballo."],
+ring:["El teléfono sonó durante la cena.","¿Ha sonado ya el timbre?"],
+run:["Ayer corrió cinco kilómetros.","He corrido dos maratones."],
+say:["Saludó a todo el mundo.","¿Qué le has dicho?"],
+see:["El sábado vi una película genial.","¿Has visto la nieve alguna vez?"],
+sell:["Vendieron su casa antigua.","La tienda ha vendido todas las entradas."],
+send:["Anoche te mandé un mensaje.","¿Has enviado el correo?"],
+set:["Pusimos la mesa para cenar.","El sol se ha puesto. Ya es de noche."],
+shake:["El perro se sacudió después del baño.","La noticia ha impactado a todo el mundo."],
+shine:["El sol brilló todo el día.","Esta semana ha hecho sol todos los días."],
+show:["Me enseñó sus fotos.","Me ha enseñado cómo se hace."],
+shut:["Cerró la puerta sin hacer ruido.","Alguien ha cerrado la ventana."],
+sing:["Cantamos canciones alrededor del fuego.","Lleva años cantando en el coro."],
+sit:["Me senté al lado de Marta en clase.","Llevamos una hora sentados aquí."],
+sleep:["Anoche dormí muy bien.","¿Has dormido algo?"],
+speak:["Hablé con la profesora después de clase.","¿Has hablado con tu madre?"],
+spell:["Escribió mal mi nombre.","¿Lo he escrito bien?"],
+spend:["Pasamos el verano en Galicia.","Me he gastado todo el dinero."],
+stand:["Estuvimos una hora de pie en la cola.","Lleva toda la mañana ahí de pie."],
+steal:["Alguien me robó la bici la semana pasada.","¡Me han robado la cartera!"],
+swim:["Nadábamos en el mar todos los días.","Nunca he nadado en un lago."],
+take:["Hice muchas fotos en vacaciones.","¿Quién ha cogido mi boli?"],
+teach:["Mi tío me enseñó a jugar al ajedrez.","Lleva diez años enseñando inglés."],
+tell:["Me contó una historia muy graciosa.","¿Se lo has contado a tus padres?"],
+think:["Pensé que el examen era fácil.","¿Has pensado en mi idea?"],
+throw:["Me lanzó la pelota.","Alguien ha tirado una piedra al coche."],
+understand:["Entendí la lección perfectamente.","¿Has entendido la pregunta?"],
+wake:["Esta mañana me desperté a las siete.","El bebé acaba de despertarse."],
+wear:["Llevó un vestido azul a la boda.","Nunca me he puesto un traje."],
+win:["Nuestro equipo ganó el partido.","Este año ha ganado tres medallas."],
+write:["Le escribí una carta a mi abuela.","Hoy he escrito tres correos."]
 };
+
 
 const V=RAW.map(r=>({inf:r[0],phI:r[1],past:r[2],phP:r[3],part:r[4],phPP:r[5],es:r[6]}));
 const FORMS=[["inf","Infinitive","a"],["past","Past simple","b"],["part","Past participle","c"]];
@@ -1003,8 +1100,8 @@ function exHTML(v){
   const e=EX[v.inf];if(!e)return "";
   const mk=(s,c)=>s.replace(/\*(.+?)\*/g,`<mark class="${c}">$1</mark>`);
   return `<div class="ex">
-    <div class="exl b"><span class="tag">Past simple</span><span class="sen" lang="en">${mk(e[0],"b")}</span></div>
-    ${e[1]?`<div class="exl c"><span class="tag">Present perfect</span><span class="sen" lang="en">${mk(e[1],"c")}</span></div>`:`<div class="exl c"><span class="tag">Present perfect</span><span class="sen es2">"can" no tiene participio: se usa "be able to" (I have been able to…).</span></div>`}
+    <div class="exl b"><span class="tag">Past simple</span><span class="sen" lang="en">${mk(e[0],"b")}</span><span class="tr">${(EXES[v.inf]||[])[0]||""}</span></div>
+    ${e[1]?`<div class="exl c"><span class="tag">Present perfect</span><span class="sen" lang="en">${mk(e[1],"c")}</span><span class="tr">${(EXES[v.inf]||[])[1]||""}</span></div>`:`<div class="exl c"><span class="tag">Present perfect</span><span class="sen es2">"can" no tiene participio: se usa "be able to" (I have been able to…).</span></div>`}
   </div>`;
 }
 
@@ -1170,6 +1267,7 @@ const rowHTML=(v,full=true)=>{
     <div class="f a ${full?"tap":""}" ${full?`role="button" tabindex="0" aria-expanded="${open}" aria-label="${v.inf}: ver frases de ejemplo"`:""}><b lang="en">${v.inf}${full?`<span class="lvl l${lv(v)}" aria-hidden="true"></span><span class="chev" aria-hidden="true">▾</span>`:""}</b><small>${v.phI}</small></div>
     <div class="f b ${hp?"mask":""}"><b lang="en">${v.past}</b><small>${v.phP}</small></div>
     <div class="f c ${hpp?"mask":""}"><b lang="en">${v.part}</b><small>${v.phPP}</small></div>
+    ${full?"":`<div class="f d esrow">${v.es}</div>`}
     ${full?`<div class="f d ${hes?"mask":""}"><span>${v.es}</span></div>
     <button class="spk" aria-label="Escuchar ${v.inf}">🔊</button>`:""}
   </div>${open?exHTML(v):""}</div>`;
@@ -1570,7 +1668,7 @@ function playRain(){
     function lose(d){
       remove(d,"lost");lives--;combo=0;mark(d.v,false);missed(d.v);tone(false);buzz(false);
       $("gLives").textContent=lives3(lives);$("gCombo").textContent="";
-      $("rainMsg").className="say bad";$("rainMsg").innerHTML=`<span lang="en">${d.v.inf} → ${d.v[d.k]}</span>`;
+      $("rainMsg").className="say bad";$("rainMsg").innerHTML=`<span lang="en">${d.v.inf} → ${d.v[d.k]}</span> <span class="esm">(${d.v.es})</span>`;
       if(lives<=0){G.running=false;GT(()=>gameOver("lluvia",G.score,"Puntos",G.score,false),600);}
     }
     $("gIce").onclick=()=>{if(ice<=0||!G.running)return;ice--;frozen=Date.now()+5000;$("gIceN").textContent=ice;$("gIce").classList.toggle("hidden",!ice);toast("❄️ ¡Lluvia congelada 5 segundos!",1500);inp.focus();};
@@ -1664,7 +1762,7 @@ function playPairs(){
       if(open.length===3){
         moves++;found++;$("gMoves").textContent=moves;$("gFound").textContent=found;
         const v=pickV[cards[open[0]].vi];open.forEach(j=>{els[j].classList.add("done");burst(els[j]);});open=[];tone(true,found*2);buzz(true);sayAll(v);
-        $("pMsg").className="say ok";$("pMsg").innerHTML=`<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
+        $("pMsg").className="say ok";$("pMsg").innerHTML=`<span lang="en">${v.inf} – ${v.past} – ${v.part}</span> <span class="esm">(${v.es})</span>`;
         if(found===N){G.running=false;GT(()=>gameOver("parejas",moves,"Movimientos",moves,true,`<p>${LV[lvl][1]} · ${Math.round((Date.now()-t0)/1000)} segundos</p>`,recKey()),900);}
       }
     };
@@ -1731,7 +1829,7 @@ function playSurvival(){
         streak=0;lives--;missed(v);if(type==="boss")boss=false;
         $("gLives").textContent=lives3(lives);
         const h=given!=null?hint(v,k,given):"";
-        $("svMsg").className="say bad";$("svMsg").innerHTML=`${timeout?"⏰ ¡Se acabó el tiempo! ":h?h+" ":""}<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
+        $("svMsg").className="say bad";$("svMsg").innerHTML=`${timeout?"⏰ ¡Se acabó el tiempo! ":h?h+" ":""}<span lang="en">${v.inf} – ${v.past} – ${v.part}</span> <span class="esm">(${v.es})</span>`;
         if(lives<=0){G.running=false;GT(()=>gameOver("superv",lvl,"Has llegado al nivel",lvl,false,`<p>${G.score} puntos</p>`),1800);}else GT(next,2000);
       }
       $("gScore").textContent=G.score;powers();
@@ -1762,7 +1860,7 @@ function playHangman(){
       const draw=()=>{$("hWord").innerHTML=[...w].map(c=>`<span class="${got.has(c)?"on":""}">${got.has(c)?c:"_"}</span>`).join("");};draw();
       const balloons=()=>{$("hBal").textContent="🎈".repeat(Math.max(0,6-miss))+"💥".repeat(Math.min(6,miss));};
       const lost=()=>{mark(v,false);missed(v);[...w].forEach(x=>got.add(x));draw();
-        $("hMsg").className="say bad";$("hMsg").innerHTML=`Era <b lang="en">${v[k]}</b>`;buzz(false);
+        $("hMsg").className="say bad";$("hMsg").innerHTML=`Era <b lang="en">${v[k]}</b> <span class="esm">(${v.es})</span>`;buzz(false);
         G.running=false;GT(()=>gameOver("ahorcado",streak,"Palabras seguidas",streak,false),1800);};
       $("hHintBtn").onclick=()=>{
         if(hinted||miss>=6||!G.running)return;hinted=true;miss++;balloons();$("hHintBtn").disabled=true;
@@ -1810,10 +1908,10 @@ function playDuel(){
       const fakes=shuffle(trapsFor(v,k)).slice(0,2);
       let g=0;while(fakes.length<2&&g++<40){const o=pick(V)[k];if(o!=="—"&&norm(o)!==norm(v[k])&&!fakes.includes(o))fakes.push(o);}
       q={v,k,ch:shuffle([v[k],...fakes])};
-      [0,1].forEach(p=>{$("ds"+p).innerHTML=`<div class="dname">${esc(n[p])} · <b>${pts[p]}</b>/${target}</div><div class="dq"><span lang="en">${v.inf}</span> → <span style="color:var(--${k==="past"?"past":"part"}-x)">${k==="past"?"past":"participle"}</span></div>
+      [0,1].forEach(p=>{$("ds"+p).innerHTML=`<div class="dname">${esc(n[p])} · <b>${pts[p]}</b>/${target}</div><div class="dq"><span lang="en">${v.inf}</span> → <span style="color:var(--${k==="past"?"past":"part"}-x)">${k==="past"?"past":"participle"}</span><small class="des">${v.es}</small></div>
         <div class="dopts" lang="en">${q.ch.map(c=>`<button class="opt" data-p="${p}">${c}</button>`).join("")}</div>`;});
     }
-    const showTrip=()=>{$("dTrip").innerHTML=triple([q.v.inf,q.v.past,q.v.part]);};
+    const showTrip=()=>{$("dTrip").innerHTML=triple([q.v.inf,q.v.past,q.v.part])+`<small class="des">${q.v.es}</small>`;};
     $("p-game").querySelector(".duel").onclick=e=>{
       const b=e.target.closest(".opt");if(!b||done||!G.running)return;const p=+b.dataset.p;if(locked[p])return;
       if(b.textContent===q.v[q.k]){
@@ -1901,7 +1999,7 @@ function playLink(){
         combo++;G.score++;$("gScore").textContent=G.score;$("gCombo").textContent=combo>=3?`🔥 ${combo}`:"";
         mark(v,true);tone(true,combo);buzz(true);
         path.forEach(i=>{const el=tiles()[i];el.classList.add("gone",FCLS[board[i].k]);burst(el);});
-        $("lMsg").className="say ok";$("lMsg").innerHTML=`<span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;speakForm(v,"inf");
+        $("lMsg").className="say ok";$("lMsg").innerHTML=`<span lang="en">${v.inf} – ${v.past} – ${v.part}</span> <span class="esm">(${v.es})</span>`;speakForm(v,"inf");
         path=[];draw();
         if(tiles().every(x=>x.classList.contains("gone")))GT(newBoard,500);
       }else{
@@ -1974,13 +2072,13 @@ function playTower(){
       mark(v,ok);tone(ok,G.score+1);buzz(ok);
       if(ok){
         G.score++;$("gScore").textContent=G.score;
-        const f=document.createElement("div");f.className="floor";f.setAttribute("lang","en");f.textContent=`${v.inf} · ${v.past} · ${v.part}`;$("tw").prepend(f);burst(f);
+        const f=document.createElement("div");f.className="floor";f.setAttribute("lang","en");f.innerHTML=`${v.inf} · ${v.past} · ${v.part} <span class="esm" lang="es">(${v.es})</span>`;$("tw").prepend(f);burst(f);
         [...$("ts").children].forEach(s=>s.classList.add("okk"));
         $("tMsg").className="say ok";$("tMsg").textContent=cheer();sayAll(v);
         GT(()=>{[...$("ts").children].forEach(s=>s.classList.remove("okk"));next();},1100);
       }else{
         lives--;missed(v);$("gLives").textContent=lives3(lives);
-        $("tMsg").className="say bad";$("tMsg").innerHTML=`Es: <span lang="en">${v.inf} – ${v.past} – ${v.part}</span>`;
+        $("tMsg").className="say bad";$("tMsg").innerHTML=`Es: <span lang="en">${v.inf} – ${v.past} – ${v.part}</span> <span class="esm">(${v.es})</span>`;
         $("ts").classList.remove("shake");void $("ts").offsetWidth;$("ts").classList.add("shake");
         if(lives<=0){G.running=false;GT(()=>gameOver("torre",G.score,"Pisos de tu torre",G.score,false),1800);}else GT(next,2000);
       }
@@ -1992,9 +2090,10 @@ function playTower(){
 // ===== 9. Arrastra al hueco =====
 function gapSentence(v,k){
   const e=EX[v.inf];if(!e)return null;const s=e[k==="past"?0:1];if(!s)return null;
+  const es=(EXES[v.inf]||[])[k==="past"?0:1]||"";
   const targets=opts(v[k]);let found=false;
   const html=s.replace(/\*(.+?)\*/g,(m,inner)=>inner.split(" ").map(t=>{if(!found&&targets.includes(norm(t))){found=true;return "@@GAP@@";}return t;}).join(" "));
-  return found?{html,plain:s.replace(/\*/g,"")}:null;
+  return found?{html,plain:s.replace(/\*/g,""),es}:null;
 }
 function playGap(){
   const G=newGame("hueco");
@@ -2013,7 +2112,7 @@ function playGap(){
       do{v=pick(P);k=askForm(v);g=gapSentence(v,k);}while(!g&&tries++<50);
       cur={v,k,g};
       $("hCount").textContent=`Frase ${n+1} de 10`;$("hOk").textContent=`${ok} aciertos`;$("gBar").style.width=n*10+"%";
-      $("hs").innerHTML=g.html.replace("@@GAP@@",`<span class="gap" id="gap" tabindex="-1">&nbsp;</span> <small class="gapv">(${v.inf})</small>`);
+      $("hs").innerHTML=g.html.replace("@@GAP@@",`<span class="gap" id="gap" tabindex="-1">&nbsp;</span> <small class="gapv">(${v.inf})</small>`)+(g.es?`<span class="hes" lang="es">${g.es}</span>`:"");
       // trampa principal: la otra forma del mismo verbo; luego -ed, infinitivo o faltas
       const other=k==="past"?v.part:v.past;const fakes=[];
       if(other!=="—"&&!opts(v[k]).includes(norm(firstForm(other))))fakes.push(firstForm(other));
@@ -2166,6 +2265,7 @@ const CHANGELOG={
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
   19:["En Ajustes salen primero las voces británicas."],
+  39:["Las frases de ejemplo tienen su traducción al castellano, y los juegos y las listas de repaso muestran el significado de cada verbo."],
   38:["Tres juegos nuevos sin escribir, solo con el dedo: 🔗 Une las tres formas, 🧱 Ordena la torre y 🎯 Arrastra al hueco."],
   36:["El selector Aprender / Jugar se desliza y, en Jugar, la app cambia a colores cálidos."],
   35:["Inicio reordenado: primero eliges cómo practicar, luego los verbos y abajo tu muro de 88 verbos."],
