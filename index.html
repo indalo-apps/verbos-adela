@@ -2,8 +2,19 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="app-version" content="43">
 <title>Irregular Verbs</title>
+<meta name="author" content="Adela Moreno Vega y Carlos Moreno Otto">
+<meta name="copyright" content="© 2026 Adela Moreno Vega y Carlos Moreno Otto. Todos los derechos reservados.">
+<meta name="description" content="App para estudiar los verbos irregulares de inglés (4º ESO): tarjetas, examen, juegos y pronunciación.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Irregular Verbs · 4º ESO">
+<meta property="og:description" content="App para estudiar los verbos irregulares de inglés (4º ESO): tarjetas, examen, juegos y pronunciación.">
+<meta property="og:url" content="https://indalo-apps.github.io/verbos-adela/">
+<meta property="og:image" content="https://indalo-apps.github.io/verbos-adela/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -13,8 +24,12 @@
 <meta name="apple-mobile-web-app-title" content="Irregular Verbs">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preload" href="nunito.woff" as="font" type="font/woff" crossorigin>
 <script>
 /* aplicar el tema antes de pintar, para que no parpadee */
@@ -29,6 +44,7 @@ try{const t=JSON.parse(localStorage.getItem("adela-irregular-v1")||"{}").theme;i
   Texto de color sobre fondo claro: variables *-x (contraste AA). Rellenos con texto blanco: variables base.
 */
 :root{
+  --ik-accent:#6741D9;
   --bg:#F1EEFF; --paper:#FFFFFF; --row:#F7F5FF; --field:#FFFFFF; --line:#DCD5FA;
   --ink:#1F1747; --soft:#57517F; --hero:#231A4F; --hero-soft:#D2CBF6; --glow1:#DDD3FF; --glow2:#FFE4D6;
   --inf:#6741D9;  --inf-t:#ECE6FF;  --inf-x:#4A27B8;  --inf-d:#4C2DB0;
@@ -555,6 +571,198 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 @media (max-width:345px){#ver{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<style>
+/* ===== Kit común: ayuda para instalar y aviso amarillo ===== */
+.ik-bg{position:fixed;inset:0;z-index:9999;background:rgba(10,15,25,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media (min-width:640px){.ik-bg{align-items:center;padding:20px}}
+.ik-sheet{position:relative;background:#fff;color:#1b2430;width:100%;max-width:520px;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:22px 20px calc(18px + env(safe-area-inset-bottom));font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:left;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+@media (min-width:640px){.ik-sheet{border-radius:22px}}
+.ik-sheet h2{margin:0;font-size:20px;line-height:1.2}
+.ik-sheet p{margin:12px 0 0}
+.ik-head{display:flex;align-items:center;gap:12px;padding-right:40px}
+.ik-head img{width:56px;height:56px;border-radius:13px;flex:none}
+.ik-muted{color:#5b6573;font-size:14px}
+.ik-nota{background:#eef3fa;border-radius:12px;padding:8px 12px;font-size:14px}
+.ik-steps{margin:12px 0 0;padding:0;list-style:none;counter-reset:ik}
+.ik-steps li{counter-increment:ik;position:relative;padding:8px 0 8px 40px;border-top:1px solid #e8ecf1}
+.ik-steps li:first-child{border-top:0}
+.ik-steps li::before{content:counter(ik);position:absolute;left:0;top:7px;width:28px;height:28px;border-radius:50%;background:var(--ik-accent,#1d5fc4);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.ik-ic{width:20px;height:20px;vertical-align:-4px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--ik-accent,#1d5fc4)}
+.ik-ic circle{fill:currentColor}
+.ik-kbd{display:inline-block;border:1px solid #c9d1db;border-bottom-width:2px;border-radius:6px;padding:0 6px;font-weight:600;font-size:14px}
+.ik-nav{margin-top:16px}
+.ik-btn{appearance:none;border:0;border-radius:12px;min-height:44px;padding:10px 16px;font:inherit;font-weight:700;background:var(--ik-accent,#1d5fc4);color:#fff;cursor:pointer}
+.ik-nav .ik-btn{width:100%}
+.ik-ghost{background:#eef3fa;color:var(--ik-accent,#1d5fc4);min-height:36px;padding:6px 12px;font-size:14px;margin-top:6px}
+.ik-btn:focus-visible,.ik-x:focus-visible,.ik-bx:focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
+.ik-btn:disabled{opacity:.6}
+.ik-x{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;border-radius:50%;background:#eef1f5;color:#1b2430;font-size:18px;cursor:pointer}
+.ik-banner{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + var(--ik-bottom,0px) + env(safe-area-inset-bottom));z-index:9000;width:calc(100% - 24px);max-width:520px;display:flex;align-items:center;gap:10px;background:#ffe066;color:#2b2100;border:1.5px solid #e6bf2e;border-radius:14px;padding:8px 4px 8px 10px;box-shadow:0 8px 24px -8px rgba(0,0,0,.35);font:14px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:left}
+.ik-banner img{width:36px;height:36px;border-radius:9px;flex:none}
+.ik-banner div{flex:1;min-width:0}
+.ik-banner b{display:block;font-size:15px}
+.ik-banner .ik-btn{background:#2b2100;color:#ffe066;min-height:40px;padding:8px 12px;font-size:14px}
+.ik-bx{flex:none;width:44px;height:44px;border:0;background:none;color:#5c4a00;font-size:22px;cursor:pointer}
+@media (prefers-color-scheme:dark){.ik-sheet{background:#1c2430;color:#e8edf3}.ik-muted{color:#a9b4c2}.ik-nota{background:#26313f}.ik-steps li{border-color:#2d3846}.ik-x{background:#2a3442;color:#e8edf3}.ik-ghost{background:#26313f}.ik-kbd{border-color:#4a5666}}
+@media (prefers-reduced-motion:no-preference){.ik-sheet{animation:ik-up .22s ease-out}@keyframes ik-up{from{transform:translateY(30px);opacity:0}}}
+</style>
+<script>
+/* ===== Kit común de las apps de indalo-apps (copiado de la Tabla periódica) =====
+   Ayuda para instalar según el móvil, aviso para instalar y búsqueda de versión.
+   Uso: IK.init({nombre, clave, version, onBuscar, esInicio})                        */
+const IK = (function(){
+  const UA = navigator.userAgent;
+  const IS_IPAD = /iPad/.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const IS_IOS = /iPhone|iPad|iPod/.test(UA) || IS_IPAD;
+  const IS_ANDROID = /Android/.test(UA);
+  const IN_APP = /FBAN|FBAV|Instagram|WhatsApp|Line\/|; wv\)|GSA\//.test(UA);
+  const IOS_OTHER = IS_IOS && /CriOS|FxiOS|EdgiOS/.test(UA);
+  const EN_WEB = /\.github\.io$/.test(location.hostname) || location.hostname === "localhost";
+  let cfg = {nombre: document.title, clave: "app", version: "dev"};
+  let deferred = null;
+  const st = {
+    get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+    set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  };
+  // Versión de iOS: Safari 26 deja fija la del sistema en 18_x, así que se usa «Version/NN» cuando está
+  function iosVersion(){
+    const sv = UA.match(/Version\/(\d+)(?:\.(\d+))?.*Safari/);
+    if (sv && !IOS_OTHER) return [+sv[1], +(sv[2] || 0)];
+    const os = UA.match(/OS (\d+)_(\d+)/); return os ? [+os[1], +os[2]] : [0, 0];
+  }
+  function instalada(){ try { return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; } catch(e){ return false; } }
+  const SHARE = '<svg class="ik-ic" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+  const DOTS = '<svg class="ik-ic" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>';
+  const HDOTS = '<svg class="ik-ic" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>';
+  const PLUS = '<svg class="ik-ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>';
+
+  function pasos(){
+    const n = cfg.nombre;
+    if (IN_APP) return `<p>Has abierto el enlace dentro de otra app. Para instalarla, ábrela primero en el navegador:</p>
+      <ol class="ik-steps"><li>Toca el menú ${DOTS} o el botón ${SHARE} de esta pantalla.</li>
+      <li>Elige <b>«Abrir en ${IS_IOS ? "Safari" : "Chrome"}»</b> (o «Abrir en el navegador»).</li>
+      <li>Allí, vuelve a <b>Ajustes → Cómo añadirla a la pantalla de inicio</b>.</li></ol>`;
+    if (IS_IOS){
+      const [maj, min] = iosVersion(), dev = IS_IPAD ? "iPad" : "iPhone";
+      const ver = maj ? `<p class="ik-nota">Tu ${dev} tiene <b>iOS ${maj}${min ? "." + min : ""}</b>. Estos son los pasos para esa versión.</p>` : "";
+      const fin = `<li>Si aparece <b>«Abrir como app web»</b>, déjalo activado y pulsa <span class="ik-kbd">Añadir</span> (arriba a la derecha).</li>
+        <li>Listo: el icono <b>${n}</b> aparecerá en tu pantalla de inicio. Ábrela siempre desde ahí.</li>`;
+      if (maj && (maj < 16 || (maj === 16 && min < 4)) && IOS_OTHER)
+        return ver + `<p>En esta versión de iOS solo se puede instalar desde <b>Safari</b>:</p>
+          <ol class="ik-steps"><li>Copia el enlace y ábrelo en <b>Safari</b>. <button class="ik-btn ik-ghost" data-ik="copiar">Copiar enlace</button></li>
+          <li>Toca el botón <b>Compartir</b> ${SHARE} de la barra de abajo.</li>
+          <li>Elige <b>«Añadir a pantalla de inicio»</b> ${PLUS}.</li>${fin}</ol>`;
+      if (IOS_OTHER)
+        return ver + `<p>Desde este navegador (o desde Safari):</p>
+          <ol class="ik-steps"><li>Toca el botón <b>Compartir</b> ${SHARE}, en la barra de direcciones (arriba a la derecha) o en el menú del navegador.</li>
+          <li>Elige <b>«Añadir a pantalla de inicio»</b> ${PLUS}. Si no está, toca <b>«Más»</b> o baja en la lista.</li>${fin}</ol>`;
+      if (maj >= 26)
+        return ver + `<ol class="ik-steps">
+          <li>Toca el botón <b>···</b> ${HDOTS} que está a la derecha de la barra de la dirección${IS_IPAD ? " (arriba)" : " (abajo)"}.</li>
+          <li>Toca <b>«Compartir»</b> ${SHARE}.</li>
+          <li>Toca <b>«Ver más»</b> si hace falta, baja en la lista y elige <b>«Añadir a pantalla de inicio»</b> ${PLUS}.</li>${fin}</ol>`;
+      return ver + `<ol class="ik-steps">
+        <li>Toca el botón <b>Compartir</b> ${SHARE}${IS_IPAD ? ", arriba a la derecha." : ", en el centro de la barra de abajo. Si no ves la barra, desliza un poco la página hacia arriba."}</li>
+        <li>Baja en la lista y elige <b>«Añadir a pantalla de inicio»</b> ${PLUS}.</li>${fin}</ol>`;
+    }
+    if (IS_ANDROID) return `<p>En el móvil o la tablet Android, con Chrome:</p>
+      <ol class="ik-steps"><li>Toca el menú ${DOTS} (arriba a la derecha).</li>
+      <li>Elige <b>«Añadir a pantalla de inicio»</b> o <b>«Instalar aplicación»</b>.</li>
+      <li>Pulsa <span class="ik-kbd">Instalar</span>. El icono aparecerá en tu pantalla de inicio.</li></ol>`;
+    return `<p>Está pensada para el móvil o la tablet: abre este mismo enlace allí y sigue los pasos que salen.</p>
+      <ol class="ik-steps"><li>En el ordenador también se puede instalar con Chrome o Edge: busca el icono de instalar ${PLUS} a la derecha de la barra de direcciones.</li></ol>`;
+  }
+
+  function cerrar(){ const s = document.getElementById("ik-sheet"); if (s) s.remove(); }
+  function abrir(html, etiqueta){
+    cerrar();
+    const s = document.createElement("div");
+    s.id = "ik-sheet"; s.className = "ik-bg";
+    s.innerHTML = `<div class="ik-sheet" role="dialog" aria-modal="true" aria-label="${etiqueta}"><button class="ik-x" data-ik="cerrar" aria-label="Cerrar">✕</button>${html}</div>`;
+    s.addEventListener("click", ev => {
+      if (ev.target === s || ev.target.closest('[data-ik="cerrar"]')) { cerrar(); return; }
+      const b = ev.target.closest("[data-ik]"); if (!b) return;
+      if (b.dataset.ik === "ya") instalarYa();
+      if (b.dataset.ik === "copiar"){
+        const u = location.origin + location.pathname;
+        (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => { b.textContent = "✓ Enlace copiado"; }).catch(() => { b.textContent = u; });
+      }
+    });
+    document.addEventListener("keydown", function esc(e){ if (e.key === "Escape"){ cerrar(); document.removeEventListener("keydown", esc); } });
+    document.body.appendChild(s);
+    const x = s.querySelector(".ik-x"); if (x) x.focus();
+  }
+  async function instalarYa(){
+    if (!deferred) return;
+    deferred.prompt(); try { await deferred.userChoice; } catch(e){}
+    deferred = null; cerrar();
+  }
+  function abrirInstalar(){
+    if (instalada()){ abrir(`<h2>Ya está instalada</h2><p>✓ Ya la estás usando como app instalada. Ábrela siempre desde su icono.</p><div class="ik-nav"><button class="ik-btn" data-ik="cerrar">Entendido</button></div>`, "Instalar"); return; }
+    if (deferred && !IS_IOS && !IN_APP){ instalarYa(); return; }
+    abrir(`<div class="ik-head"><img src="icon-192.png" alt=""><div><h2>Instalar la app</h2><span class="ik-muted">Gratis, sin tienda y sin registrarse</span></div></div>
+      ${pasos()}
+      <p class="ik-muted">Una vez instalada se abre a pantalla completa, funciona sin conexión y se actualiza sola.</p>
+      <div class="ik-nav">${deferred ? '<button class="ik-btn" data-ik="ya">Instalar ahora</button>' : '<button class="ik-btn" data-ik="cerrar">Entendido</button>'}</div>`, "Instalar en el móvil");
+  }
+
+  // Aviso amarillo «Instálala en tu móvil» (solo en móvil o tablet, si no está instalada y no se ha cerrado)
+  function pintarAviso(){
+    const viejo = document.getElementById("ik-banner");
+    const toca = !instalada() && !st.get(cfg.clave + "-install-hide", 0) && (IS_IOS || IS_ANDROID || deferred)
+      && (!cfg.esInicio || cfg.esInicio());
+    if (!toca){ if (viejo) viejo.remove(); return; }
+    if (viejo) return;
+    const b = document.createElement("div");
+    b.id = "ik-banner"; b.className = "ik-banner"; b.setAttribute("role", "region"); b.setAttribute("aria-label", "Instalar la app");
+    b.innerHTML = `<img src="icon-192.png" alt=""><div><b>📲 Instálala en tu ${IS_IPAD ? "iPad" : "móvil"}</b>Tenla en la pantalla de inicio, como una app.</div>
+      <button class="ik-btn" data-b="ver">${deferred && !IS_IOS ? "Instalar" : "Ver cómo"}</button><button class="ik-bx" data-b="x" aria-label="No mostrar más">×</button>`;
+    b.addEventListener("click", ev => {
+      const t = ev.target.closest("[data-b]"); if (!t) return;
+      if (t.dataset.b === "ver") abrirInstalar();
+      else { st.set(cfg.clave + "-install-hide", 1); b.remove(); }
+    });
+    document.body.appendChild(b);
+  }
+
+  // Comprueba la versión publicada leyendo el <meta name="app-version"> de la página
+  const verCmp = (a, b) => { const x = String(a).split(".").map(Number), y = String(b).split(".").map(Number);
+    for (let i = 0; i < 3; i++){ const d = (x[i] || 0) - (y[i] || 0); if (d) return d; } return 0; };
+  async function versionPublicada(){
+    if (!EN_WEB) return null;
+    try {
+      const txt = await (await fetch(location.pathname + "?v=" + Date.now(), {cache: "no-store"})).text();
+      const m = txt.match(/name="app-version" content="([^"]+)"/);
+      return m ? m[1] : null;
+    } catch(e){ return null; }
+  }
+  // Botón «Buscar actualizaciones»: escribe el resultado en el elemento msg
+  async function buscar(boton, msg){
+    if (boton) boton.disabled = true;
+    if (msg) msg.textContent = "Comprobando…";
+    const v = await versionPublicada();
+    if (boton) boton.disabled = false;
+    if (!msg) return v;
+    if (!EN_WEB) msg.textContent = "Solo se puede comprobar en la app publicada.";
+    else if (v == null) msg.textContent = "No se ha podido comprobar. ¿Tienes conexión a internet?";
+    else if (verCmp(v, cfg.version) > 0){ msg.textContent = `Hay una versión nueva (${v}). Se instalará en cuanto cierres esta ventana.`; if (cfg.onNueva) cfg.onNueva(v); }
+    else msg.textContent = `✓ Tienes la última versión (${cfg.version}).`;
+    return v;
+  }
+
+  function init(c){
+    Object.assign(cfg, c);
+    addEventListener("beforeinstallprompt", ev => { ev.preventDefault(); deferred = ev; pintarAviso(); });
+    addEventListener("appinstalled", () => { deferred = null; st.set(cfg.clave + "-install-hide", 1); pintarAviso(); cerrar(); });
+    let pend = false;
+    if (cfg.esInicio) new MutationObserver(() => { if (pend) return; pend = true; setTimeout(() => { pend = false; pintarAviso(); }, 250); }).observe(document.body, {subtree: true, attributes: true, attributeFilter: ["class", "hidden"]});
+    setTimeout(pintarAviso, 1200);
+    // Enlace directo a las instrucciones: …/?instalar
+    if (/[?&]instalar\b/.test(location.search)){ history.replaceState(history.state, "", location.pathname); if (!instalada()) setTimeout(abrirInstalar, 500); }
+  }
+  return {init, abrirInstalar, buscar, versionPublicada, verCmp, instalada, EN_WEB};
+})();
+</script>
 </head>
 <body>
 <canvas id="confetti" aria-hidden="true"></canvas>
@@ -700,7 +908,7 @@ footer{text-align:center;color:var(--soft);font-size:13px;margin-top:34px}
 </div>
 
 <script>
-const APP_VERSION=42, APP_DATE="18/11/2026";
+const APP_VERSION=Number(document.querySelector('meta[name="app-version"]').content), APP_DATE="23/11/2026";
 const RAW = [
 ["be","/biː/","was / were","/wɒz/, /wɜː(r)/","been","/biːn/","ser, estar",1],
 ["beat","/biːt/","beat","/biːt/","beaten","/ˈbiːtn/","golpear, vencer",1],
@@ -1063,11 +1271,12 @@ const FEMALE=/(Kate|Serena|Stephanie|Martha|Female|Libby|Sonia|Hazel|Susan|Maisi
 const FEMALE_RANK=["Kate","Serena","Stephanie","Martha","Google UK English Female","Libby","Sonia","Hazel","Susan","Maisie","Mia","gb-x-gba","gb-x-gbc","gb-x-gbg","Female","Shelley","Flo","Sandy"];
 const MALE=/(Daniel|Arthur|Oliver|George|Ryan|Thomas|Male|Rishi|Aaron|Fred|Alex|Gordon|Lee|Eddy|Reed|Rocko|Grandpa|gb-x-gbb|gb-x-gbd|gb-x-rjs)/i;
 let VOICES=[];
-function loadVoices(){
+function loadVoices(redraw){
   try{VOICES=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang)||v.lang==="en");}catch(e){VOICES=[];}
-  if(view==="ajustes")renderSettings();
+  // Solo se vuelve a pintar Ajustes cuando llegan voces nuevas (sin voces en inglés se quedaba en bucle y Ajustes salía en blanco)
+  if(redraw&&view==="ajustes")renderSettings();
 }
-try{speechSynthesis.addEventListener("voiceschanged",loadVoices);}catch(e){}
+try{speechSynthesis.addEventListener("voiceschanged",()=>loadVoices(true));}catch(e){}
 const isGB=v=>/en[-_]GB/i.test(v.lang);
 function pickVoice(){
   if(!VOICES.length)loadVoices();
@@ -2166,6 +2375,15 @@ function renderSettings(){
       <button class="try" data-i="${i}" aria-label="Probar ${esc(v.name)}">▶ Probar</button><button class="use" data-i="${i}">${cur&&v.name===cur.name?"✓ En uso":"Usar"}</button></div>`).join(""):`<p>Este navegador no tiene voces en inglés.</p>`}</div>
     ${nGB&&sorted.length>list.length?`<button class="btn w" id="moreV" style="margin-top:10px">Ver otras voces en inglés (${sorted.length-list.length})</button>`:""}
     <div class="vhelp"><b>¿No hay ninguna voz femenina británica?</b><br>En iPhone: Ajustes → Accesibilidad → Contenido leído → Voces → Inglés (Reino Unido), descarga Kate, Serena o Stephanie y vuelve a abrir la app.<br>En Android: Ajustes → Accesibilidad → Texto a voz → Motor de Google → Inglés (Reino Unido).</div></div>
+  <div class="set"><h3>Instalar en el móvil</h3>${IK.instalada()?`<p>✓ Ya la estás usando como app instalada.</p>`:`<p>Tenla en la pantalla de inicio: se abre como una app, funciona sin internet y tu progreso queda más seguro.</p><button class="btn v" id="instBtn">📲 Cómo añadirla a la pantalla de inicio</button>`}</div>
+  <div class="set"><h3>Acerca de</h3>
+    <div style="display:flex;gap:12px;align-items:center"><img src="icon-192.png" alt="" width="48" height="48" style="border-radius:11px"><div><b>Irregular Verbs · 4º ESO</b><br><span style="color:var(--soft)">Versión ${APP_VERSION}</span></div></div>
+    <p style="margin-top:8px">Creada por <b>Adela Moreno Vega</b> y <b>Carlos Moreno Otto</b>.</p>
+    <p>© ${new Date().getFullYear()} Adela Moreno Vega y Carlos Moreno Otto. Todos los derechos reservados. Uso personal y educativo gratuito. Letra Nunito (SIL Open Font License).</p></div>
+  <div class="set"><h3>Aviso</h3><p>Esta app es una ayuda para repasar y puede contener errores. <b>En caso de error o duda, la fuente fiable es el material oficial de la asignatura de Inglés</b> (libro de texto y apuntes del profesorado).</p></div>
+  <div class="set"><h3>Versión</h3><p>Irregular Verbs · <b>versión ${APP_VERSION}</b>. Se actualiza sola cuando hay una versión nueva.</p>
+    <div class="pick" style="justify-content:flex-start"><button class="btn w" id="updBtn">🔄 Buscar actualizaciones</button><button class="btn w" id="novBtn">Ver novedades</button></div>
+    <p id="updMsg" role="status" style="margin-top:8px">La app lo comprueba sola cada vez que la abres o vuelves a ella.</p></div>
   <div class="set"><h3>Copia de seguridad</h3><p>Tu progreso se guarda solo en este dispositivo. Copia el código y guárdalo (por ejemplo, envíatelo por WhatsApp) para recuperarlo si cambias de móvil o se borra la app.</p>
     <div class="pick" style="justify-content:flex-start"><button class="btn v" id="bkCopy">Copiar mi código</button><button class="btn w" id="bkShow">Restaurar desde un código</button></div>
     <div id="bkArea"></div></div>
@@ -2173,6 +2391,9 @@ function renderSettings(){
     ${confirmReset?`<div class="confirm"><p>¿Seguro? Se borrarán ${nM} verbos dominados y ${nA} logros. No se puede deshacer.</p><div class="pick" style="justify-content:flex-start"><button class="btn r" id="rsYes">Sí, borrar mi progreso</button><button class="btn w" id="rsNo">Cancelar</button></div></div>`:`<button class="btn w" id="rsAsk">Borrar mi progreso</button>`}</div>`;
   $("themeSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.theme=b.dataset.t;save();applyTheme();renderSettings();};
   $("sizeSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.textSize=b.dataset.s;save();applyTextSize();renderSettings();};
+  if($("instBtn"))$("instBtn").onclick=()=>IK.abrirInstalar();
+  $("updBtn").onclick=()=>IK.buscar($("updBtn"),$("updMsg"));
+  $("novBtn").onclick=()=>showNews(true);
   $("sndSw").onclick=()=>{S.mute=!S.mute;save();if(!S.mute)tone(true);renderSettings();$("sndSw").focus();};
   if($("moreV"))$("moreV").onclick=()=>{allVoices=true;renderSettings();};
   $("p-ajustes").querySelectorAll(".try").forEach(b=>b.onclick=()=>sayText("go, went, gone. I have gone to London.",list[+b.dataset.i]));
@@ -2219,6 +2440,7 @@ function confetti(){
 
 // ---------- versión, actualizaciones y modo sin conexión ----------
 const CHANGELOG={
+  43:["En Ajustes: «Buscar actualizaciones», novedades, autores y aviso.","Arreglado: Ajustes salía en blanco en los móviles sin voces en inglés.","Ayuda para instalarla con los pasos de tu móvil (iPhone, iPad o Android).","Iconos para todos los tamaños e imagen al compartir el enlace."],
   15:["Tu progreso se ve en un muro con los 88 verbos."],
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
   17:["Funciona mejor en iPhone: sin zoom al escribir, la voz no se corta y los sonidos suenan desde el primer toque."],
@@ -2241,7 +2463,7 @@ const CHANGELOG={
 };
 $("ver").textContent="v"+APP_VERSION;
 $("foot").textContent=`Irregular Verbs · versión ${APP_VERSION} (${APP_DATE}) · Letra Nunito (SIL Open Font License)`;
-const ONLINE_HOST=location.protocol==="https:"&&/github\.io$/.test(location.hostname);
+const ONLINE_HOST=IK.EN_WEB;
 const loadedAt=Date.now();let lastTouch=0;
 ["pointerdown","keydown"].forEach(ev=>addEventListener(ev,()=>{lastTouch=Date.now();},{passive:true}));
 let checking=false;
@@ -2249,9 +2471,8 @@ async function checkUpdate(){
   if(checking||!ONLINE_HOST||!navigator.onLine)return;
   checking=true;
   try{
-    const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});
-    const{version}=await r.json();
-    if(version>APP_VERSION){
+    const v=await IK.versionPublicada();const version=Number(v);
+    if(v&&version>APP_VERSION){
       const idle=Date.now()-lastTouch>120000||Date.now()-loadedAt<6000;
       if(idle)doUpdate(version);else showUpdBar(version);
     }
@@ -2269,15 +2490,18 @@ function showUpdBar(version){
   document.body.appendChild(b);
   $("updGo").onclick=()=>doUpdate(version);$("updX").onclick=()=>b.remove();
 }
-function showNews(){
-  const seen=S.seenVersion||0;
-  if(!seen){S.seenVersion=APP_VERSION;save();return;}
-  if(seen>=APP_VERSION)return;
+function showNews(todas){
+  let seen=S.seenVersion||0;
+  if(todas)seen=Object.keys(CHANGELOG).map(Number).sort((a,b)=>b-a)[4]||0;
+  else{
+    if(!seen){S.seenVersion=APP_VERSION;save();return;}
+    if(seen>=APP_VERSION)return;
+  }
   const notes=Object.keys(CHANGELOG).map(Number).filter(v=>v>seen&&v<=APP_VERSION).sort((a,b)=>a-b).flatMap(v=>CHANGELOG[v]);
-  S.seenVersion=APP_VERSION;save();
+  if(!todas){S.seenVersion=APP_VERSION;save();}
   if(!notes.length){toast(`App actualizada a la versión ${APP_VERSION}`);return;}
   const m=document.createElement("div");m.className="newsbg";
-  m.innerHTML=`<div class="news" role="dialog" aria-modal="true" aria-labelledby="newsT"><div class="ico" aria-hidden="true">🎉</div><h2 id="newsT">¡App actualizada!</h2><p class="sv">Ahora tienes la versión ${APP_VERSION}. Novedades:</p><ul>${notes.map(n=>`<li>${n}</li>`).join("")}</ul><button class="btn v" id="newsOk">¡Genial!</button></div>`;
+  m.innerHTML=`<div class="news" role="dialog" aria-modal="true" aria-labelledby="newsT"><div class="ico" aria-hidden="true">🎉</div><h2 id="newsT">${todas?"Novedades":"¡App actualizada!"}</h2><p class="sv">${todas?"Lo último de la app (versión "+APP_VERSION+"):":"Ahora tienes la versión "+APP_VERSION+". Novedades:"}</p><ul>${notes.map(n=>`<li>${n}</li>`).join("")}</ul><button class="btn v" id="newsOk">¡Genial!</button></div>`;
   document.body.appendChild(m);
   const close=()=>{m.remove();document.removeEventListener("keydown",onEsc);};
   const onEsc=e=>{if(e.key==="Escape")close();};document.addEventListener("keydown",onEsc);
@@ -2307,7 +2531,9 @@ $("hello").textContent=h<14?"¡Buenos días, Adela!":h<21?"¡Buenas tardes, Adel
 try{speechSynthesis.getVoices();}catch(e){}
 applyTheme();applyTextSize();netState();setGroup("all");checkAch(true);
 trainOf(V[Math.random()*V.length|0]);
-render();showNews();iosTip();
+render();showNews();
+if(S.iosTipDone)try{localStorage.setItem("verbos-install-hide","1")}catch(e){}
+IK.init({nombre:"Irregular Verbs",clave:"verbos",version:String(APP_VERSION),onNueva:v=>doUpdate(v),esInicio:()=>!$("v-home").classList.contains("hidden")&&!document.querySelector(".newsbg")});
 </script>
 </body>
 </html>
