@@ -2,7 +2,7 @@
 // La página siempre se pide primero a internet (así llegan las versiones nuevas);
 // si no hay conexión, se usa la última copia guardada.
 // Al subir una versión nueva, cambia el nombre de la caché y se borra la anterior.
-const CACHE = "irregular-verbs-43";
+const CACHE = "irregular-verbs-44";
 const CORE = ["./", "index.html", "nunito.woff", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "icon-152.png", "icon-167.png", "icon-maskable-512.png", "favicon-32.png"];
 
 self.addEventListener("install", e => {

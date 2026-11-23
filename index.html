@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="43">
+<meta name="app-version" content="44">
 <title>Irregular Verbs</title>
 <meta name="author" content="Adela Moreno Vega y Carlos Moreno Otto">
 <meta name="copyright" content="© 2026 Adela Moreno Vega y Carlos Moreno Otto. Todos los derechos reservados.">
@@ -633,6 +633,7 @@ const IK = (function(){
   function instalada(){ try { return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; } catch(e){ return false; } }
   const SHARE = '<svg class="ik-ic" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
   const DOTS = '<svg class="ik-ic" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>';
+  const MENU3='<svg class="ik-ic" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h10"/></svg>';
   const HDOTS = '<svg class="ik-ic" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>';
   const PLUS = '<svg class="ik-ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>';
 
@@ -658,7 +659,7 @@ const IK = (function(){
           <li>Elige <b>«Añadir a pantalla de inicio»</b> ${PLUS}. Si no está, toca <b>«Más»</b> o baja en la lista.</li>${fin}</ol>`;
       if (maj >= 26)
         return ver + `<ol class="ik-steps">
-          <li>Toca el botón <b>···</b> ${HDOTS} que está a la derecha de la barra de la dirección${IS_IPAD ? " (arriba)" : " (abajo)"}.</li>
+          <li>${maj>=27&&!IS_IPAD?`Toca el botón ${MENU3} de tres rayas que está a la izquierda, dentro de la barra de la dirección (abajo).`:`Toca el botón ${HDOTS} que está a la derecha de la barra de la dirección${IS_IPAD ? " (arriba)" : " (abajo)"}.`}</li>
           <li>Toca <b>«Compartir»</b> ${SHARE}.</li>
           <li>Toca <b>«Ver más»</b> si hace falta, baja en la lista y elige <b>«Añadir a pantalla de inicio»</b> ${PLUS}.</li>${fin}</ol>`;
       return ver + `<ol class="ik-steps">
@@ -2440,6 +2441,7 @@ function confetti(){
 
 // ---------- versión, actualizaciones y modo sin conexión ----------
 const CHANGELOG={
+  44:["📲 Ayuda para instalar al día con iOS 27: el botón de tres rayas dentro de la barra de la dirección"],
   43:["En Ajustes: «Buscar actualizaciones», novedades, autores y aviso.","Arreglado: Ajustes salía en blanco en los móviles sin voces en inglés.","Ayuda para instalarla con los pasos de tu móvil (iPhone, iPad o Android).","Iconos para todos los tamaños e imagen al compartir el enlace."],
   15:["Tu progreso se ve en un muro con los 88 verbos."],
   16:["La app te avisa cuando hay una versión nueva y te cuenta las novedades."],
